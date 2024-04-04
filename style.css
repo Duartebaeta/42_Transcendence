@@ -1,6 +1,22 @@
-.icon {
+.navbar {
+	height: 100vh;
+}
+
+.btn-icon {
 	width: 48px;
 	aspect-ratio: 1;
 	border-radius: 50%;
 	background-color: orange;
+}
+
+.left-move {
+	transform: translateX(-100vw);
+}
+
+.pop-up {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	background-color: blue;
+	transition: all ease-in-out 0.4ms;
 }
