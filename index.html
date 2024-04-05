@@ -8,33 +8,30 @@
     <title>Ft_transcendence</title>
 </head>
 <body class="bg-dark">
-	<div>
+
+	<div class="container-fluid">
 		<div class="row">
-			<div class="col-1">
-				<nav class="navbar bg-light justify-content-center align-items-center">
-					<ul class="nav navbar-nav">
-						<button class="btn btn-dark btn-icon mb-4" onclick="myFunction()"></button>
-						<button class="btn btn-dark btn-icon mb-4" onclick="myFunction()"></button>
-						<button class="btn btn-dark btn-icon mb-4" onclick="myFunction()"></button>
-						<button class="btn btn-dark btn-icon mb-4" onclick="myFunction()"></button>
-						<button class="btn btn-dark btn-icon mb-4" onclick="myFunction()"></button>
+			<!-- Sidebar -->
+			<nav class="col-1 d-md-block bg-light sidebar">
+				<div class="position-sticky">
+					<ul class="nav navbar flex-column">
+						<button class="btn btn-dark btn-icon nav-item mb-4""></button>
+						<button class="btn btn-dark btn-icon nav-item mb-4""></button>
+						<button class="btn btn-dark btn-icon nav-item mb-4""></button>
+						<button class="btn btn-dark btn-icon nav-item mb-4""></button>
+						<button class="btn btn-dark btn-icon nav-item mb-4""></button>
 					</ul>
-				</nav>
-			</div>
+				</div>
+			</nav>
+			
+			<!-- Main Content -->
+			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+				<!-- Main content of the page goes here -->
+				<h1>Main Content</h1>
+				<p>This is the main content of the page.</p>
+			</main>
 		</div>
 	</div>
 
-	<section class="content bg-dark h-100 d-flex justify-content-center align-items-center" style="width: 94%">
-		<div class="pop-up"></div>
-	</section>
-
-	<script>
-		function myFunction() {
-			const icon = document.querySelector(".btn-icon");
-			const pop_up = document.querySelector(".pop-up");
-			
-			pop_up.classList.toggle("left-move");
-		}
-	</script>
 </body>
 </html>
