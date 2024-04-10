@@ -2,16 +2,9 @@
 	height: 100vh;
 }
 
-.sidebar {
+/* .sidebar {
 	position: sticky;
 	top: 0;
 	height: 100%;
-	border-right: 1px solid #ddd; /* Optional: Add border for styling */
-}
-
-.btn-icon {
-	width: 48px;
-	aspect-ratio: 1;
-	border-radius: 50%;
-	background-color: orange;
-}
+	border-right: 10px solid blue;
+} */
