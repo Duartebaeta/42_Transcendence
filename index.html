@@ -16,13 +16,25 @@
 	<div class="container-fluid">
 		<div class="row">
 			<!-- Sidebar -->
-			<nav class="col-auto d-md-block bg-light">
+			<nav class="col-auto d-md-block bg-gradient" style="background-color: rgb(130, 0, 130);">
 				<div class="position-sticky">
 					<ul class="nav navbar flex-column align-items-center justify-content-center">
-						<button class="btn nav-item mb-3" data-bs-toggle="modal" data-bs-target="#stats-modal"><i class="bi bi-person h3"></i></button> <!-- Games Button -->
-						<button class="btn nav-item mb-3"><i class="bi bi-chat h3"></i></button> <!-- Chat Button -->
-						<button class="btn nav-item mb-3"><i class="bi bi-trophy h3"></i></button> <!-- Stats Button -->
-						<button class="btn nav-item mb-3"><i class="bi bi-gear h3"></i></button> <!-- Settings Button -->
+						<!-- Profile Button -->
+						<button class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#stats-modal">
+							<i class="bi bi-person h3"></i>
+						</button>
+						<!-- Chat Button -->
+						<button class="btn nav-item mb-3 text-light">
+							<i class="bi bi-chat h3"></i>
+						</button>
+						<!-- Match History Button -->
+						<button class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#match-history-modal">
+							<i class="bi bi-clock-history h3"></i>
+						</button>
+						<!-- Settings Button -->
+						<button class="btn nav-item mb-3 text-light">
+							<i class="bi bi-gear h3"></i>
+						</button>
 					</ul>
 				</div>
 			</nav>
@@ -34,7 +46,7 @@
 		</div>
 
 		<!-- Login Modal -->
-		<div class="modal fade" id="login-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal" id="login-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 			  	<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
 					<div class="modal-header">
@@ -58,13 +70,13 @@
 			</div>
 		</div>
 
-		<!-- Stats Modal -->
-		<div class="modal fade" id="stats-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<!-- Player Stats Modal -->
+		<div class="modal fade" id="stats-modal" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 			  	<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
 					<div class="modal-header">
 						<h5 class="modal-title text-light" id="staticBackdropLabel">Player Stats</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
 						<div class="row">
@@ -86,11 +98,51 @@
 			</div>
 		</div>
 
+		<!-- Match History Modal -->
+		<div class="modal fade" id="match-history-modal" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		    <div class="modal-dialog modal-dialog-centered modal-lg">
+		        <div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
+		            <div class="modal-header">
+		                <h5 class="modal-title text-light" id="staticBackdropLabel">Match History</h5>
+		                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		            </div>
+		            <div class="modal-body">
+		                <div class="row">
+		                    <!-- Win/Loss -->
+		                    <div class="col-3">
+		                        <p class="text-light text-center">VICTORY</p>
+		                        <p class="text-light text-center">DEFEAT</p>
+		                        <p class="text-light text-center">TIE</p>
+		                        <p class="text-light text-center">DEFEAT</p>
+		                        <p class="text-light text-center">VICTORY</p>
+		                    </div>
+		                    <!-- Score -->
+		                    <div class="col-3">
+		                        <p class="text-light text-center">7 - 3</p>
+		                        <p class="text-light text-center">0 - 4</p>
+		                        <p class="text-light text-center">3 - 3</p>
+		                        <p class="text-light text-center">2 - 5</p>
+		                        <p class="text-light text-center">6 - 5</p>
+		                    </div>
+		                    <!-- Opponent -->
+		                    <div class="col-6">
+		                        <p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
+		                        <p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
+		                        <p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
+		                        <p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
+		                        <p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+
 		<!-- Login Modal Trigger -->
 		<!-- <script>
 			// Trigger the modal on page load
 			document.addEventListener('DOMContentLoaded', function () {
-			  var myModal = new bootstrap.Modal(document.getElementById('stats-modal'));
+			  var myModal = new bootstrap.Modal(document.getElementById('match-history-modal'));
 			  myModal.show();
 			});
 		</script> -->
