@@ -1,0 +1,10 @@
+{
+	"status": "unauthorized",
+	"message": "Login successful",
+	"data": {
+	  "user_id": 123,
+	  "username": "john_doe",
+	  "email": "john@example.com"
+	}
+}
+  

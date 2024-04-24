@@ -21,7 +21,7 @@
 				<div class="position-sticky">
 					<ul class="nav navbar flex-column align-items-center justify-content-center">
 						<!-- Profile Button -->
-						<button id="updateButton" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#stats-modal">
+						<button id="statsBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#stats-modal">
 							<i class="bi bi-person h3"></i>
 						</button>
 						<!-- Chat Button -->
@@ -48,7 +48,7 @@
 	</div>
 
 	<!-- Login Modal -->
-	<div class="modal" id="login-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
 				<div class="modal-header">
@@ -56,12 +56,12 @@
 				</div>
 				<div class="modal-body p-5">
 					<!-- Email -->
-					<input type="email" class="form-control mb-3" placeholder="Email" id="modal-email"<input/>
+					<input type="email" class="form-control mb-3" placeholder="Email" id="modal-email"></input>
 					<!-- Password -->
-					<input type="email-password" class="form-control" placeholder="Password" id="modal-email-password"<input/>
+					<input type="email-password" class="form-control" placeholder="Password" id="modal-email-password"></input>
 					<!-- Submit Button -->
 					<div class="text-center mt-4">
-						<button type="button" class="btn bg-gradient btn-block mb-4" style="background-color: rgb(238, 130, 238)">Sign in</button>
+						<button id="loginRequestBtn" class="btn bg-gradient btn-block mb-4" style="background-color: rgb(238, 130, 238)">Sign in</button>
 					</div>
 					<!-- Register Button -->
 					<div class="text-center text-light">
@@ -73,7 +73,7 @@
 	</div>
 
 	<!-- Player Stats Modal -->
-	<div class="modal fade" id="stats-modal" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="stats-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
 				<div class="modal-header">
