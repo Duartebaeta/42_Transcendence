@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch("login-check.json")
 			.then(function(response) {
 				// Check if response status is OK
-				if (response.status == 200) {
+				if (response.ok) {
 					// If response status is 200 OK, hide the modal
 					var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
 					myModal.hide();

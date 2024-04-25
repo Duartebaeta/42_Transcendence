@@ -56,16 +56,57 @@
 				</div>
 				<div class="modal-body p-5">
 					<!-- Email -->
-					<input type="email" class="form-control mb-3" placeholder="Email" id="modal-email"></input>
+					<input type="email" class="form-control mb-3" placeholder="Email"></input>
 					<!-- Password -->
-					<input type="email-password" class="form-control" placeholder="Password" id="modal-email-password"></input>
+					<input type="email-password" class="form-control" placeholder="Password"></input>
 					<!-- Submit Button -->
 					<div class="text-center mt-4">
 						<button id="loginRequestBtn" class="btn bg-gradient btn-block mb-4" style="background-color: rgb(238, 130, 238)">Sign in</button>
 					</div>
 					<!-- Register Button -->
 					<div class="text-center text-light">
-						<p>Not a member? <a href="#!" style="color: rgb(238, 130, 238)";>Register</a></p>
+						<p>Not a member? <a href="#" data-bs-toggle="modal" data-bs-target="#register-modal" style="color: rgb(238, 130, 238);">Register</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Register Modal -->
+	<div id="register-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
+				<div class="modal-header">
+					<h5 class="modal-title text-light" id="staticBackdropLabel">Register</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#login-modal"></button>
+				</div>
+				<div class="modal-body">
+					<div class="modal-body">
+						<div class="row">
+							<!-- Avatar Selection -->
+							<div class="col-4 text-center pr-5">
+								<!-- Current Avatar -->
+								<i class="bi bi-person-square text-light registerIcon"></i>
+								<div class="text-center">
+									<button class="btn bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change Avatar</button>
+								</div>
+							</div>
+							<!-- Register Components -->
+							<div class="col-8">
+								<!-- Email -->
+								<input type="email" class="form-control mb-3" placeholder="Email"></input>
+								<!-- Password -->
+								<input type="email-password" class="form-control mb-3" placeholder="Password"></input>
+								<!-- Confirm Password -->
+								<input type="email-password" class="form-control mb-5" placeholder="Confirm Password"></input>
+								<!-- Username -->
+								<input type="username" class="form-control" placeholder="Username"></input>
+								<!-- Submit Button -->
+								<div class="text-center mt-4">
+									<button class="btn bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Register</button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

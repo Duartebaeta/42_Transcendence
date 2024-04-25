@@ -2,6 +2,10 @@
 	height: 100vh;
 }
 
+.registerIcon {
+	font-size: 7em;
+}
+
 /* .sidebar {
 	position: sticky;
 	top: 0;
