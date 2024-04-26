@@ -114,5 +114,18 @@ class TestSignUp(TestCase):
 			'fii@example.pt',
 			'fialexan42@example.pt',
 			'fialexan.42@example.pt',
-			'fialan@'
+			'fialan@example-example.pt'
 		]
+		number = 1
+		password = 'Email_Pass_123'
+		expected_status = 201
+		for email in emails:
+			username = 'Fii' + number.__str__()
+			number += 1
+			self.run_test(
+				username,
+				email,
+				password,
+				expected_status,
+				expected_errors=None
+			)
