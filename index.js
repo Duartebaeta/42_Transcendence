@@ -72,3 +72,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get a reference to the button element
+    var loginRequestBtn = document.getElementById('registerRequestBtn');
+
+    // Add event listener to the button for the 'click' event
+    loginRequestBtn .addEventListener('click', function() {
+        // Construct the request object
+        // var request = {
+        //     method: 'POST', // HTTP method
+        //     url: 'https://example.com/api/endpoint', // API endpoint URL
+        //     headers: {
+        //         'Content-Type': 'application/json', // Set content type to JSON
+        //         // Add any additional headers if needed
+        //     },
+        //     body: JSON.stringify({ // Convert data to JSON string
+        //         key1: 'value1',
+        //         key2: 'value2'
+        //         // Add any data you want to send in the request body
+        //     })
+        // };
+
+        // Send the request using Fetch API
+        fetch("login-check.json")
+			.then(function(response) {
+				// Check if response status is OK
+				if (response.ok) {
+					// If response status is 200 OK, hide the modal
+					var myModal = bootstrap.Modal.getInstance(document.getElementById('register-modal'));
+					myModal.hide();
+				} else {
+					// If response status is not OK, throw an error
+					throw new Error('Network response was not ok.');
+				}
+			})
+			.catch(function(error) {
+				// Handle errors
+				console.error('Error:', error);
+			});
+
+    });
+});
+
