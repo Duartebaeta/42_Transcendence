@@ -53,27 +53,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // };
 
         // Send the request using Fetch API
-        fetch("login-check.json")
+		fetch("login-check.json")
 			.then(function(response) {
-				// Check if response status is OK
+				//  Check if response status is OK (optional)
 				if (response.ok) {
-					// If response status is 200 OK, hide the modal
-					var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
-					myModal.hide();
+				    // If response status is 200 OK, hide the modal
+				    var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
+				    myModal.hide();
 				}
 				else {
 					// If response status is not OK, show error message
-					message = 'Error message';
-					document.getElementById('loginErrorMessage').innerText = message;
-					document.getElementById('loginErrorMessage').style.display = 'block';
-				}
-			})
-			.catch(function(error) {
-				// Handle errors
-				console.error('Error:', error);
-			});
+					response.json().then(function(data) {
+							var firstErrorMessage = data.errors[0];
 
-    });
+							document.getElementById('loginErrorMessage').innerText = firstErrorMessage;
+							document.getElementById('loginErrorMessage').style.display = 'block';
+					})
+					.catch(function(error) {
+					    // Handle errors
+					    console.error('Error:', error);
+					});
+				}
+			});
+	});
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -105,18 +107,20 @@ document.addEventListener('DOMContentLoaded', function() {
 					// If response status is 200 OK, hide the modal
 					var myModal = bootstrap.Modal.getInstance(document.getElementById('register-modal'));
 					myModal.hide();
-				} else {
-					// If response status is not OK, show error message
-					message = 'Error message';
-					document.getElementById('registerErrorMessage').innerText = message;
-					document.getElementById('registerErrorMessage').style.display = 'block';
 				}
-			})
-			.catch(function(error) {
-				// Handle errors
-				console.error('Error:', error);
-			});
+				else {
+					// If response status is not OK, show error message
+					response.json().then(function(data) {
+							var firstErrorMessage = data.errors[0];
 
+							document.getElementById('registerErrorMessage').innerText = firstErrorMessage;
+							document.getElementById('registerErrorMessage').style.display = 'block';
+						})
+					.catch(function(error) {
+						// Handle errors
+						console.error('Error:', error);
+					});
+				}
+			});
     });
 });
-
