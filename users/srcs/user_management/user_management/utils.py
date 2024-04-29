@@ -52,9 +52,9 @@ def is_valid_password(password):
 	if password is None or password == '':
 		return False, 'Password is empty'
 	if len(password) < settings.PASSWORD_MIN_LENGTH:
-		return False, 'Password is too short'
+		return False, f'Password is too short (minimum size {settings.PASSWORD_MIN_LENGTH})'
 	if len(password) > settings.PASSWORD_MAX_LENGTH:
-		return False, 'Password is too big'
+		return False, f'Password is too big (maximum size {settings.PASSWORD_MAX_LENGTH})'
 	if not any(char.isdigit() for char in password):
 		return False, 'Password must contain atleast 1 number'
 	if not any(char.islower() for char in password):
@@ -62,6 +62,6 @@ def is_valid_password(password):
 	if not any(char.isupper() for char in password):
 		return False, 'Password must contain atleast 1 uppercase letter'
 	if not any(char in '*-_+' for char in password):
-		return False, 'Password must contain atleast 1 special character'
+		return False, 'Password must contain atleast 1 special character (*-_+)'
 	return True, None
 	
