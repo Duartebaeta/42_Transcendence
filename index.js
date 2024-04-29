@@ -60,9 +60,12 @@ document.addEventListener('DOMContentLoaded', function() {
 					// If response status is 200 OK, hide the modal
 					var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
 					myModal.hide();
-				} else {
-					// If response status is not OK, throw an error
-					throw new Error('Network response was not ok.');
+				}
+				else {
+					// If response status is not OK, show error message
+					message = 'Error message';
+					document.getElementById('loginErrorMessage').innerText = message;
+					document.getElementById('loginErrorMessage').style.display = 'block';
 				}
 			})
 			.catch(function(error) {
@@ -103,8 +106,10 @@ document.addEventListener('DOMContentLoaded', function() {
 					var myModal = bootstrap.Modal.getInstance(document.getElementById('register-modal'));
 					myModal.hide();
 				} else {
-					// If response status is not OK, throw an error
-					throw new Error('Network response was not ok.');
+					// If response status is not OK, show error message
+					message = 'Error message';
+					document.getElementById('registerErrorMessage').innerText = message;
+					document.getElementById('registerErrorMessage').style.display = 'block';
 				}
 			})
 			.catch(function(error) {
