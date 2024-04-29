@@ -129,3 +129,56 @@ class TestSignUp(TestCase):
 				expected_status,
 				expected_errors=None
 			)
+	
+	def test_signup_invalid_password(self):
+		passwords = [
+			(None, 'Password is empty'),
+			('', 'Password is empty'),
+			('x' * (settings.PASSWORD_MIN_LENGTH - 1),
+				f'Password is too short (minimum size {settings.PASSWORD_MIN_LENGTH})'),
+			('x' * (settings.PASSWORD_MAX_LENGTH + 1),
+				f'Password is too big (maximum size {settings.PASSWORD_MAX_LENGTH})'),
+			('OlaAmigosAdeus', 'Password must contain atleast 1 number'),
+			('OLAAMIGOS1234', 'Password must contain atleast 1 lowercase letter'),
+			('olaamigos123456789', 'Password must contain atleast 1 uppercase letter'),
+			('OlaAmigos1234Adeu<\s', 'Password must contain atleast 1 special character (*-_+)'),
+		]
+		number = 1
+		expected_status = 400
+		for password, error in passwords:
+			username = 'Fii' + number.__str__()
+			email = 'fii' + number.__str__() + '@example.pt'
+			number += 1
+			expected_error = [error]
+			self.run_test(
+				username,
+				email,
+				password,
+				expected_status,
+				expected_error
+			)
+
+	def test_signup_valid_password(self):
+		passwords = [
+			'OlaAmigos-1',
+			'1234567890aS+',
+			'*EUChamoME1234',
+			'TestPAss_18237189372198329837129837',
+			'x' * (settings.PASSWORD_MIN_LENGTH - 3) + 'A1-',
+			'x' * (settings.PASSWORD_MAX_LENGTH - 3) + 'A2+',
+			'+*-_-+__+*-+*+--___-a+*-+-*16*-+*++*T',
+			'NormalLookingPassword++8520',
+		]
+		number = 1
+		expected_status = 201
+		for password in passwords:
+			username = 'Fii' + number.__str__()
+			email = 'fii' + number.__str__() + '@example.pt'
+			number += 1
+			self.run_test(
+				username,
+				email,
+				password,
+				expected_status,
+				expected_errors=None
+			)
