@@ -83,24 +83,28 @@ document.addEventListener('DOMContentLoaded', function() {
     var loginRequestBtn = document.getElementById('registerRequestBtn');
 
     // Add event listener to the button for the 'click' event
-    loginRequestBtn .addEventListener('click', function() {
+    registerRequestBtn.addEventListener('click', function() {
+        // Retrieve email and password inputs
+		var usernameInput = document.querySelector('input[type="username"]');
+        var emailInput = document.querySelector('input[type="email"]');
+        var passwordInput = document.querySelector('input[type="password"]');
+
         // Construct the request object
-        // var request = {
-        //     method: 'POST', // HTTP method
-        //     url: 'https://example.com/api/endpoint', // API endpoint URL
-        //     headers: {
-        //         'Content-Type': 'application/json', // Set content type to JSON
-        //         // Add any additional headers if needed
-        //     },
-        //     body: JSON.stringify({ // Convert data to JSON string
-        //         key1: 'value1',
-        //         key2: 'value2'
-        //         // Add any data you want to send in the request body
-        //     })
-        // };
+        var request = {
+            method: 'POST', // HTTP method
+            url: 'https://example.com/api/register',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ // Convert data to JSON string
+				username: usernameInput.value,
+                email: emailInput.value,
+                password: passwordInput.value
+            })
+        };
 
         // Send the request using Fetch API
-        fetch("login-check.json")
+        fetch(request.url, request)
 			.then(function(response) {
 				// Check if response status is OK
 				if (response.ok) {
