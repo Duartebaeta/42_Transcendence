@@ -87,12 +87,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Retrieve email and password inputs
 		var usernameInput = document.querySelector('input[type="username"]');
         var emailInput = document.querySelector('input[type="email"]');
-        var passwordInput = document.querySelector('input[type="password"]');
+        var passwordInput = document.querySelector('input[type="email-password"]');
 
+		console.log(emailInput.value);
         // Construct the request object
         var request = {
             method: 'POST', // HTTP method
-            url: 'https://example.com/api/register',
+            url: 'http://127.0.0.1:8000/user/signup/',
             headers: {
                 'Content-Type': 'application/json' 
             },
