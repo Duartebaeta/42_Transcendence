@@ -6,6 +6,10 @@
 	font-size: 12em;
 }
 
+.showPasswordBtn {
+	color: white;
+}
+
 /* .sidebar {
 	position: sticky;
 	top: 0;
