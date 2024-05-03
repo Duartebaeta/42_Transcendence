@@ -34,26 +34,26 @@ document.addEventListener("DOMContentLoaded", function() {
 // Login Request
 document.addEventListener('DOMContentLoaded', function() {
     // Get a reference to the button element
-    var loginRequestBtn = document.getElementById('loginRequestBtn');
+    const loginRequestBtn = document.getElementById('loginRequestBtn');
 
     // Add event listener to the button for the 'click' event
-    loginRequestBtn .addEventListener('click', function() {
+    loginRequestBtn.addEventListener('click', function() {
         // Retrieve email and password inputs
-        var emailInput = document.getElementById('loginEmail');
-        var passwordInput = document.getElementById('loginPassword');
+        // var emailInput = document.getElementById('loginEmail');
+        // var passwordInput = document.getElementById('loginPassword');
 
-        // Construct the request object
-        var request = {
-            method: 'POST', // HTTP method
-            url: 'http://127.0.0.1:8000/user/signup/',
-            headers: {
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({ // Convert data to JSON string
-                email: emailInput.value,
-                password: passwordInput.value
-            })
-        };
+        // // Construct the request object
+        // var request = {
+        //     method: 'POST', // HTTP method
+        //     url: 'http://127.0.0.1:8000/user/signup/',
+        //     headers: {
+        //         'Content-Type': 'application/json' 
+        //     },
+        //     body: JSON.stringify({ // Convert data to JSON string
+        //         email: emailInput.value,
+        //         password: passwordInput.value
+        //     })
+        // };
 
         // Send the request using Fetch API
 		fetch("login-check.json")
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Register Request
 document.addEventListener('DOMContentLoaded', function() {
-    var loginRequestBtn = document.getElementById('registerRequestBtn');
+    const loginRequestBtn = document.getElementById('registerRequestBtn');
 
     registerRequestBtn.addEventListener('click', function() {
         // Retrieve email and password inputs
@@ -127,6 +127,36 @@ document.addEventListener('DOMContentLoaded', function() {
 						console.error('Error:', error);
 					});
 				}
-			});
+			});	
     });
+});
+
+// Show Password Button at Login
+document.addEventListener("DOMContentLoaded", function() {
+	const showPasswordBtn = document.getElementById('showPasswordBtnLogin');
+	showPasswordBtn.checked = false;
+
+	showPasswordBtn.addEventListener('click', function() {
+		const passwordInput = document.getElementById('loginPassword');
+		
+		if (showPasswordBtn.checked === true)
+			passwordInput.setAttribute('type', 'text');
+		else
+			passwordInput.setAttribute('type', 'password');
+	})	
+});
+
+// Show Password Button at Register
+document.addEventListener("DOMContentLoaded", function() {
+	const showPasswordBtn = document.getElementById('showPasswordBtnRegister');
+	showPasswordBtn.checked = false;
+
+	showPasswordBtn.addEventListener('click', function() {
+		const passwordInput = document.getElementById('registerPassword');
+		
+		if (showPasswordBtn.checked === true)
+			passwordInput.setAttribute('type', 'text');
+		else
+			passwordInput.setAttribute('type', 'password');
+	})	
 });
