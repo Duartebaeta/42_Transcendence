@@ -2,5 +2,6 @@
 	"gamesPlayed": 100,
 	"wins": 1,
 	"losses": 3,
-	"tournamentWins": 4
+	"tournamentWins": 4,
+	"points" : [5, 1, 7, 0, 3]
 }

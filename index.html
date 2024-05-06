@@ -123,7 +123,7 @@
 
 	<!-- Player Stats Modal -->
 	<div id="stats-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
 				<div class="modal-header">
 					<h5 class="modal-title text-light" id="staticBackdropLabel">Player Stats</h5>
@@ -143,6 +143,11 @@
 							<p class="text-light">Losses: <span id="losses"></span></p>
 							<p class="text-light">Tournaments Won: <span id="tournamentWins"></span></p>
 						</div>
+					</div>
+					<div>
+						<!-- Points Graph -->
+						<canvas id="chartCanvas" width="700" height="400"></canvas>
+						  <div id="tooltip" style="position: absolute; display: none; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 5px;"></div>
 					</div>
 				</div>
 			</div>
