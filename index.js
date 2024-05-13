@@ -1,8 +1,8 @@
 // Login Modal Trigger
-// document.addEventListener('DOMContentLoaded', function() {
-// 	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
-// 	myModal.show();
-// });
+document.addEventListener('DOMContentLoaded', function() {
+	var myModal = new bootstrap.Modal(document.getElementById('stats-modal'));
+	myModal.show();
+});
 
 // Get Player Stats from JSON file
 document.addEventListener("DOMContentLoaded", function() {
@@ -166,89 +166,93 @@ document.addEventListener("DOMContentLoaded", function() {
 // Stats Dashboard
 document.addEventListener("DOMContentLoaded", function() {
 	const canvas = document.getElementById("chartCanvas");
-    const ctx = canvas.getContext('2d');
-    const dataY = ["Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
-    const dataX = [100, 150, 160, 250, 260, 300, 360];
+	const ctx = canvas.getContext('2d');
+	const dataY = ["Game 1", "Game 2", "Game 3", "Game 4", "Game 5", "Game 6", "Game 7"];
+	const dataX = [6, 2, 10, 5, 5, 3, 8];
 
-    function drawLineGraph() {
-      const margin = 50;
-      const chartWidth = canvas.width - 2 * margin;
-      const chartHeight = canvas.height - 2 * margin;
+	function drawLineGraph() {
+		const margin = 50;
+		const chartWidth = canvas.width - 2 * margin;
+		const chartHeight = canvas.height - 2 * margin;
 
-      // Draw axes
-      ctx.beginPath();
-      ctx.moveTo(margin, margin);
-      ctx.lineTo(margin, canvas.height - margin);
-      ctx.lineTo(canvas.width - margin, canvas.height - margin);
-      ctx.stroke();
+		// Draw axes
+		ctx.beginPath();
+		ctx.moveTo(margin, margin);
+		ctx.lineTo(margin, canvas.height - margin);
+		ctx.lineTo(canvas.width - margin, canvas.height - margin);
+		ctx.stroke();
 
-      // Draw data points and lines
-      ctx.beginPath();
-      ctx.strokeStyle = "green";
-      ctx.lineWidth = 2;
-      ctx.moveTo(margin, canvas.height - margin - (dataX[0] - Math.min(...dataX)) * chartHeight / (Math.max(...dataX) - Math.min(...dataX)));
-      for (let i = 1; i < dataX.length; i++) {
-        const x = margin + i * (chartWidth / (dataX.length - 1));
-        const y = canvas.height - margin - (dataX[i] - Math.min(...dataX)) * chartHeight / (Math.max(...dataX) - Math.min(...dataX));
-        ctx.lineTo(x, y);
-        ctx.stroke();
+		// Draw data points and lines
+		ctx.beginPath();
+		ctx.strokeStyle = "green";
+		ctx.lineWidth = 2;
+		ctx.moveTo(margin, canvas.height - margin - (dataX[0] - Math.min(...dataX)) * chartHeight / (Math.max(...dataX) - Math.min(...dataX)));
+		for (let i = 0; i < dataX.length; i++) {
+			const x = margin + i * (chartWidth / (dataX.length - 1));
+			const y = canvas.height - margin - (dataX[i] - Math.min(...dataX)) * chartHeight / (Math.max(...dataX) - Math.min(...dataX));
+			ctx.lineTo(x, y);
+			ctx.stroke();
 
-        // Draw data points as circles
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = "green";
-        ctx.fill();
-        ctx.closePath();
-      }
+			// Draw data points as circles
+			ctx.beginPath();
+			ctx.arc(x, y, 4, 0, Math.PI * 2);
+			ctx.fillStyle = "green";
+			ctx.fill();
+			ctx.closePath();
+		}
 
-      // Draw X-axis labels
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      for (let i = 0; i < dataY.length; i++) {
-        const x = margin + i * (chartWidth / (dataY.length - 1));
-        const y = canvas.height - margin + 20;
-        ctx.fillText(dataY[i], x, y);
-      }
+		// Draw X-axis labels
+		ctx.fillStyle = "white";
+		ctx.textAlign = "center";
+		for (let i = 0; i < dataY.length; i++) {
+			const x = margin + i * (chartWidth / (dataY.length - 1));
+			const y = canvas.height - margin + 20;
+			ctx.fillText(dataY[i], x, y);
+		}
 
-      // Draw Y-axis labels
-      ctx.textAlign = "right";
-      ctx.textBaseline = "middle";
-      for (let i = 0; i < dataX.length; i++) {
-        const x = margin - 10;
-        const y = canvas.height - margin - i * (chartHeight / (dataX.length - 1));
-        ctx.fillText(dataX[i], x, y);
-      }
-    }
+		// Draw Y-axis labels
+		ctx.textAlign = "right";
+		ctx.textBaseline = "middle";
+		dataX.sort(function (a, b) { return a - b })
+
+		for (let i = 0; i < dataX.length; i++) {
+			labY = i / dataX.length;
+			const x = margin - 10;
+			const y = canvas.height - margin - i * (chartHeight / (dataX.length - 1));
+			if (dataX[i] != dataX[i - 1])
+				ctx.fillText(dataX[i], x, y);
+		}
+	}
 
     canvas.addEventListener('mousemove', function (event) {
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-
-      // Show tooltip
-      const tooltip = document.getElementById("tooltip");
-      tooltip.style.display = "block";
-      tooltip.style.left = (event.clientX + 10) + "px";
-      tooltip.style.top = (event.clientY + 10) + "px";
-
-      // Find closest data point
-      let closestIndex = 0;
-      let minDistance = Infinity;
-      for (let i = 0; i < dataX.length; i++) {
-        const distance = Math.abs(x - (margin + i * (chartWidth / (dataX.length - 1))));
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = i;
-        }
-      }
-      tooltip.innerHTML = `${dataY[closestIndex]}: ${dataX[closestIndex]}`;
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+		
+		// Show tooltip
+    	const tooltip = document.getElementById("tooltip");
+    	tooltip.style.display = "block";
+    	tooltip.style.left = (event.clientX + 10) + "px";
+		tooltip.style.top = (event.clientY + 10) + "px";
+			
+		// Find closest data point
+		let closestIndex = 0;
+		let minDistance = Infinity;
+		for (let i = 0; i < dataX.length; i++) {
+			const distance = Math.abs(x - (margin + i * (chartWidth / (dataX.length - 1))));
+			if (distance < minDistance) {
+				minDistance = distance;
+				closestIndex = i;
+			}
+		}
+		tooltip.innerHTML = `${dataY[closestIndex]}: ${dataX[closestIndex]}`;
     });
 
+	// Hide tooltip
     canvas.addEventListener('mouseleave', function () {
-      // Hide tooltip
-      const tooltip = document.getElementById("tooltip");
-      tooltip.style.display = "none";
+    	const tooltip = document.getElementById("tooltip");
+    	tooltip.style.display = "none";
     });
 
-    drawLineGraph();
+	drawLineGraph();
 });
