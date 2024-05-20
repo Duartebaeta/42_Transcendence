@@ -164,95 +164,92 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // Stats Dashboard
-document.addEventListener("DOMContentLoaded", function() {
-	const canvas = document.getElementById("chartCanvas");
-	const ctx = canvas.getContext('2d');
-	const dataY = ["Game 1", "Game 2", "Game 3", "Game 4", "Game 5", "Game 6", "Game 7"];
-	const dataX = [6, 2, 10, 5, 5, 3, 8];
+function drawGraph( dataArr ){  
+    var canvas = document.getElementById( "statsChart" );  
+    var context = canvas.getContext( "2d" );  
+  
+    var GRAPH_TOP = 25;  
+    var GRAPH_BOTTOM = 375;  
+    var GRAPH_LEFT = 75;  
+    var GRAPH_RIGHT = 475;  
+  
+    var GRAPH_HEIGHT = 350;  
+    var GRAPH_WIDTH = 450;  
+  
+    var arrayLen = dataArr.length;  
+  
+    var largest = 0;  
+    for( var i = 0; i < arrayLen; i++ ){  
+        if( dataArr[ i ] > largest ){  
+            largest = dataArr[ i ];  
+        }  
+    }  
+  
+    context.clearRect( 0, 0, 500, 400 );
 
-	function drawLineGraph() {
-		const margin = 50;
-		const chartWidth = canvas.width - 2 * margin;
-		const chartHeight = canvas.height - 2 * margin;
+    // set font for fillText()  
+    context.font = "16px Arial";  
+       
+    // draw X and Y axis  
+    context.beginPath();  
+    context.moveTo( GRAPH_RIGHT, GRAPH_BOTTOM );  
+    context.lineTo( GRAPH_LEFT, GRAPH_BOTTOM );  
+    context.lineTo( GRAPH_LEFT, GRAPH_TOP );  
+    context.stroke();  
+       
+    // draw reference line  
+    context.beginPath();
+    context.strokeStyle = "#BBB";  
+    context.moveTo( GRAPH_RIGHT, GRAPH_TOP );  
+    context.lineTo( GRAPH_LEFT, GRAPH_TOP );  
+    // draw reference value for hours  
+    context.fillText( largest, GRAPH_LEFT - 15, GRAPH_TOP);  
+    context.stroke();
+   
+    // // draw reference line  
+    context.beginPath();  
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT ) / 4 * 3 + GRAPH_TOP );  
+    context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 * 3 + GRAPH_TOP );  
+    // draw reference value for hours  
+    context.fillText( largest / 4, GRAPH_LEFT - 15, ( GRAPH_HEIGHT ) / 4 * 3 + GRAPH_TOP);  
+    context.stroke();  
+   
+    // // draw reference line  
+    context.beginPath();  
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT ) / 2 + GRAPH_TOP );  
+    context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 2 + GRAPH_TOP );  
+    // draw reference value for hours  
+    context.fillText( largest / 2, GRAPH_LEFT - 15, ( GRAPH_HEIGHT ) / 2 + GRAPH_TOP);  
+    context.stroke();  
+   
+    // // draw reference line  
+    context.beginPath();  
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );  
+    context.lineTo( GRAPH_RIGHT, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP );  
+    // draw reference value for hours  
+    context.fillText( largest / 4 * 3, GRAPH_LEFT - 15, ( GRAPH_HEIGHT ) / 4 + GRAPH_TOP);  
+    context.stroke();  
+  
+    // // draw titles  
+    context.fillText( "Day of the week", GRAPH_LEFT / 3, GRAPH_BOTTOM + 50); 
+    context.fillText( "Points", GRAPH_LEFT - 70, GRAPH_HEIGHT / 2);  
+  
+    context.beginPath();  
+    context.lineJoin = "round";  
+    context.strokeStyle = "black";  
+  
+    context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT - dataArr[ 0 ] / largest * GRAPH_HEIGHT ) + GRAPH_TOP ); 
 
-		// Draw axes
-		ctx.beginPath();
-		ctx.moveTo(margin, margin);
-		ctx.lineTo(margin, canvas.height - margin);
-		ctx.lineTo(canvas.width - margin, canvas.height - margin);
-		ctx.stroke();
-
-		// Draw data points and lines
-		ctx.beginPath();
-		ctx.strokeStyle = "green";
-		ctx.lineWidth = 2;
-		ctx.moveTo(margin, canvas.height - margin - (dataX[0] - Math.min(...dataX)) * chartHeight / (Math.max(...dataX) - Math.min(...dataX)));
-		for (let i = 0; i < dataX.length; i++) {
-			const x = margin + i * (chartWidth / (dataX.length - 1));
-			const y = canvas.height - margin - (dataX[i] - Math.min(...dataX)) * chartHeight / (Math.max(...dataX) - Math.min(...dataX));
-			ctx.lineTo(x, y);
-			ctx.stroke();
-
-			// Draw data points as circles
-			ctx.beginPath();
-			ctx.arc(x, y, 4, 0, Math.PI * 2);
-			ctx.fillStyle = "green";
-			ctx.fill();
-			ctx.closePath();
-		}
-
-		// Draw X-axis labels
-		ctx.fillStyle = "white";
-		ctx.textAlign = "center";
-		for (let i = 0; i < dataY.length; i++) {
-			const x = margin + i * (chartWidth / (dataY.length - 1));
-			const y = canvas.height - margin + 20;
-			ctx.fillText(dataY[i], x, y);
-		}
-
-		// Draw Y-axis labels
-		ctx.textAlign = "right";
-		ctx.textBaseline = "middle";
-		dataX.sort(function (a, b) { return a - b })
-
-		for (let i = 0; i < dataX.length; i++) {
-			labY = i / dataX.length;
-			const x = margin - 10;
-			const y = canvas.height - margin - i * (chartHeight / (dataX.length - 1));
-			if (dataX[i] != dataX[i - 1])
-				ctx.fillText(dataX[i], x, y);
-		}
-	}
-
-    canvas.addEventListener('mousemove', function (event) {
-		const rect = canvas.getBoundingClientRect();
-		const x = event.clientX - rect.left;
-		const y = event.clientY - rect.top;
-		
-		// Show tooltip
-    	const tooltip = document.getElementById("tooltip");
-    	tooltip.style.display = "block";
-    	tooltip.style.left = (event.clientX + 10) + "px";
-		tooltip.style.top = (event.clientY + 10) + "px";
-			
-		// Find closest data point
-		let closestIndex = 0;
-		let minDistance = Infinity;
-		for (let i = 0; i < dataX.length; i++) {
-			const distance = Math.abs(x - (margin + i * (chartWidth / (dataX.length - 1))));
-			if (distance < minDistance) {
-				minDistance = distance;
-				closestIndex = i;
-			}
-		}
-		tooltip.innerHTML = `${dataY[closestIndex]}: ${dataX[closestIndex]}`;
-    });
-
-	// Hide tooltip
-    canvas.addEventListener('mouseleave', function () {
-    	const tooltip = document.getElementById("tooltip");
-    	tooltip.style.display = "none";
-    });
-
-	drawLineGraph();
-});
+    // draw reference value for day of the week  
+    context.fillText( "1", 15, GRAPH_BOTTOM + 25);  
+    for( var i = 1; i < arrayLen; i++ ){  
+        context.lineTo( GRAPH_RIGHT / arrayLen * i + GRAPH_LEFT, ( GRAPH_HEIGHT - dataArr[ i ] / largest * GRAPH_HEIGHT ) + GRAPH_TOP );  
+        // draw reference value for day of the week  
+        context.fillText( ( i + 1 ), GRAPH_RIGHT / arrayLen * i, GRAPH_BOTTOM + 25);  
+    }  
+    context.stroke();  
+}   
+   
+// test graph  
+var testValues = [ 0, 6, 8, 7, 5, 6, 5 ];  
+drawGraph( testValues );
