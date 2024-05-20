@@ -171,7 +171,7 @@ function drawGraph( dataArr ){
     var GRAPH_TOP = 25;  
     var GRAPH_BOTTOM = 375;  
     var GRAPH_LEFT = 75;  
-    var GRAPH_RIGHT = 475;  
+    var GRAPH_RIGHT = 625;  
   
     var GRAPH_HEIGHT = 350;  
     var GRAPH_WIDTH = 450;  
