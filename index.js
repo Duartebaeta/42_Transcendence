@@ -1,6 +1,6 @@
 // Login Modal Trigger
 document.addEventListener('DOMContentLoaded', function() {
-	var myModal = new bootstrap.Modal(document.getElementById('stats-modal'));
+	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
 	myModal.show();
 });
 
@@ -19,12 +19,14 @@ document.addEventListener("DOMContentLoaded", function() {
 				const losses = data.losses;
 				const tournamentWins = data.tournamentWins;	
 				const points = data.points;
+				const graph = data.graph;
 
 				// Update HTML content
 				document.getElementById('gamesPlayed').innerText = gamesPlayed;
 				document.getElementById('wins').innerText = wins;
 				document.getElementById('losses').innerText = losses;
 				document.getElementById('tournamentWins').innerText = tournamentWins;
+				drawGraph(graph); // Draw points graph
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error);
@@ -163,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-// Stats Dashboard
+// Draw stats graph
 function drawGraph(dataArr) {  
     var canvas = document.getElementById("statsChart");
     var context = canvas.getContext("2d");
@@ -258,7 +260,3 @@ function drawGraph(dataArr) {
     }
     context.stroke();
 }
-
-// test graph
-var testValues = [1, 6, 8, 7, 5, 6, 5];
-drawGraph(testValues);
