@@ -236,7 +236,7 @@ function drawGraph(dataArr) {
     }
 
     // Draw points title
-    context.fillText("Points", GRAPH_LEFT - 75, GRAPH_HEIGHT / 2);
+    context.fillText("Points", GRAPH_LEFT - 75, 200);
 
     context.beginPath();
     context.lineJoin = "round";
@@ -256,7 +256,7 @@ function drawGraph(dataArr) {
         context.lineTo(x, y);
 		context.fillRect(x - 4, y - 4, 8, 8);
 		context.fillStyle = "white";
-        context.fillText(i + 1, x + 5, GRAPH_BOTTOM + 25);
+        context.fillText("Game " + (i + 1), x - 25, GRAPH_BOTTOM + 25);
     }
     context.stroke();
 }
