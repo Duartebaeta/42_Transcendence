@@ -179,13 +179,13 @@ function drawGraph(dataArr) {
     var arrayLen = dataArr.length;
   
     var largest = 0;
-    for (var i = 0;i < arrayLen;i++) {  
+    for (var i = 0; i < arrayLen; i++) {  
         if (dataArr[i] > largest) {  
             largest = dataArr[i];
         }  
     }  
   
-	// Clear previous graph
+    // Clear previous graph
     context.clearRect(0, 0, 700, 400);
 
     // Set font for fillText()  
@@ -202,7 +202,7 @@ function drawGraph(dataArr) {
 
     // Reference lines and their values
     var refValues = [0, largest / 4, largest / 2, (largest / 4) * 3, largest];
-    for (var j = 0;j < refValues.length;j++) {
+    for (var j = 0; j < refValues.length; j++) {
         var yPos = GRAPH_BOTTOM - (GRAPH_HEIGHT / 4) * j;
         context.beginPath();
         context.moveTo(GRAPH_LEFT, yPos);
@@ -212,23 +212,48 @@ function drawGraph(dataArr) {
         context.fillText(refValues[j], GRAPH_LEFT - 20, yPos + 5);
     }
 
+    // Draw grid
+    context.strokeStyle = "white";
+    context.lineWidth = 0.5;
+    // Horizontal grid lines
+    for (var j = 0; j <= 8; j++) {
+        var yPos = GRAPH_BOTTOM - (GRAPH_HEIGHT / 8) * j;
+        context.beginPath();
+        context.moveTo(GRAPH_LEFT, yPos);
+        context.lineTo(GRAPH_RIGHT, yPos);
+        context.stroke();
+    }
+    // Vertical grid lines
+    var stepX = GRAPH_WIDTH / (arrayLen - 1);
+    for (var i = 0; i < arrayLen; i++) {
+        var xPos = GRAPH_LEFT + stepX * i;
+        context.beginPath();
+        context.moveTo(xPos, GRAPH_TOP);
+        context.lineTo(xPos, GRAPH_BOTTOM);
+        context.stroke();
+    }
+
     // Draw points title
     context.fillText("Points", GRAPH_LEFT - 75, GRAPH_HEIGHT / 2);
-    
+
     context.beginPath();
     context.lineJoin = "round";
-    context.strokeStyle = "yellow";
-  
+    context.strokeStyle = "orange";
+    context.lineWidth = 2;
+	
     var x = GRAPH_LEFT;
     var y = (GRAPH_HEIGHT - (dataArr[0] / largest * GRAPH_HEIGHT)) + GRAPH_TOP;
     context.moveTo(x, y);
-
-	// Draw lines
-    for (var i = 0;i < arrayLen;i++) {
+	
+    // Draw lines
+    for (var i = 0; i < arrayLen; i++) {
+		context.fillStyle = "orange";
         x = GRAPH_LEFT + (GRAPH_WIDTH / (arrayLen - 1)) * i;
         y = (GRAPH_HEIGHT - (dataArr[i] / largest * GRAPH_HEIGHT)) + GRAPH_TOP;
         
         context.lineTo(x, y);
+		context.fillRect(x - 4, y - 4, 8, 8);
+		context.fillStyle = "white";
         context.fillText(i + 1, x + 5, GRAPH_BOTTOM + 25);
     }
     context.stroke();
