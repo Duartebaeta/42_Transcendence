@@ -55,19 +55,27 @@
 					<h5 class="modal-title text-light" id="staticBackdropLabel">Login</h5>
 				</div>
 				<div class="modal-body p-5">
-					<!-- Error Message -->
-					<div id="loginErrorMessage" class="text-danger position-absolute mb-3" 	style="display: none; margin-top: -30px;"></div>
-					<!-- Email -->
-					<input id="loginEmail" class="form-control mb-3" placeholder="Email"></input>
-					<!-- Password -->
-					<input id="loginPassword" type="password" class="form-control" placeholder="Password"></input>
-					<!-- Submit Button -->
-					<!-- Show Password Button -->
-					<input id="showPasswordBtnLogin" type="checkbox"></input>
-					<label for="showPasswordBtnLogin" class="showPasswordBtn">Show Password</label>
-					<div class="text-center mt-4">
-						<button id="loginRequestBtn" class="btn bg-gradient btn-block mb-4" style="background-color: rgb(238, 130, 238)">Sign in</button>
-					</div>
+					<form>
+						<!-- Error Message -->
+						<div id="loginErrorMessage" class="text-danger position-absolute mb-3" style="display: none; margin-top: -30px;"></div>
+						<!-- Email -->
+						<div class="mb-3">
+							<input id="loginEmail" type="email" class="form-control" placeholder="Email" required>
+						</div>
+						<!-- Password -->
+						<div class="mb-3">
+							<input id="loginPassword" type="password" class="form-control" placeholder="Password" required>
+						</div>
+						<!-- Show Password Button -->
+						<div class="form-check mb-3">
+							<input id="showPasswordBtnLogin" type="checkbox" class="form-check-input">
+							<label for="showPasswordBtnLogin" class="form-check-label showPasswordBtn">Show Password</label>
+						</div>
+						<!-- Submit Button -->
+						<div class="text-center mt-4">
+							<button id="loginRequestBtn" type="submit" class="btn bg-gradient btn-block mb-4" style="background-color: rgb(238, 130, 238)">Sign in</button>
+						</div>
+					</form>
 					<!-- Register Button -->
 					<div class="text-center text-light">
 						<p>Not a member? <a href="#" data-bs-toggle="modal" data-bs-target="#register-modal" style="color: rgb(238, 130, 238);">Register</a></p>
@@ -86,36 +94,46 @@
 					<button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#login-modal"></button>
 				</div>
 				<div class="modal-body">
-					<div class="modal-body">
-						<div class="row">
-							<!-- Avatar Selection -->
-							<div class="col-4 text-center" style="margin-top: -40px;">
-								<!-- Current Avatar -->
-								<i class="bi bi-person-square text-light register-icon"></i>
-								<div class="text-center">
-									<button class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change Avatar</button>
+					<form>
+						<div class="modal-body">
+							<div class="row">
+								<!-- Avatar Selection -->
+								<div class="col-4 text-center" style="margin-top: -40px;">
+									<!-- Current Avatar -->
+									<i class="bi bi-person-square text-light register-icon"></i>
+									<div class="text-center">
+										<button class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change Avatar</button>
+									</div>
 								</div>
-							</div>
-							<!-- Register Components -->
-							<div class="col-8 p-5">
-								<!-- Error Message -->
-								<div id="registerErrorMessage" class="text-danger position-absolute mb-3" style="display: none; margin-top: -30px;"></div>
-								<!-- Username -->
-								<input id="registerUsername" class="form-control mb-3" placeholder="Username"></input>
-								<!-- Email -->
-								<input id="registerEmail" class="form-control mb-3" placeholder="Email"></input>
-								<!-- Password -->
-								<input id="registerPassword" type="password" class="form-control" placeholder="Password"></input>
-								<!-- Show Password Button -->
-								<input id="showPasswordBtnRegister" type="checkbox"></input>
-								<label for="showPasswordBtnRegister" class="showPasswordBtn">Show Password</label>
-								<!-- Submit Button -->
-								<div class="text-center mt-5">
-									<button id="registerRequestBtn" class="btn bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Register</button>
+								<!-- Register Components -->
+								<div class="col-8 p-5">
+									<!-- Error Message -->
+									<div id="registerErrorMessage" class="text-danger position-absolute mb-3" style="display: none; margin-top: -30px;"></div>
+									<!-- Username -->
+									<div class="mb-3">
+										<input id="registerUsername" type="text" class="form-control" placeholder="Username" required>
+									</div>
+									<!-- Email -->
+									<div class="mb-3">
+										<input id="registerEmail" type="email" class="form-control" placeholder="Email" required>
+									</div>
+									<!-- Password -->
+									<div class="mb-3">
+										<input id="registerPassword" type="password" class="form-control" placeholder="Password" required>
+									</div>
+									<!-- Show Password Button -->
+									<div class="form-check mb-3">
+										<input id="showPasswordBtnRegister" type="checkbox" class="form-check-input">
+										<label for="showPasswordBtnRegister" class="form-check-label showPasswordBtn">Show Password</label>
+									</div>
+									<!-- Submit Button -->
+									<div class="text-center mt-5">
+										<button id="registerRequestBtn" type="submit" class="btn bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Register</button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</div>
