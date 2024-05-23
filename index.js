@@ -180,12 +180,12 @@ function drawGraph(dataArr) {
 
     var arrayLen = dataArr.length;
   
-    var largest = 0;
-    for (var i = 0; i < arrayLen; i++) {  
-        if (dataArr[i] > largest) {  
-            largest = dataArr[i];
-        }  
-    }  
+    var largest = 8;
+    // for (var i = 0; i < arrayLen; i++) {  
+    //     if (dataArr[i] > largest) {  
+    //         largest = dataArr[i];
+    //     }  
+    // }  
   
     // Clear previous graph
     context.clearRect(0, 0, 700, 400);
@@ -202,15 +202,12 @@ function drawGraph(dataArr) {
     context.lineTo(GRAPH_LEFT, GRAPH_TOP);
     context.stroke();
 
+
+	// Need to fix dependeing on the max points allowed
     // Reference lines and their values
     var refValues = [0, largest / 4, largest / 2, (largest / 4) * 3, largest];
     for (var j = 0; j < refValues.length; j++) {
         var yPos = GRAPH_BOTTOM - (GRAPH_HEIGHT / 4) * j;
-        context.beginPath();
-        context.moveTo(GRAPH_LEFT, yPos);
-        context.lineTo(GRAPH_RIGHT, yPos);
-        context.strokeStyle = "black";
-        context.stroke();
         context.fillText(refValues[j], GRAPH_LEFT - 20, yPos + 5);
     }
 
