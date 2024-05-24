@@ -174,32 +174,52 @@
 	<!-- Chat Modal -->
 	<div id="chat-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl">
-			<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
-				<div class="modal-header">
-					<h5 class="modal-title text-light" id="staticBackdropLabel">Chat</h5>
-					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<!-- Friends Column -->
-						<div class="col-2 border-end">
-							<h5 class="text-light">Friends</h5>
-						</div>
-						<!-- Live Chat -->
-						<div class="col-10">
-							<!-- Message Input And Send Button -->
-							<div class="d-flex h-50">
-								<textarea class="w-100" placeholder="Type message.." name="msg" required></textarea>
-								<button class="btn text-light">
-									<i class="bi bi-send"></i>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
+		  <div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
+			<div class="modal-header">
+			  <h5 class="modal-title text-light" id="staticBackdropLabel">Chat</h5>
+			  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
+			<div class="modal-body">
+			  <div class="row">
+				<!-- Friends Column -->
+				<div class="col-2 border-end">
+				  <h5 class="text-light">Friends</h5>
+				  <!-- List of friends (example) -->
+				</div>
+				<!-- Live Chat -->
+				<div class="col-10 d-flex flex-column">
+				  <!-- Messages Display -->
+				  <div class="flex-grow-1 overflow-auto" id="chat-messages" style="height: 500px;">
+					<!-- Example messages -->
+					<div class="p-2">
+					  <div class="text-dark p-2 rounded mb-2" style="background-color: orange; max-width: 70%">Hi!</div>
+					  <div class="text-light bg-secondary p-2 rounded ms-auto mb-2" style="max-width: 70%;">Hi there!</div>
+					  <div class="text-dark p-2 rounded mb-2" style="background-color: orange; max-width: 70%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
+					  <div class="text-light bg-secondary p-2 rounded ms-auto mb-2" style="max-width: 70%;">Hi there!</div>
+					  <div class="text-dark p-2 rounded mb-2" style="background-color: orange; max-width: 70%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
+					  <div class="text-light bg-secondary p-2 rounded ms-auto mb-2" style="max-width: 70%;">Hi there!</div>
+					  <div class="text-dark p-2 rounded mb-2" style="background-color: orange; max-width: 70%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
+					  <div class="text-light bg-secondary p-2 rounded ms-auto mb-2" style="max-width: 70%;">Hi there!</div>
+					  <div class="text-dark p-2 rounded mb-2" style="background-color: orange; max-width: 70%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
+					  <div class="text-light bg-secondary p-2 rounded ms-auto mb-2" style="max-width: 70%;">Hi there!</div>
+					  <div class="text-dark p-2 rounded mb-2" style="background-color: orange; max-width: 70%">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
+					  <div class="text-light bg-secondary p-2 rounded ms-auto mb-2" style="max-width: 70%;">Hi there!</div>
+					</div>
+				  </div>
+				  <!-- Message Input And Send Button -->
+				  <div class="d-flex border-top align-items-center">
+					<textarea class="form-control me-2 h-50" placeholder="Type message..." name="msg" required></textarea>
+					<button class="btn text-light h-50">
+					  <i class="bi bi-send"></i>
+					</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
 		</div>
-	</div>
+	  </div>
+	  
 
 	<!-- Match History Modal -->
 	<div class="modal fade" id="match-history-modal" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

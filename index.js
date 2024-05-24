@@ -1,6 +1,6 @@
 // Login Modal Trigger
 document.addEventListener('DOMContentLoaded', function() {
-	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
+	var myModal = new bootstrap.Modal(document.getElementById('chat-modal'));
 	myModal.show();
 });
 
