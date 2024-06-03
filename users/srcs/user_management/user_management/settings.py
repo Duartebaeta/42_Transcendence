@@ -33,8 +33,13 @@ EMAIL_MAX_LENGTH = 382
 EMAIL_RECIPIENT_MAX_LENGTH = 64
 EMAIL_DOMAIN_MAX_LENGTH = 253
 EMAIL_TOP_LEVEL_DOMAIN_MAX_LENGTH = 63
+EMAIL_VERIFICATION_TOKEN_MAX_LENGTH = 100
 PASSWORD_MIN_LENGTH = 8
 PASSWORD_MAX_LENGTH = 50
+
+ACTIVATE_ACCOUNT_URL = 'https://localhost:8000/account/active'
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # Application definition
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	'django_extensions',
 	'corsheaders',
 ]
 
