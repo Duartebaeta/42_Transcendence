@@ -36,11 +36,11 @@
 							<i class="bi bi-chat h3"></i>
 						</button>
 						<!-- Match History Button -->
-						<button class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#match-history-modal">
+						<button id="matchHistoryBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#match-history-modal">
 							<i class="bi bi-clock-history h3"></i>
 						</button>
 						<!-- Settings Button -->
-						<button class="btn nav-item mb-3 text-light">
+						<button id="settingsBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#settings-modal">
 							<i class="bi bi-gear h3"></i>
 						</button>
 					</ul>
@@ -337,6 +337,47 @@
 							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
 							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Settings Modal -->
+	<div id="settings-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl">
+			<div class="modal-content bg-gradient" style="background-color: rgba(130, 0, 130, .5);">
+				<div class="modal-header">
+					<h5 class="modal-title text-light" id="staticBackdropLabel">Settings</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Change Username -->
+					<div class="d-flex">
+						<p class="text-light">Change username</p>
+						<input type="password" placeholder="New Password">
+						<div class="text-center">
+							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
+						</div>
+					</div>
+					<!-- Change Password -->
+					<div class="d-flex">
+						<p class="text-light">Change password</p>
+						<input type="password" placeholder="New Password">
+						<div class="text-center">
+							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
+						</div>
+					</div>
+					<!-- Change Avatar -->
+					<div class="d-flex">
+						<label for="img" class="text-light">Select image:</label>
+						<input class="text-light" type="file" id="img" name="img" accept="image/*">
+						<input type="submit">
+					</div>
+					<!-- Toggle 2FA -->
+					<div class="d-flex">
+						<p class="text-light">Activate 2 Factor Authentication</p>
+						<input type="checkbox" class="form-check-input">
 					</div>
 				</div>
 			</div>

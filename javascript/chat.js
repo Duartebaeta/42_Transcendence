@@ -5,6 +5,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	chatModal.addEventListener('shown.bs.modal', function() {
 		chatWindow.scrollTop = chatWindow.scrollHeight;
-		console.log(chatWindow.scrollHeight);
 	});
 });
