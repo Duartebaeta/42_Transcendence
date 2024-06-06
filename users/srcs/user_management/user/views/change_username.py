@@ -31,7 +31,7 @@ class ChangeUsername(View):
 			return JsonResponse(status=400, data={'errors': ['New username must be different of the current one, Dummy :p']})
 		
 		is_valid, error = is_valid_username(new_username)
-		if is_valid == False:
+		if not is_valid:
 			return JsonResponse(status=400, data={f'errors': [error]})
 		
 		user.username = new_username;
