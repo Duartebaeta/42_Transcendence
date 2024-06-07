@@ -16,6 +16,7 @@
 	<script src="javascript/player-stats.js" defer></script>
 	<script src="javascript/register.js" defer></script>
 	<script src="javascript/setting.js" defer></script>
+	<script src="javascript/match-history.js" defer></script>
 
 	<!-- Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -315,29 +316,11 @@
 				<div class="modal-body">
 					<div class="row">
 						<!-- Win/Loss -->
-						<div class="col-3">
-							<p class="text-light text-center">VICTORY</p>
-							<p class="text-light text-center">DEFEAT</p>
-							<p class="text-light text-center">TIE</p>
-							<p class="text-light text-center">DEFEAT</p>
-							<p class="text-light text-center">VICTORY</p>
-						</div>
+						<div id="matchHistoryOutcomes" class="col-3"></div>
 						<!-- Score -->
-						<div class="col-3">
-							<p class="text-light text-center">7 - 3</p>
-							<p class="text-light text-center">0 - 4</p>
-							<p class="text-light text-center">3 - 3</p>
-							<p class="text-light text-center">2 - 5</p>
-							<p class="text-light text-center">6 - 5</p>
-						</div>
-						<!-- Opponent -->
-						<div class="col-6">
-							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
-							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
-							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
-							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
-							<p class="text-light text-center">OPPONENT: (PLAYER_USERNAME)</p>
-						</div>
+						<div id="matchHistoryScores" class="col-3"></div>
+						<!-- Opponents -->
+						<div id="matchHistoryOpponents" class="col-6"></div>
 					</div>
 				</div>
 			</div>

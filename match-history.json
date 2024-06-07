@@ -1,0 +1,54 @@
+{
+	"games": [
+		{
+			"outcome": "Victory",
+			"score": "7-3",
+			"opponent": "Opponent-Name1"
+		},
+		{
+			"outcome": "Loss",
+			"score": "0-7",
+			"opponent": "Opponent-Name2"
+		},
+		{
+			"outcome": "Loss",
+			"score": "0-3",
+			"opponent": "Opponent-Name3"
+		},
+		{
+			"outcome": "Tie",
+			"score": "7-7",
+			"opponent": "Opponent-Name4"
+		},
+		{
+			"outcome": "Victory",
+			"score": "2-1",
+			"opponent": "Opponent-Name5"
+		},
+		{
+			"outcome": "Victory",
+			"score": "7-0",
+			"opponent": "Opponent-Name6"
+		},
+		{
+			"outcome": "Tie",
+			"score": "1-1",
+			"opponent": "Opponent-Name7"
+		},
+		{
+			"outcome": "Loss",
+			"score": "3-7",
+			"opponent": "Opponent-Name8"
+		},
+		{
+			"outcome": "Loss",
+			"score": "0-5",
+			"opponent": "Opponent-Name9"
+		},
+		{
+			"outcome": "Victory",
+			"score": "6-3",
+			"opponent": "Opponent-Name10"
+		}
+	]
+}
