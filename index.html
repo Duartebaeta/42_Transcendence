@@ -15,7 +15,7 @@
 	<script src="javascript/login.js" defer></script>
 	<script src="javascript/player-stats.js" defer></script>
 	<script src="javascript/register.js" defer></script>
-	<script src="javascript/setting.js" defer></script>
+	<script src="javascript/settings.js" defer></script>
 	<script src="javascript/match-history.js" defer></script>
 
 	<!-- Icons -->
@@ -86,7 +86,7 @@
 					</form>
 					<!-- Register Button -->
 					<div class="text-center text-light">
-						<p>Not a member? <a href="#" data-bs-toggle="modal" data-bs-target="#register-modal" style="color: rgb(238, 130, 238);">Register</a></p>
+						<p>Not a member? <a href="#" id="registerBtn" data-bs-toggle="modal" data-bs-target="#register-modal" style="color: rgb(238, 130, 238);">Register</a></p>
 					</div>
 				</div>
 			</div>
@@ -102,7 +102,7 @@
 					<button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#login-modal"></button>
 				</div>
 				<div class="modal-body">
-					<form>
+					<form id="registerForm">
 						<div class="modal-body">
 							<div class="row">
 								<!-- Avatar Selection -->
@@ -342,7 +342,7 @@
 					<!-- Change Username -->
 					<div class="d-flex align-items-center mb-3">
 						<p class="text-light pe-3 mb-0">Change Username</p>
-						<input type="text" class="form-control w-auto" placeholder="New Username">
+						<input id="newUsername" type="text" class="form-control w-auto" placeholder="New Username">
 						<div class="text-center ps-3">
 							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
 						</div>
@@ -350,7 +350,7 @@
 					<!-- Change Password -->
 					<div class="d-flex align-items-center mb-3">
 						<p class="text-light pe-3 mb-0">Change Password</p>
-						<input type="text" class="form-control w-auto" placeholder="New Password">
+						<input id="newPassword" type="text" class="form-control w-auto" placeholder="New Password">
 						<div class="text-center ps-3">
 							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
 						</div>
@@ -367,10 +367,10 @@
 						</div>
 					</div>
 					<!-- Toggle 2FA -->
-					<div class="d-flex ">
+					<!-- <div class="d-flex">
 						<p class="text-light pe-3">Activate 2 Factor Authentication</p>
 						<input type="checkbox" class="form-check-input">
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</div>

@@ -1,3 +1,14 @@
+// Clear input fields
+document.addEventListener("DOMContentLoaded", function() {
+	const registerbtn = document.getElementById('registerBtn');
+
+	registerbtn.addEventListener('click', function() {
+		var registerForm = document.getElementById('registerForm');
+
+		registerForm.reset();
+	});
+});
+
 // Register Request
 document.addEventListener('DOMContentLoaded', function() {
 	const loginRequestBtn = document.getElementById('registerRequestBtn');
