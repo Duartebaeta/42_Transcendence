@@ -1,6 +1,6 @@
 // Login Modal Trigger
 document.addEventListener('DOMContentLoaded', function() {
-	var myModal = new bootstrap.Modal(document.getElementById('settings-modal'));
+	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
 	myModal.show();
 });
 
@@ -16,41 +16,44 @@ document.addEventListener('DOMContentLoaded', function() {
 		// var passwordInput = document.getElementById('loginPassword');
 
 		// // Construct the request object
-		// var request = {
-		//     method: 'POST', // HTTP method
-		//     url: 'http://127.0.0.1:8000/user/signup/',
-		//     headers: {
-		//         'Content-Type': 'application/json' 
-		//     },
-		//     body: JSON.stringify({ // Convert data to JSON string
-		//         email: emailInput.value,
-		//         password: passwordInput.value
-		//     })
-		// };
+		var request = {
+		    method: 'POST', // HTTP method
+		    url: 'http://127.0.0.1:8000/user/signup/',
+		    headers: {
+		        'Content-Type': 'application/json' 
+		    },
+		    body: JSON.stringify({ // Convert data to JSON string
+		        email: emailInput.value,
+		        password: passwordInput.value
+		    })
+		};
 
 		// Send the request using Fetch API
-		fetch("login-check.json")
-			.then(function(response) {
-				//  Check if response status is OK (optional)
-				if (response.ok) {
-					// If response status is 200 OK, hide the modal
-					var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
-					myModal.hide();
-				}
-				else {
-					// If response status is not OK, show error message
-					response.json().then(function(data) {
-							var firstErrorMessage = data.errors[0];
+		fetch("login-check.json", request, {
+			method: 'GET',
+			credentials: 'include' // Store cookies
+		})
+		.then(function(response) {
+			//  Check if response status is OK (optional)
+			if (response.ok) {
+				// If response status is 200 OK, hide the modal
+				var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
+				myModal.hide();
+			}
+			else {
+				// If response status is not OK, show error message
+				response.json().then(function(data) {
+						var firstErrorMessage = data.errors[0];
 
-							document.getElementById('loginErrorMessage').innerText = firstErrorMessage;
-							document.getElementById('loginErrorMessage').style.display = 'block';
-					})
-					.catch(function(error) {
-						// Handle errors
-						console.error('Error:', error);
-					});
-				}
-			});
+						document.getElementById('loginErrorMessage').innerText = firstErrorMessage;
+						document.getElementById('loginErrorMessage').style.display = 'block';
+				})
+				.catch(function(error) {
+					// Handle errors
+					console.error('Error:', error);
+				});
+			}
+		});
 	});
 });
 
