@@ -17,6 +17,8 @@
 	<script src="javascript/register.js" defer></script>
 	<script src="javascript/settings.js" defer></script>
 	<script src="javascript/match-history.js" defer></script>
+	<script src="javascript/pong.js" defer></script>
+	<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
 	<!-- Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -51,6 +53,19 @@
 			<!-- Main Content -->
 			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 				<!-- Game Window Code -->
+				<h1>Pong Game</h1>
+				<div class="game-menu">
+					<p>Start game</p>
+					<form onsubmit="startGame(event)">
+						<input type="username" name="username" placeholder="username" required>
+						<input type="number" name="gameID" placeholder="gameID" required>
+						<button type="submit">Connect</button>
+					</form>
+				</div>
+				<div class="game hidden">
+					<canvas></canvas>
+					<p>Control the left player by using up and down arrow keys</p>
+				</div>
 			</main>
 		</div>
 	</div>
