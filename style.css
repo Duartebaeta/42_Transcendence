@@ -1,0 +1,31 @@
+.navbar {
+	height: 100vh;
+}
+
+.register-icon {
+	font-size: 12em;
+}
+
+.showPasswordBtn {
+	color: white;
+}
+
+.modal-xl {
+	width: 90%;
+	max-width:1200px;
+}
+
+.custom-select {
+	display: none;
+}
+
+.dropdown-toggle::after {
+	display: none;
+}
+
+/* .sidebar {
+	position: sticky;
+	top: 0;
+	height: 100%;
+	border-right: 10px solid blue;
+} */
