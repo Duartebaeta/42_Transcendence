@@ -50,25 +50,33 @@
 				</div>
 			</nav>
 			
-			<!-- Main Content -->
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-				<!-- Game Window Code -->
-				<h1>Pong Game</h1>
-				<div class="game-menu">
-					<p>Start game</p>
-					<form onsubmit="startGame(event)">
-						<input type="username" name="username" placeholder="username" required>
-						<input type="number" name="gameID" placeholder="gameID" required>
-						<button type="submit">Connect</button>
-					</form>
+			<!-- Game Content -->
+			<main class="col d-flex align-items-center justify-content-center" style="height: 100vh;">
+				<div class="game-menu text-center">
+					<h1 class="text-light mb-5">Start game</h1>
+					<h5 class="text-light mb-3">Select Game Mode</h5>
+					<div class="text-center">
+						<!-- vs AI Mode -->
+						<button type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">vs AI</button>
+						<!-- Local Multyplayer -->
+						<button type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Local vs</button>
+						<!-- Remote Multiplayer -->
+						<button type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Remote vs</button>
+						<!-- Tournaments Mode -->
+						<button type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Tournaments</button>
+					</div>
 				</div>
-				<div class="game hidden">
+				
+				<!-- <div class="game hidden">
 					<canvas></canvas>
 					<p>Control the left player by using up and down arrow keys</p>
-				</div>
+				</div> -->
 			</main>
 		</div>
 	</div>
+	
+	</div>
+	
 
 	<!-- Login Modal -->
 	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
