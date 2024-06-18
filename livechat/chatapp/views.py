@@ -13,7 +13,7 @@ def chatroom(request, username):
   try:
     chatroom = ChatRoom.objects.get(user1=user, user2=auth_user)
   except ChatRoom.DoesNotExist:
-    chatroom = ChatRoom.objects.get_or_create(
+    chatroom, created = ChatRoom.objects.get_or_create(
       user1=auth_user, user2=user, name=f'{auth_username}-{username}', slug=f'{auth_username}-{username}')
   messages = ChatMessage.objects.filter(room=chatroom)[0:30]
   return render(request, 'chatapp/room.html', {'chatroom': chatroom, 'messages': messages})

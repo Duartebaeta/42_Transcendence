@@ -14,7 +14,7 @@ class ChatRoom(models.Model):
   name = models.CharField(max_length=100)
   slug = models.SlugField(unique=True)
   user1 = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='user1')
-  user2 = models.ForeignKey(User, on_delete=models.CASCADE, default=2,related_name='user2')
+  user2 = models.ForeignKey(User, on_delete=models.CASCADE, default=2, related_name='user2')
 
 class ChatMessage(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
