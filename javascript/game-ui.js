@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// vs AI Mode
     aiModeBtn.addEventListener('click', function() {
+		aiModeBtn.classList.add('bg-warning');
+		localModeBtn.classList.remove('bg-warning');
+		remoteModeBtn.classList.remove('bg-warning');
+		tournamentModeBtn.classList.remove('bg-warning');
+		
 		gameHiddenDiv.classList.add('d-none');
 		createBtn.classList.remove('d-none');
 		joinBtn.classList.add('d-none');
@@ -18,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Local vs Mode
 	localModeBtn.addEventListener('click', function() {
+		aiModeBtn.classList.remove('bg-warning');
+		localModeBtn.classList.add('bg-warning');
+		remoteModeBtn.classList.remove('bg-warning');
+		tournamentModeBtn.classList.remove('bg-warning');
+
 		gameHiddenDiv.classList.add('d-none');
 		createBtn.classList.remove('d-none');
 		joinBtn.classList.add('d-none');
@@ -25,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Remote vs Mode
 	remoteModeBtn.addEventListener('click', function() {
+		aiModeBtn.classList.remove('bg-warning');
+		localModeBtn.classList.remove('bg-warning');
+		remoteModeBtn.classList.add('bg-warning');
+		tournamentModeBtn.classList.remove('bg-warning');
+
 		gameHiddenDiv.classList.add('d-none');
 		createBtn.classList.remove('d-none');
 		joinBtn.classList.remove('d-none');
@@ -32,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	// Tournament Mode
 	tournamentModeBtn.addEventListener('click', function() {
+		aiModeBtn.classList.remove('bg-warning');
+		localModeBtn.classList.remove('bg-warning');
+		remoteModeBtn.classList.remove('bg-warning');
+		tournamentModeBtn.classList.add('bg-warning');
+
 		gameHiddenDiv.classList.remove('d-none');
 		createBtn.classList.remove('d-none');
 		joinBtn.classList.remove('d-none');
