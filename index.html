@@ -18,6 +18,7 @@
 	<script src="javascript/settings.js" defer></script>
 	<script src="javascript/match-history.js" defer></script>
 	<script src="javascript/pong.js" defer></script>
+	<script src="javascript/game-ui.js" defer></script>
 	<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
 	<!-- Icons -->
@@ -50,25 +51,43 @@
 				</div>
 			</nav>
 			
-			<!-- Main Content -->
-			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-				<!-- Game Window Code -->
-				<h1>Pong Game</h1>
-				<div class="game-menu">
-					<p>Start game</p>
-					<form onsubmit="startGame(event)">
-						<input type="username" name="username" placeholder="username" required>
-						<input type="number" name="gameID" placeholder="gameID" required>
-						<button type="submit">Connect</button>
-					</form>
+			<!-- Game Content -->
+			<main class="col d-flex align-items-center justify-content-center">
+				<div class="game-menu text-center">
+					<h1 class="text-light mb-5">Start game</h1>
+					<h5 class="text-light mb-3">Select Game Mode</h5>
+					<!-- Select Game Mode Panel -->
+					<div class="text-center">
+						<!-- vs AI Mode -->
+						<button id="aiModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">vs AI</button>
+						<!-- Local Multyplayer -->
+						<button id="localModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Local vs</button>
+						<!-- Remote Multiplayer -->
+						<button id="remoteModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Remote vs</button>
+						<!-- Tournaments Mode -->
+						<button id="tournamentModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Tournaments</button>
+						<!-- Tounament Display Name Selection Panel -->
+						<form id="tournamentDisplayName" class="d-none">
+							<div class="my-4">
+								<input type="text" class="form-control text-center" placeholder="Tournament Display Name" required>
+							</div>
+						</form>
+						<!-- Join And Create Game Button -->
+						<div class="my-3">
+							<button id="joinGameBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
+							<button id="createGameBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
+						</div>
+					</div>
 				</div>
-				<div class="game hidden">
+				
+				<!-- <div class="game hidden">
 					<canvas></canvas>
 					<p>Control the left player by using up and down arrow keys</p>
-				</div>
+				</div> -->
 			</main>
 		</div>
 	</div>
+	
 
 	<!-- Login Modal -->
 	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
