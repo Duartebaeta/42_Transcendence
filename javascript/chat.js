@@ -26,9 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
 				// Create HTML content
 				let info = '';
 				contacts.forEach(contact => {
-					info += `<div class="d-flex align-items-start align-items-center">
+					info += `<div id="contactArea" class="d-flex align-items-start align-items-center ps-4">
 								<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
-								<div class="ms-3" style="width: 230px;">
+								<div class="ms-3" style="width: 210px;">
 									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
 									<p class="text-light mb-0 text-truncate">${contact.lastMessage}</p>
 								</div>

@@ -24,9 +24,13 @@
 }
 
 .text-truncate {
-    max-width: 250px;
+    max-width: 210;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 	margin: 0;
+}
+
+#contactArea:hover {
+	background: rgb(66, 1, 66);
 }
