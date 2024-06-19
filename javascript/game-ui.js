@@ -1,68 +1,39 @@
-// vs AI Mode Button
 document.addEventListener('DOMContentLoaded', function() {
     const aiModeBtn = document.getElementById('aiModeBtn');
+    const localModeBtn = document.getElementById('localModeBtn');
+    const remoteModeBtn = document.getElementById('remoteModeBtn');
+    const tournamentModeBtn = document.getElementById('tournamentModeBtn');
+
     const gameHiddenDiv = document.getElementById('tournamentDisplayName');
 	const createBtn = document.getElementById('createGameBtn');
     const joinBtn = document.getElementById('joinGameBtn');
 	
 
+	// vs AI Mode
     aiModeBtn.addEventListener('click', function() {
-		if (!gameHiddenDiv.classList.contains('d-none'))
-			gameHiddenDiv.classList.toggle('d-none');
-		if (createBtn.classList.contains('d-none'))
-			createBtn.classList.toggle('d-none');
-		if (!joinBtn.classList.contains('d-none'))
-			joinBtn.classList.toggle('d-none');
+		gameHiddenDiv.classList.add('d-none');
+		createBtn.classList.remove('d-none');
+		joinBtn.classList.add('d-none');
     });
-});
 
-// Local Mode Button
-document.addEventListener('DOMContentLoaded', function() {
-    const localModeBtn = document.getElementById('localModeBtn');
-    const gameHiddenDiv = document.getElementById('tournamentDisplayName');
-	const createBtn = document.getElementById('createGameBtn');
-    const joinBtn = document.getElementById('joinGameBtn');
-
-    localModeBtn.addEventListener('click', function() {
-		if (!gameHiddenDiv.classList.contains('d-none'))
-			gameHiddenDiv.classList.toggle('d-none');
-		if (createBtn.classList.contains('d-none'))
-			createBtn.classList.toggle('d-none');
-		if (!joinBtn.classList.contains('d-none'))
-			joinBtn.classList.toggle('d-none');
+	// Local vs Mode
+	localModeBtn.addEventListener('click', function() {
+		gameHiddenDiv.classList.add('d-none');
+		createBtn.classList.remove('d-none');
+		joinBtn.classList.add('d-none');
     });
-});
 
-// Remote Mode Button
-document.addEventListener('DOMContentLoaded', function() {
-    const remoteModeBtn = document.getElementById('remoteModeBtn');
-    const gameHiddenDiv = document.getElementById('tournamentDisplayName');
-    const joinBtn = document.getElementById('joinGameBtn');
-	const createBtn = document.getElementById('createGameBtn');
-
-    remoteModeBtn.addEventListener('click', function() {
-		if (!gameHiddenDiv.classList.contains('d-none'))
-			gameHiddenDiv.classList.toggle('d-none');
-		if (createBtn.classList.contains('d-none'))
-			createBtn.classList.toggle('d-none');
-		if (joinBtn.classList.contains('d-none'))
-			joinBtn.classList.toggle('d-none');
+	// Remote vs Mode
+	remoteModeBtn.addEventListener('click', function() {
+		gameHiddenDiv.classList.add('d-none');
+		createBtn.classList.remove('d-none');
+		joinBtn.classList.remove('d-none');
     });
-});
-
-// Tournament Mode Buttons
-document.addEventListener('DOMContentLoaded', function() {
-    const tournamentModeBtn = document.getElementById('tournamentModeBtn');
-    const gameHiddenDiv = document.getElementById('tournamentDisplayName');
-	const joinBtn = document.getElementById('joinGameBtn');
-	const createBtn = document.getElementById('createGameBtn');
-
-    tournamentModeBtn.addEventListener('click', function() {
-		if (gameHiddenDiv.classList.contains('d-none'))
-			gameHiddenDiv.classList.toggle('d-none');
-		if (createBtn.classList.contains('d-none'))
-			createBtn.classList.toggle('d-none');
-		if (joinBtn.classList.contains('d-none'))
-			joinBtn.classList.toggle('d-none');
+	
+	// Tournament Mode
+	tournamentModeBtn.addEventListener('click', function() {
+		gameHiddenDiv.classList.remove('d-none');
+		createBtn.classList.remove('d-none');
+		joinBtn.classList.remove('d-none');
     });
 });
