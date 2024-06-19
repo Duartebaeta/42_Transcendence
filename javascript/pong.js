@@ -1,9 +1,21 @@
 // BACKEND CONECTION CODE
+// Global Variables
 let gameId = "";
 let username;
 let socket;
 let isSocketConnected = false;
 var Pong;
+
+var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
+let color_increment = 0;
+
+var DIRECTION = {
+	IDLE: "IDLE",
+	UP: "UP",
+	DOWN: "DOWN",
+	LEFT: "LEFT",
+	RIGHT: "RIGHT",
+};
 
 function startGame(event) {
 	event.preventDefault();
@@ -27,14 +39,9 @@ function startGame(event) {
 		const gameState = JSON.parse(event.data);
 		if (gameState.type === "game_start") {
 			SockIn.gameStart(Pong);
-		} else if (gameState.type === "game_end") {
-			SockIn.gameEnd(Pong, gameState.message);
 		} else if (gameState.type === "start_game") {
 			console.log("Both players are ready. Starting the game...");
 			SockIn.gameStart(Pong);
-		} else if (gameState.type === "countdown") {
-			console.log("Countdown message captured")
-			Pong.countdown(gameState.count);
 		} else if (gameState.type === "update") {
 			Pong.backendUpdate(gameState);
 		} else if (gameState.type === "assign_side") {
@@ -61,18 +68,6 @@ function startGame(event) {
 		console.log(`[error] ${error.message}`);
 	};
 }
-
-// Global Variables
-var DIRECTION = {
-	IDLE: "IDLE",
-	UP: "UP",
-	DOWN: "DOWN",
-	LEFT: "LEFT",
-	RIGHT: "RIGHT",
-};
-
-var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
-let color_increment = 0;
 
 // The ball object (The cube that bounces back and forth)
 var Ball = {
@@ -120,13 +115,8 @@ const SockIn = {
 			Pong.endGameMenu(text);
 		}, 1000);
 	},
-	countdown: function(game, number) {
-		Pong.countdown(number);
-	},
 	direction_change: function(gameState) {
 		idle_check = Pong.ai.move == DIRECTION.IDLE;
-		console.log("ai move: ", Pong.ai.move, "idle check: ", idle_check);
-		console.log("Player side: ", Pong.side);
 		if (Pong.side == "left") {
 			Pong.player.move = gameState.left;
 			Pong.ai.move = gameState.right;
@@ -135,12 +125,10 @@ const SockIn = {
 			Pong.player.move = gameState.right;
 			Pong.ai.move = gameState.left;
 		}
-		// if (idle_check) {
-		// 	return;
-		// } else if (Pong.ai.move == DIRECTION.IDLE) {
-		// 	Pong.ai.y = gameState.position;
-		// 	window.requestAnimationFrame(Pong.loop.bind(Pong));
-		// }
+		if (!idle_check) {
+			Pong.ai.y = gameState.position;
+		}
+
 	}
 };
 
@@ -168,9 +156,11 @@ const SockOut = {
 		}
 	},
 	toggleMove: function (direction, position) {
+		console.log("Toggling move...", Pong.side, direction, position)
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
 				type: "move",
+				player: Pong.side,
 				direction: direction,
 				position: position
 			}));
@@ -256,34 +246,6 @@ var Game = {
 		// Draw the 'press any key to begin' text
 		this.context.fillText(
 			"Waiting for both players to ready up",
-			this.canvas.width / 2,
-			this.canvas.height / 2 + 15
-		);
-	},
-
-	// Frontend countdown function
-	countdown: function (number) {
-		// Draw all the Pong objects in their current state
-		Pong.draw();
-
-		// Change the canvas font size and color
-		this.context.font = "50px Courier New";
-		this.context.fillStyle = this.color;
-
-		// Draw the rectangle behind the countdown text
-		this.context.fillRect(
-			this.canvas.width / 2 - 350,
-			this.canvas.height / 2 - 48,
-			700,
-			100
-		);
-
-		// Change the canvas color;
-		this.context.fillStyle = "#ffffff";
-
-		// Draw the countdown number
-		this.context.fillText(
-			number.toString(),
 			this.canvas.width / 2,
 			this.canvas.height / 2 + 15
 		);
@@ -419,14 +381,18 @@ var Game = {
 		document.addEventListener("keydown", function (key) {
 			// Handle up arrow and w key events
 			if (key.keyCode === 38 || key.keyCode === 87) {
-				Pong.player.move = DIRECTION.UP;
-				SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
+				if (Pong.player.move !== DIRECTION.UP) { // Prevent multiple triggers
+					Pong.player.move = DIRECTION.UP;
+					SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
+				}
 			}
-
+		
 			// Handle down arrow and s key events
 			if (key.keyCode === 40 || key.keyCode === 83) {
-				Pong.player.move = DIRECTION.DOWN;
-				SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
+				if (Pong.player.move !== DIRECTION.DOWN) { // Prevent multiple triggers
+					Pong.player.move = DIRECTION.DOWN;
+					SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
+				}
 			}
 		});
 
