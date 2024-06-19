@@ -23,9 +23,10 @@
 	display: none;
 }
 
-/* .sidebar {
-	position: sticky;
-	top: 0;
-	height: 100%;
-	border-right: 10px solid blue;
-} */
+.text-truncate {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	margin: 0;
+}
