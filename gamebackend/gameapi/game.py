@@ -15,8 +15,8 @@ class Game:
 		self.players = {}
 		self.ball_x = 700
 		self.ball_y = 500
-		self.ball_move_x = 'DIRECTION.LEFT'
-		self.ball_move_y = 'DIRECTION.DOWN'
+		self.ball_move_x = 'LEFT'
+		self.ball_move_y = 'DOWN'
 		self.left_y = 500
 		self.right_y = 500
 		self.left_direction = "IDLE"
@@ -57,6 +57,14 @@ class Game:
 			"ball_move_y": self.ball_move_y,
 			"left_y": self.left_y,
 			"right_y": self.right_y
+		}
+
+	def get_ball_state(self):
+		return {
+			"ball_x": self.ball_x,
+			"ball_y": self.ball_y,
+			"ball_move_x": self.ball_move_x,
+			"ball_move_y": self.ball_move_y
 		}
 
 	def set_game_state(self, ball_x, ball_y, ball_move_x, ball_move_y, left_y, right_y):

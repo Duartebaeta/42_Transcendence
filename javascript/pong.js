@@ -71,7 +71,7 @@ function startGame(event) {
 
 // The ball object (The cube that bounces back and forth)
 var Ball = {
-	new: function (incrementedSpeed) {
+	new: function () {
 		return {
 			width: 18,
 			height: 18,
@@ -79,10 +79,22 @@ var Ball = {
 			y: this.canvas.height / 2 - 9,
 			moveX: DIRECTION.IDLE,
 			moveY: DIRECTION.IDLE,
-			speed: incrementedSpeed || 7,
+			speed: 4,
 		};
 	},
 };
+
+var Marker = {
+	new: function (x, y, color) {
+		return {
+			x: x,
+			y: y,
+			width: 10,
+			height: 10,
+			color: color || "#ffffff",
+		};
+	}
+}
 
 // The object (The two lines that move up and down)
 var Paddle = {
@@ -186,6 +198,7 @@ var Game = {
 		this.player = Paddle.new.call(this, this.side);
 		this.ai = Paddle.new.call(this, opponent);
 		this.ball = Ball.new.call(this);
+		this.markers = [Marker.new.call(this, this.ball.x, this.ball.y, "#afffff"), Marker.new.call(this, this.ball.x, this.ball.y, "#ff0000")];
 
 		this.ai.speed = 5;
 		this.running = this.over = false;
@@ -257,33 +270,68 @@ var Game = {
 			// Move player if they player.move value was updated by a keyboard event
 			if (this.player.move === DIRECTION.UP) {
 				this.player.y -= this.player.speed;
-				// SockOut.sendPosition("UP", this.side);
 			} else if (this.player.move === DIRECTION.DOWN) {
 				this.player.y += this.player.speed;
-				// SockOut.sendPosition("DOWN", this.side);
 			}
 			if (this.ai.move === DIRECTION.UP) {
 				this.ai.y -= this.player.speed;
-				// SockOut.sendPosition("UP", this.side);
 			} else if (this.ai.move === DIRECTION.DOWN) {
 				this.ai.y += this.player.speed;
-				// SockOut.sendPosition("DOWN", this.side);
 			}
 
 			// If the player collides with the bound limits, update the x and y coords.
+			if (this.player.y <= 0) this.player.y = 0;
+			else if (this.player.y >= this.canvas.height - this.player.height)
+				this.player.y = this.canvas.height - this.player.height;
+			// Same for the AI
+			if (this.ai.y <= 0) this.ai.y = 0;
+			else if (this.ai.y >= this.canvas.height - this.ai.height)
+				this.ai.y = this.canvas.height - this.ai.height;
+
+			// Move the ball
+
+			// console.log("Ball moveX:", Pong.ball.moveX, "Ball moveY:", Pong.ball.moveY)
+			// console.log(DIRECTION.UP === Pong.ball.moveY, DIRECTION.DOWN === Pong.ball.moveY, DIRECTION.LEFT === Pong.ball.moveX, DIRECTION.RIGHT === Pong.ball.moveX)
+
+			if (Pong.ball.moveX === DIRECTION.LEFT)
+				Pong.ball.x -= Pong.ball.speed;
+			else if (Pong.ball.moveX === DIRECTION.RIGHT)
+				Pong.ball.x += Pong.ball.speed;
+	
+			if (Pong.ball.moveY === DIRECTION.UP)
+				Pong.ball.y -= Pong.ball.speed;
+			else if (Pong.ball.moveY === DIRECTION.DOWN)
+				Pong.ball.y += Pong.ball.speed;
+
+			if (Pong.ball.y <= 0)
+				Pong.ball.moveY = DIRECTION.DOWN;
+			else if (Pong.ball.y >= Pong.canvas.height - Pong.ball.height)
+				Pong.ball.moveY = DIRECTION.UP;
+
+			// let left_y = Pong.side === "left" ? Pong.player.y : Pong.ai.y;
+			// let right_y = Pong.side === "right" ? Pong.player.y : Pong.ai.y;
+
+			// // Collision with left paddle
+			// if (Pong.ball.x >= 150 && Pong.ball.x <= 159 && Pong.ball.y >= left_y && Pong.ball.y <= left_y + 180) {
+			// 	Pong.ball.moveX = DIRECTION.RIGHT;
+			// }
+			// // Collision with right paddle
+			// else if (Pong.ball.x >= 1250 && Pong.ball.x <= 1259 && Pong.ball.y >= right_y && Pong.ball.y <= right_y + 180) {
+			// 	Pong.ball.moveX = DIRECTION.LEFT;
+			// }
 		}
 	},
 
 	backendUpdate: function(gameState) {
+		console.log("Updating game state...");
+		console.log(gameState);
 		Pong.ball.x = gameState.ball_x;
 		Pong.ball.y = gameState.ball_y;
-		// if (this.side === "left") {
-		// 	this.player.y = gameState.left_y;
-		// 	this.ai.y = gameState.right_y;
-		// } else {
-		// 	this.player.y = gameState.right_y;
-		// 	this.ai.y = gameState.left_y;
-		// }
+		Pong.ball.moveX = gameState.ball_move_x;
+		Pong.ball.moveY = gameState.ball_move_y;
+
+		//create a new marker with the x and y values of the ball and with pink color
+		Pong.markers[0] = Marker.new.call(this, gameState.ball_x, gameState.ball_y, "#afffff");
 
 		Pong.draw();
 	},
@@ -327,6 +375,14 @@ var Game = {
 				this.ball.height
 			);
 		}
+
+		//Iterate through the markers and draw them
+		this.markers.forEach((marker) => {
+			this.context.fillStyle = marker.color;
+			this.context.fillRect(marker.x, marker.y, marker.width, marker.height);
+		});
+
+		this.context.fillStyle = "#ffffff";
 
 		// Draw the net (Line in the middle)
 		this.context.beginPath();

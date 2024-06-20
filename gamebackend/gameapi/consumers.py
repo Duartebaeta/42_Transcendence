@@ -66,12 +66,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 						'type': 'start_game',
 					}
 				)
-				await self.channel_layer.group_send(
-					self.game_group_name,
-					{
-						'type': 'game_update',
-					}
-				)
 
 		elif message_type == 'move':
 			print(f"Player {self.username} moved")
@@ -124,6 +118,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type': 'start_game',
 		}))
 		self.schedule_update()
+		self.send_update()
 
 	async def direction_change(self, event):
 		await self.send(text_data=json.dumps({
@@ -132,6 +127,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'right': event['right'],
 			'position': event['position']
 		}))
+
+	def send_update(self):
+		ballState = self.game.get_ball_state()
+		loop = asyncio.get_event_loop()
+		loop.call_later(0.5, lambda: asyncio.create_task(self.update_game_state(ballState)))
 
 	def schedule_update(self):
 		loop = asyncio.get_event_loop()
@@ -149,59 +149,47 @@ class GameConsumer(AsyncWebsocketConsumer):
 		right_y = game_state['right_y']
 
 		# Ball speed
-		ball_speed = 5
+		ball_speed = 6
 
 
 		# Collision with top wall
 		if ball_y <= 0:
-			ball_move_y = 'DIRECTION.DOWN'
+			ball_move_y = 'DOWN'
 		# Collision with bottom wall
 		elif ball_y >= 980:  # Assuming the canvas height is 1000
-			ball_move_y = 'DIRECTION.UP'
+			ball_move_y = 'UP'
 
 		# Collision with left paddle
 		if 150 <= ball_x <= 159 and left_y <= ball_y <= left_y + 180:
-			ball_move_x = 'DIRECTION.RIGHT'
+			ball_move_x = 'RIGHT'
 		# Collision with right paddle
 		elif 1250 <= ball_x <= 1259 and right_y <= ball_y <= right_y + 180:
-			ball_move_x = 'DIRECTION.LEFT'
+			ball_move_x = 'LEFT'
 
 		# Ball out of bounds
 		if ball_x <= 0:
 			self.game.player2_score += 1
 			ball_x = 700
 			ball_y = 500
-			ball_move_x = 'DIRECTION.RIGHT'
+			ball_move_x = 'RIGHT'
 		elif ball_x >= 1400:
 			self.game.player1_score += 1
 			ball_x = 700
 			ball_y = 500
-			ball_move_x = 'DIRECTION.LEFT'
+			ball_move_x = 'LEFT'
 
 		# Move ball
-		if ball_move_x == 'DIRECTION.LEFT':
+		if ball_move_x == 'LEFT':
 			ball_x -= ball_speed
 		else:
 			ball_x += ball_speed
 
-		if ball_move_y == 'DIRECTION.UP':
+		if ball_move_y == 'UP':
 			ball_y -= ball_speed
 		else:
 			ball_y += ball_speed
 
 		self.game.set_game_state(ball_x, ball_y, ball_move_x, ball_move_y, left_y, right_y)
-
-		# Broadcast updated game state
-		await self.channel_layer.group_send(
-			self.game_group_name,
-			{
-				'type': 'update_game_state',
-				'ball_x': ball_x,
-				'ball_y': ball_y,
-				'player1_score': self.game.player1_score,
-				'player2_score': self.game.player2_score
-			}
-		)
 
 		# Schedule the next update
 		self.schedule_update()
@@ -210,5 +198,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.send(text_data=json.dumps({
 			'type': 'update',
 			'ball_x': event['ball_x'],
-			'ball_y': event['ball_y']
+			'ball_y': event['ball_y'],
+			'ball_move_x': event['ball_move_x'],
+			'ball_move_y': event['ball_move_y']
 		}))
+		self.send_update()
