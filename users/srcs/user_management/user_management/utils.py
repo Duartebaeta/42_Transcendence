@@ -4,7 +4,9 @@ from string import digits as s_digits
 from user_management import settings 
 from user.models import User
 
-def is_valid_username(username):
+from typing import Tuple, Union
+
+def is_valid_username(username: str) -> Tuple[bool, Union[str, None]]:
 	if username is None or username == '':
 		return False, 'Username is empty'
 	if len(username) < settings.USERNAME_MIN_LENGTH:
@@ -17,7 +19,7 @@ def is_valid_username(username):
 		return False, 'Username is already taken'
 	return True, None
 
-def is_valid_email(email):
+def is_valid_email(email: str) -> Tuple[bool, Union[str, None]]:
 	if email is None or email == '':
 		return False, 'Email is empty'
 	if User.objects.filter(email=email).exists():
@@ -48,7 +50,7 @@ def is_valid_email(email):
 		return False, f'Email top level domain name is too big (maximum size {settings.EMAIL_TOP_LEVEL_DOMAIN_MAX_LENGTH})'
 	return True, None
 
-def is_valid_password(password):
+def is_valid_password(password: str) -> Tuple[bool, Union[str, None]]:
 	if password is None or password == '':
 		return False, 'Password is empty'
 	if len(password) < settings.PASSWORD_MIN_LENGTH:
