@@ -1,0 +1,49 @@
+{
+	"contacts": [
+		{
+			"id": 1,
+			"name": "Peter",
+			"lastMessage": "hello"
+		},
+		{
+			"id": 2,
+			"name": "John",
+			"lastMessage": "How are you doing?"
+		},
+		{
+			"id": 3,
+			"name": "Fred",
+			"lastMessage": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in tincidunt sem."
+		},
+		{
+			"id": 4,
+			"name": "Mary",
+			"lastMessage": "Lorem ipsum dolor"
+		},
+		{
+			"id": 5,
+			"name": "Bob",
+			"lastMessage": "Phasellus commodo augue sed nibh mollis ornare. Vivamus euismod sodales urna vel tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum diam ante, maximus id ultrices rhoncus, ultrices elementum arcu. "
+		},
+		{
+			"id": 6,
+			"name": "Thomas",
+			"lastMessage": "Lorem ipsum dolor"
+		},
+		{
+			"id": 7,
+			"name": "Susan",
+			"lastMessage": "Lorem ipsum dolor"
+		},
+		{
+			"id": 8,
+			"name": "Betty",
+			"lastMessage": "Lorem ipsum dolor"
+		},
+		{
+			"id": 9,
+			"name": "James",
+			"lastMessage": "Lorem ipsum dolor"
+		}
+	]
+}

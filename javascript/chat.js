@@ -1,24 +1,13 @@
-// Set chat scroll to bottom
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener('DOMContentLoaded', function() {
 	const chatModal = document.getElementById('chat-modal');
 	const chatWindow = document.getElementById('chat-messages');
 	const contactsWindow = document.getElementById('contacts');
-
-	chatModal.addEventListener('shown.bs.modal', function() {
-		chatWindow.scrollTop = chatWindow.scrollHeight;
-		contactsWindow.scrollTop = 0;
-	});
-});
-
-// API Info Request	
-document.addEventListener('DOMContentLoaded', function() {
-	// Get a reference to the button element
 	const chatBtn = document.getElementById('chatBtn');
 
 	// Add event listener to the button for the 'click' event
 	chatBtn.addEventListener('click', function() {
 		// Send the request using Fetch API
-		fetch("chat.json")
+		fetch("chat-contacts.json")
 			.then(response => response.json())
 			.then(data => {
 				const contacts = data.contacts;
@@ -26,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				// Create HTML content
 				let info = '';
 				contacts.forEach(contact => {
-					info += `<div id="contactArea" class="d-flex align-items-start align-items-center ps-4">
+					info += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${contact.id}">
 								<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
 								<div class="ms-3" style="width: 210px;">
 									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
@@ -49,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
 										<option value="Profile">Profile</option>
 									</select>
 								</div>
-							</div>`
+							</div>`;
 				});
 
 				// Update HTML content
@@ -58,5 +47,42 @@ document.addEventListener('DOMContentLoaded', function() {
 			.catch(error => {
 				console.error("Error fetching data:", error);
 			});
+	});
+
+	// Event delegation for chat logs
+	document.getElementById('contacts').addEventListener('click', function(event) {
+		const contactArea = event.target.closest('.contactArea');
+		if (contactArea) {
+			const contactId = contactArea.getAttribute('data-contact-id');
+			// Send the request using Fetch API
+			fetch(`chat-logs-test/chat-messages-${contactId}.json`)
+				.then(response => response.json())
+				.then(data => {
+					const chat = data.messages;
+
+					// Create HTML content
+					let info = '';
+					chat.forEach(message => {
+						if (!message.fromOtherUser)
+							info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; display: table;">${message.message}</div>`;
+						else
+							info += `<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">${message.message}</div>`;
+					});
+
+					// Update HTML content
+					document.getElementById('chat-messages').innerHTML = info;
+
+					// Scroll to bottom of chat window
+					chatWindow.scrollTop = chatWindow.scrollHeight;
+				})
+				.catch(error => {
+					console.error("Error fetching data:", error);
+				});
+		}
+	});
+
+	chatModal.addEventListener('shown.bs.modal', function() {
+		chatWindow.scrollTop = chatWindow.scrollHeight;
+		contactsWindow.scrollTop = 0;
 	});
 });
