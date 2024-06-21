@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		let	chatLogs = document.getElementById('chat-messages');
 
 		chatLogs.innerHTML = "";
+		document.getElementById('selectedContactName').innerHTML = "";
 	});
 })
 
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 	});
 
+	// Event To Open Messages With Target Contact
 	document.getElementById('contacts').addEventListener('click', function(event) {
 		const contactArea = event.target.closest('.contactArea');
 		if (contactArea) {
@@ -79,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					});
 
 					// Update HTML Content
+					document.getElementById('selectedContactName').innerHTML = data.contactName;
 					document.getElementById('chat-messages').innerHTML = info;
 
 					// Scroll To Bottom Of Chat Window
