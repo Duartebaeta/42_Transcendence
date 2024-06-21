@@ -1,10 +1,20 @@
+// Clear Chat Window After Leaving Chat Modal
+document.addEventListener('DOMContentLoaded', function() {
+	const chatModal = document.getElementById('chat-modal');
+	
+	chatModal.addEventListener('hidden.bs.modal', function() {
+		let	chatLogs = document.getElementById('chat-messages');
+
+		chatLogs.innerHTML = "";
+	});
+})
+
 document.addEventListener('DOMContentLoaded', function() {
 	const chatModal = document.getElementById('chat-modal');
 	const chatWindow = document.getElementById('chat-messages');
 	const contactsWindow = document.getElementById('contacts');
 	const chatBtn = document.getElementById('chatBtn');
 
-	// Add event listener to the button for the 'click' event
 	chatBtn.addEventListener('click', function() {
 		// Send the request using Fetch API
 		fetch("chat-contacts.json")
@@ -12,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(data => {
 				const contacts = data.contacts;
 				
-				// Create HTML content
+				// Create HTML Content For Contacts
 				let info = '';
 				contacts.forEach(contact => {
 					info += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${contact.id}">
@@ -41,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 							</div>`;
 				});
 
-				// Update HTML content
+				// Update HTML Content
 				document.getElementById('chatContacts').innerHTML = info;
 			})
 			.catch(error => {
@@ -49,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 	});
 
-	// Event delegation for chat logs
 	document.getElementById('contacts').addEventListener('click', function(event) {
 		const contactArea = event.target.closest('.contactArea');
 		if (contactArea) {
@@ -60,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				.then(data => {
 					const chat = data.messages;
 
-					// Create HTML content
+					// Create HTML Chat Logs Content
 					let info = '';
 					chat.forEach(message => {
 						if (!message.fromOtherUser)
@@ -69,10 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
 							info += `<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">${message.message}</div>`;
 					});
 
-					// Update HTML content
+					// Update HTML Content
 					document.getElementById('chat-messages').innerHTML = info;
 
-					// Scroll to bottom of chat window
+					// Scroll To Bottom Of Chat Window
 					chatWindow.scrollTop = chatWindow.scrollHeight;
 				})
 				.catch(error => {
@@ -81,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 
+	// Set Scrolls To Initial Positions
 	chatModal.addEventListener('shown.bs.modal', function() {
 		chatWindow.scrollTop = chatWindow.scrollHeight;
 		contactsWindow.scrollTop = 0;
