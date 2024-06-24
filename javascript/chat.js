@@ -69,16 +69,25 @@ document.addEventListener('DOMContentLoaded', function() {
 			fetch(`chat-logs-test/chat-messages-${contactId}.json`)
 				.then(response => response.json())
 				.then(data => {
-					const chat = data.messages;
-
-					// Create HTML Chat Logs Content
 					let info = '';
-					chat.forEach(message => {
-						if (!message.fromOtherUser)
-							info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; display: table;">${message.message}</div>`;
-						else
-							info += `<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">${message.message}</div>`;
-					});
+
+					// Check If Chat With Contact Has Previous messages
+					if (!data.messages) {
+						info += `<div class="text-center text-light pt-3">
+									<h5>No messages with this person yet!</h3>
+								</div>`
+					}
+					else {
+						const chat = data.messages;
+	
+						// Create HTML Chat Logs Content
+						chat.forEach(message => {
+							if (!message.fromOtherUser)
+								info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; display: table;">${message.message}</div>`;
+							else
+								info += `<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">${message.message}</div>`;
+						});
+					}
 
 					// Update HTML Content
 					document.getElementById('selectedContactName').innerHTML = data.contactName;
