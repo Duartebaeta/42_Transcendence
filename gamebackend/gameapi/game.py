@@ -15,15 +15,16 @@ class Game:
 		self.players = {}
 		self.ball_x = 700
 		self.ball_y = 500
-		self.ball_move_x = 'DIRECTION.LEFT'
-		self.ball_move_y = 'DIRECTION.DOWN'
+		self.ball_move_x = 'LEFT'
+		self.ball_move_y = 'DOWN'
 		self.left_y = 500
 		self.right_y = 500
 		self.left_direction = "IDLE"
 		self.right_direction = "IDLE"
-		self.player_speed = 8
-		self.player1_score = 0
-		self.player2_score = 0
+		self.player_speed = 4
+		self.left_score = 0
+		self.right_score = 0
+		self.game_over = False
 
 	def add_player(self, username, channel_name):
 		if len(self.players) == 0:
@@ -56,7 +57,17 @@ class Game:
 			"ball_move_x": self.ball_move_x,
 			"ball_move_y": self.ball_move_y,
 			"left_y": self.left_y,
-			"right_y": self.right_y
+			"right_y": self.right_y,
+			"left_score": self.left_score,
+			"right_score": self.right_score
+		}
+
+	def get_ball_state(self):
+		return {
+			"ball_x": self.ball_x,
+			"ball_y": self.ball_y,
+			"ball_move_x": self.ball_move_x,
+			"ball_move_y": self.ball_move_y
 		}
 
 	def set_game_state(self, ball_x, ball_y, ball_move_x, ball_move_y, left_y, right_y):
@@ -66,6 +77,12 @@ class Game:
 		self.ball_move_y = ball_move_y
 		self.left_y = left_y
 		self.right_y = right_y
+
+	def set_position(self, player, position):
+		if player == "left":
+			self.left_y = position
+		else:
+			self.right_y = position
 
 	def move_player(self, player, direction, position):
 		player_y = self.left_y if player == "left" else self.right_y

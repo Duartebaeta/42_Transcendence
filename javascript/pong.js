@@ -1,9 +1,24 @@
 // BACKEND CONECTION CODE
+// Global Variables
 let gameId = "";
 let username;
 let socket;
 let isSocketConnected = false;
 var Pong;
+
+var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
+let color_increment = 0;
+
+var DIRECTION = {
+	IDLE: "IDLE",
+	UP: "UP",
+	DOWN: "DOWN",
+	LEFT: "LEFT",
+	RIGHT: "RIGHT",
+};
+
+var BACKEND_IP = "10.19.249.137"
+var PORT = "8000"
 
 function startGame(event) {
 	event.preventDefault();
@@ -12,7 +27,7 @@ function startGame(event) {
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
-	socket = new WebSocket(`ws://192.168.68.57:8000/ws/game/${gameId}/${username}/`);
+	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
 	socket.onopen = function(e) {
 		console.log("[open] Connection established");
 		isSocketConnected = true; // Mark the socket as connected
@@ -25,16 +40,9 @@ function startGame(event) {
 	
 	socket.onmessage = function(event) {
 		const gameState = JSON.parse(event.data);
-		if (gameState.type === "game_start") {
-			SockIn.gameStart(Pong);
-		} else if (gameState.type === "game_end") {
-			SockIn.gameEnd(Pong, gameState.message);
-		} else if (gameState.type === "start_game") {
+		if (gameState.type === "start_game") {
 			console.log("Both players are ready. Starting the game...");
 			SockIn.gameStart(Pong);
-		} else if (gameState.type === "countdown") {
-			console.log("Countdown message captured")
-			Pong.countdown(gameState.count);
 		} else if (gameState.type === "update") {
 			Pong.backendUpdate(gameState);
 		} else if (gameState.type === "assign_side") {
@@ -44,6 +52,8 @@ function startGame(event) {
 		} else if (gameState.type === "direction_change") {
 			console.log("Direction change message captured")
 			SockIn.direction_change(gameState);
+		} else if (gameState.type === "game_over") {
+			SockIn.gameEnd(Pong, gameState.winner);
 		}
 	};
 	
@@ -62,29 +72,17 @@ function startGame(event) {
 	};
 }
 
-// Global Variables
-var DIRECTION = {
-	IDLE: "IDLE",
-	UP: "UP",
-	DOWN: "DOWN",
-	LEFT: "LEFT",
-	RIGHT: "RIGHT",
-};
-
-var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
-let color_increment = 0;
-
 // The ball object (The cube that bounces back and forth)
 var Ball = {
-	new: function (incrementedSpeed) {
+	new: function () {
 		return {
 			width: 18,
 			height: 18,
 			x: this.canvas.width / 2 - 9,
 			y: this.canvas.height / 2 - 9,
-			moveX: DIRECTION.IDLE,
-			moveY: DIRECTION.IDLE,
-			speed: incrementedSpeed || 7,
+			moveX: DIRECTION.LEFT,
+			moveY: DIRECTION.DOWN,
+			speed: 8,
 		};
 	},
 };
@@ -116,17 +114,10 @@ const SockIn = {
 	gameEnd: function (game, text) {
 		console.log("Game ended...");
 		game.over = true;
-		setTimeout(function () {
-			Pong.endGameMenu(text);
-		}, 1000);
-	},
-	countdown: function(game, number) {
-		Pong.countdown(number);
+		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
 		idle_check = Pong.ai.move == DIRECTION.IDLE;
-		console.log("ai move: ", Pong.ai.move, "idle check: ", idle_check);
-		console.log("Player side: ", Pong.side);
 		if (Pong.side == "left") {
 			Pong.player.move = gameState.left;
 			Pong.ai.move = gameState.right;
@@ -135,12 +126,10 @@ const SockIn = {
 			Pong.player.move = gameState.right;
 			Pong.ai.move = gameState.left;
 		}
-		// if (idle_check) {
-		// 	return;
-		// } else if (Pong.ai.move == DIRECTION.IDLE) {
-		// 	Pong.ai.y = gameState.position;
-		// 	window.requestAnimationFrame(Pong.loop.bind(Pong));
-		// }
+		if (!idle_check) {
+			Pong.ai.y = gameState.position;
+		}
+
 	}
 };
 
@@ -159,7 +148,7 @@ const SockOut = {
 	sendPosition: function (direction, player) {
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
-				type: "move",
+				type: "position_change",
 				player: player,
 				direction: direction
 			}));
@@ -168,9 +157,11 @@ const SockOut = {
 		}
 	},
 	toggleMove: function (direction, position) {
+		console.log("Toggling move...", Pong.side, direction, position)
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
 				type: "move",
+				player: Pong.side,
 				direction: direction,
 				position: position
 			}));
@@ -197,7 +188,7 @@ var Game = {
 		this.ai = Paddle.new.call(this, opponent);
 		this.ball = Ball.new.call(this);
 
-		this.ai.speed = 5;
+		this.ai.speed = 8;
 		this.running = this.over = false;
 		this.turn = this.ai;
 		this.timer = this.round = 0;
@@ -261,68 +252,49 @@ var Game = {
 		);
 	},
 
-	// Frontend countdown function
-	countdown: function (number) {
-		// Draw all the Pong objects in their current state
-		Pong.draw();
-
-		// Change the canvas font size and color
-		this.context.font = "50px Courier New";
-		this.context.fillStyle = this.color;
-
-		// Draw the rectangle behind the countdown text
-		this.context.fillRect(
-			this.canvas.width / 2 - 350,
-			this.canvas.height / 2 - 48,
-			700,
-			100
-		);
-
-		// Change the canvas color;
-		this.context.fillStyle = "#ffffff";
-
-		// Draw the countdown number
-		this.context.fillText(
-			number.toString(),
-			this.canvas.width / 2,
-			this.canvas.height / 2 + 15
-		);
-	},
-
 	// Update all objects (move the player, ai, ball, increment the score, etc.)
 	update: function () {
 		if (!this.over) {
 			// Move player if they player.move value was updated by a keyboard event
 			if (this.player.move === DIRECTION.UP) {
 				this.player.y -= this.player.speed;
-				// SockOut.sendPosition("UP", this.side);
 			} else if (this.player.move === DIRECTION.DOWN) {
 				this.player.y += this.player.speed;
-				// SockOut.sendPosition("DOWN", this.side);
 			}
 			if (this.ai.move === DIRECTION.UP) {
 				this.ai.y -= this.player.speed;
-				// SockOut.sendPosition("UP", this.side);
 			} else if (this.ai.move === DIRECTION.DOWN) {
 				this.ai.y += this.player.speed;
-				// SockOut.sendPosition("DOWN", this.side);
 			}
 
 			// If the player collides with the bound limits, update the x and y coords.
+			if (this.player.y <= 0) this.player.y = 0;
+			else if (this.player.y >= this.canvas.height - this.player.height)
+				this.player.y = this.canvas.height - this.player.height;
+			// Same for the AI
+			if (this.ai.y <= 0) this.ai.y = 0;
+			else if (this.ai.y >= this.canvas.height - this.ai.height)
+				this.ai.y = this.canvas.height - this.ai.height;
 		}
 	},
 
 	backendUpdate: function(gameState) {
 		Pong.ball.x = gameState.ball_x;
 		Pong.ball.y = gameState.ball_y;
-		// if (this.side === "left") {
-		// 	this.player.y = gameState.left_y;
-		// 	this.ai.y = gameState.right_y;
-		// } else {
-		// 	this.player.y = gameState.right_y;
-		// 	this.ai.y = gameState.left_y;
-		// }
-
+		Pong.ball.moveX = gameState.ball_move_x;
+		Pong.ball.moveY = gameState.ball_move_y;
+		if (this.side == "left") {
+			Pong.player.y = gameState.left_y;
+			Pong.ai.y = gameState.right_y;
+			Pong.player.score = gameState.left_score;
+			Pong.ai.score = gameState.right_score;
+		} else {
+			Pong.player.y = gameState.right_y;
+			Pong.ai.y = gameState.left_y;
+			Pong.player.score = gameState.right_score;
+			Pong.ai.score = gameState.left_score;
+		}
+		
 		Pong.draw();
 	},
 
@@ -366,6 +338,8 @@ var Game = {
 			);
 		}
 
+		this.context.fillStyle = "#ffffff";
+
 		// Draw the net (Line in the middle)
 		this.context.beginPath();
 		this.context.setLineDash([7, 15]);
@@ -379,16 +353,27 @@ var Game = {
 		this.context.font = "100px Courier New";
 		this.context.textAlign = "center";
 
+		let leftScore;
+		let rightScore;
+
+		if (this.side == "left") {
+			leftScore = this.player.score;
+			rightScore = this.ai.score;
+		} else {
+			leftScore = this.ai.score;
+			rightScore = this.player.score;
+		}
+
 		// Draw the players score (left)
 		this.context.fillText(
-			this.player.score.toString(),
+			leftScore.toString(),
 			this.canvas.width / 2 - 300,
 			200
 		);
 
 		// Draw the paddles score (right)
 		this.context.fillText(
-			this.ai.score.toString(),
+			rightScore.toString(),
 			this.canvas.width / 2 + 300,
 			200
 		);
@@ -419,14 +404,18 @@ var Game = {
 		document.addEventListener("keydown", function (key) {
 			// Handle up arrow and w key events
 			if (key.keyCode === 38 || key.keyCode === 87) {
-				Pong.player.move = DIRECTION.UP;
-				SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
+				if (Pong.player.move !== DIRECTION.UP) { // Prevent multiple triggers
+					Pong.player.move = DIRECTION.UP;
+					SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
+				}
 			}
-
+		
 			// Handle down arrow and s key events
 			if (key.keyCode === 40 || key.keyCode === 83) {
-				Pong.player.move = DIRECTION.DOWN;
-				SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
+				if (Pong.player.move !== DIRECTION.DOWN) { // Prevent multiple triggers
+					Pong.player.move = DIRECTION.DOWN;
+					SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
+				}
 			}
 		});
 
