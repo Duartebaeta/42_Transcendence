@@ -17,6 +17,9 @@ var DIRECTION = {
 	RIGHT: "RIGHT",
 };
 
+var BACKEND_IP = "10.19.249.137"
+var PORT = "8000"
+
 function startGame(event) {
 	event.preventDefault();
 	username = event.target.elements.username.value;
@@ -24,7 +27,7 @@ function startGame(event) {
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
-	socket = new WebSocket(`ws://192.168.68.57:8000/ws/game/${gameId}/${username}/`);
+	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
 	socket.onopen = function(e) {
 		console.log("[open] Connection established");
 		isSocketConnected = true; // Mark the socket as connected
@@ -37,9 +40,7 @@ function startGame(event) {
 	
 	socket.onmessage = function(event) {
 		const gameState = JSON.parse(event.data);
-		if (gameState.type === "game_start") {
-			SockIn.gameStart(Pong);
-		} else if (gameState.type === "start_game") {
+		if (gameState.type === "start_game") {
 			console.log("Both players are ready. Starting the game...");
 			SockIn.gameStart(Pong);
 		} else if (gameState.type === "update") {
@@ -51,6 +52,8 @@ function startGame(event) {
 		} else if (gameState.type === "direction_change") {
 			console.log("Direction change message captured")
 			SockIn.direction_change(gameState);
+		} else if (gameState.type === "game_over") {
+			SockIn.gameEnd(Pong, gameState.winner);
 		}
 	};
 	
@@ -77,24 +80,12 @@ var Ball = {
 			height: 18,
 			x: this.canvas.width / 2 - 9,
 			y: this.canvas.height / 2 - 9,
-			moveX: DIRECTION.IDLE,
-			moveY: DIRECTION.IDLE,
-			speed: 4,
+			moveX: DIRECTION.LEFT,
+			moveY: DIRECTION.DOWN,
+			speed: 8,
 		};
 	},
 };
-
-var Marker = {
-	new: function (x, y, color) {
-		return {
-			x: x,
-			y: y,
-			width: 10,
-			height: 10,
-			color: color || "#ffffff",
-		};
-	}
-}
 
 // The object (The two lines that move up and down)
 var Paddle = {
@@ -123,9 +114,7 @@ const SockIn = {
 	gameEnd: function (game, text) {
 		console.log("Game ended...");
 		game.over = true;
-		setTimeout(function () {
-			Pong.endGameMenu(text);
-		}, 1000);
+		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
 		idle_check = Pong.ai.move == DIRECTION.IDLE;
@@ -159,7 +148,7 @@ const SockOut = {
 	sendPosition: function (direction, player) {
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
-				type: "move",
+				type: "position_change",
 				player: player,
 				direction: direction
 			}));
@@ -198,9 +187,8 @@ var Game = {
 		this.player = Paddle.new.call(this, this.side);
 		this.ai = Paddle.new.call(this, opponent);
 		this.ball = Ball.new.call(this);
-		this.markers = [Marker.new.call(this, this.ball.x, this.ball.y, "#afffff"), Marker.new.call(this, this.ball.x, this.ball.y, "#ff0000")];
 
-		this.ai.speed = 5;
+		this.ai.speed = 8;
 		this.running = this.over = false;
 		this.turn = this.ai;
 		this.timer = this.round = 0;
@@ -287,52 +275,26 @@ var Game = {
 			if (this.ai.y <= 0) this.ai.y = 0;
 			else if (this.ai.y >= this.canvas.height - this.ai.height)
 				this.ai.y = this.canvas.height - this.ai.height;
-
-			// Move the ball
-
-			// console.log("Ball moveX:", Pong.ball.moveX, "Ball moveY:", Pong.ball.moveY)
-			// console.log(DIRECTION.UP === Pong.ball.moveY, DIRECTION.DOWN === Pong.ball.moveY, DIRECTION.LEFT === Pong.ball.moveX, DIRECTION.RIGHT === Pong.ball.moveX)
-
-			if (Pong.ball.moveX === DIRECTION.LEFT)
-				Pong.ball.x -= Pong.ball.speed;
-			else if (Pong.ball.moveX === DIRECTION.RIGHT)
-				Pong.ball.x += Pong.ball.speed;
-	
-			if (Pong.ball.moveY === DIRECTION.UP)
-				Pong.ball.y -= Pong.ball.speed;
-			else if (Pong.ball.moveY === DIRECTION.DOWN)
-				Pong.ball.y += Pong.ball.speed;
-
-			if (Pong.ball.y <= 0)
-				Pong.ball.moveY = DIRECTION.DOWN;
-			else if (Pong.ball.y >= Pong.canvas.height - Pong.ball.height)
-				Pong.ball.moveY = DIRECTION.UP;
-
-			// let left_y = Pong.side === "left" ? Pong.player.y : Pong.ai.y;
-			// let right_y = Pong.side === "right" ? Pong.player.y : Pong.ai.y;
-
-			// // Collision with left paddle
-			// if (Pong.ball.x >= 150 && Pong.ball.x <= 159 && Pong.ball.y >= left_y && Pong.ball.y <= left_y + 180) {
-			// 	Pong.ball.moveX = DIRECTION.RIGHT;
-			// }
-			// // Collision with right paddle
-			// else if (Pong.ball.x >= 1250 && Pong.ball.x <= 1259 && Pong.ball.y >= right_y && Pong.ball.y <= right_y + 180) {
-			// 	Pong.ball.moveX = DIRECTION.LEFT;
-			// }
 		}
 	},
 
 	backendUpdate: function(gameState) {
-		console.log("Updating game state...");
-		console.log(gameState);
 		Pong.ball.x = gameState.ball_x;
 		Pong.ball.y = gameState.ball_y;
 		Pong.ball.moveX = gameState.ball_move_x;
 		Pong.ball.moveY = gameState.ball_move_y;
-
-		//create a new marker with the x and y values of the ball and with pink color
-		Pong.markers[0] = Marker.new.call(this, gameState.ball_x, gameState.ball_y, "#afffff");
-
+		if (this.side == "left") {
+			Pong.player.y = gameState.left_y;
+			Pong.ai.y = gameState.right_y;
+			Pong.player.score = gameState.left_score;
+			Pong.ai.score = gameState.right_score;
+		} else {
+			Pong.player.y = gameState.right_y;
+			Pong.ai.y = gameState.left_y;
+			Pong.player.score = gameState.right_score;
+			Pong.ai.score = gameState.left_score;
+		}
+		
 		Pong.draw();
 	},
 
@@ -376,12 +338,6 @@ var Game = {
 			);
 		}
 
-		//Iterate through the markers and draw them
-		this.markers.forEach((marker) => {
-			this.context.fillStyle = marker.color;
-			this.context.fillRect(marker.x, marker.y, marker.width, marker.height);
-		});
-
 		this.context.fillStyle = "#ffffff";
 
 		// Draw the net (Line in the middle)
@@ -397,16 +353,27 @@ var Game = {
 		this.context.font = "100px Courier New";
 		this.context.textAlign = "center";
 
+		let leftScore;
+		let rightScore;
+
+		if (this.side == "left") {
+			leftScore = this.player.score;
+			rightScore = this.ai.score;
+		} else {
+			leftScore = this.ai.score;
+			rightScore = this.player.score;
+		}
+
 		// Draw the players score (left)
 		this.context.fillText(
-			this.player.score.toString(),
+			leftScore.toString(),
 			this.canvas.width / 2 - 300,
 			200
 		);
 
 		// Draw the paddles score (right)
 		this.context.fillText(
-			this.ai.score.toString(),
+			rightScore.toString(),
 			this.canvas.width / 2 + 300,
 			200
 		);
