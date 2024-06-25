@@ -241,21 +241,21 @@
 						<!-- Live Chat -->
 						<div class="col-8 d-flex flex-column">
 							<!-- Contact Messages -->
-							<div class="d-flex align-items-start align-items-center border-bottom">
+							<div class="d-flex align-items-center border-bottom">
 								<i class="bi bi-person-square text-light h1"></i>
 								<div class="ms-3">
 									<h4 id="selectedContactName" class="text-light mb-1"></h4>
 								</div>
 							</div>
 							<!-- Messages Display -->
-							<div class="flex-grow-1 overflow-auto" id="chat-messages" style="height: 500px; flex-direction: column-reverse">
+							<div class="flex-grow-1 overflow-auto d-flex flex-column" id="chat-messages" style="height: 500px;">
 								<!-- Contact Chat Messages -->
 							</div>
 							<!-- Message Input And Send Button -->
 							<div class="d-flex border-top align-items-center">
 								<textarea class="form-control me-2 h-50" placeholder="Type message..." name="msg" required></textarea>
 								<button class="btn text-light h-50">
-								<i class="bi bi-send"></i>
+									<i class="bi bi-send"></i>
 								</button>
 							</div>
 						</div>

@@ -83,13 +83,9 @@ document.addEventListener('DOMContentLoaded', function() {
 						// Create HTML Chat Logs Content
 						chat.forEach(message => {
 							if (!message.fromOtherUser)
-								info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">
-											<p class="mw-100">${message.message}</p>
-										</div>`;
+								info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
 							else
-								info += `<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">
-											<p class="mw-100">${message.message}</p>
-										</div>`;
+								info += `<div class="text-dark p-2 rounded me-auto text-start mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
 						});
 					}
 
