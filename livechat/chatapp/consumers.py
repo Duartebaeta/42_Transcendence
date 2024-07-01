@@ -29,7 +29,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     message = data['message']
     userName = data['username']
     room = data['room']
-
+    if room.blocked:
+      return
     # Send message to room group
     await self.channel_layer.group_send(
       self.room_group_name,
@@ -59,5 +60,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
   def save_message(self, message, username, room):
     user = User.objects.get(username=username)
     room = ChatRoom.objects.get(slug=room)
-
-    ChatMessage.objects.create(user=user, room=room, message=message)
+    # is_blocked = self.isUserBlocked(user)
+    # ChatMessage.objects.create(user=user, room=room, message=message, blocked=is_blocked)
+    ChatMessage.objects.create(user=user, room=room, message=message, blocked=room.blocked)

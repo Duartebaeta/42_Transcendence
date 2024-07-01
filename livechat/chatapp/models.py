@@ -15,10 +15,16 @@ class ChatRoom(models.Model):
   slug = models.SlugField(unique=True)
   user1 = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='user1')
   user2 = models.ForeignKey(User, on_delete=models.CASCADE, default=2, related_name='user2')
+  blocked = models.BooleanField(default=False)
+
+class Blocked(models.Model):
+  blocker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocker')
+  blocked = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blocked')
 
 class ChatMessage(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
+  blocked = models.BooleanField(default=False)
   message = models.TextField()
   date = models.DateTimeField(auto_now=True)
   class Meta:

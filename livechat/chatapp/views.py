@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import ChatRoom, User, ChatMessage
+from .models import ChatRoom, User, ChatMessage, Blocked
 
 # Create your views here.
 def index(request):
@@ -17,3 +17,13 @@ def chatroom(request, username):
       user1=auth_user, user2=user, name=f'{auth_username}-{username}', slug=f'{auth_username}-{username}')
   messages = ChatMessage.objects.filter(room=chatroom)[0:30]
   return render(request, 'chatapp/room.html', {'chatroom': chatroom, 'messages': messages})
+
+def block_user(request, username):
+  auth_username = request.user.username
+  auth_user = User.objects.get(username=auth_username)
+  user = User.objects.get(username=username)
+  try:
+    blocked = Blocked.objects.get(blocker=auth_user, blocked=user)
+  except Blocked.DoesNotExist:
+    blocked, created = Blocked.objects.get_or_create(blocker=auth_user, blocked=user)
+  return index(request)
