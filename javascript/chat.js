@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	let socket;
 	let activeContactId = null;
 
+	chatModal.addEventListener('shown.bs.modal', function() {
+		chatWindow.scrollTop = chatWindow.scrollHeight;
+		contactsWindow.scrollTop = 0;
+	});
+
 	// Fetch And Display Contacts When Chat Button Is Clicked
 	chatBtn.addEventListener('click', function() {
 		// Send The Request Using Fetch API
@@ -131,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	};
 
-	// Receive Data From	 WebSocket
+	// Receive Data From WebSocket
 	socket.onmessage = function(event) {
 		try {
 			const data = JSON.parse(event.data);
@@ -148,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 
 				document.getElementById('chat-messages').innerHTML += messageHtml;
-				chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll To Bottom Of Chat Window
+				//chatWindow.scrollTop = chatWindow.scrollHeight; 
 			}
 		}
 		catch (error) {
