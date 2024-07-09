@@ -59,6 +59,26 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 });
 
+// Submit Avatar
+document.addEventListener("DOMContentLoaded", function() {
+	document.getElementById('registerAvatarBtn').addEventListener('click', function() {
+		const file =  document.getElementById('avatarImg').files[0];
+	
+		// Create FormData Object For Avatar Img
+		const formData = new FormData();
+		formData.append('avatar', file);
+
+		// Send Post Request To API With The 	Avatar
+		fetch('API PATH', {
+			method: 'POST',
+			body: formData
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	})
+})
+
 // Show Password Button at Register
 document.addEventListener("DOMContentLoaded", function() {
 	const showPasswordBtn = document.getElementById('showPasswordBtnRegister');
