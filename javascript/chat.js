@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		chatLogs.innerHTML = "";
 		document.getElementById('selectedContactName').innerHTML = "";
+		document.getElementById('chatDropdownMenu').innerHTML = "";
 	});
 })
 
@@ -41,23 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
 								<div class="ms-3" style="width: 210px;">
 									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
 									<p class="text-light mb-0 text-truncate">${contact.lastMessage}</p>
-								</div>
-								<div class="dropdown ms-auto">
-									<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-										<i class="bi bi-three-dots-vertical h4 text-light"></i>
-									</button>
-									<!-- Dropdown Menu -->
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-										<!-- Menu Options -->
-										<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-										<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-										<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-									</ul>
-									<select class="custom-select" id="hiddenSelect">
-										<option value="Block">Block</option>
-										<option value="Invite To Play">Invite To Play</option>
-										<option value="Profile">Profile</option>
-									</select>
 								</div>
 							</div>`;
 				});
@@ -95,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						// Create HTML Chat Logs Content
 						chat.forEach(message => {
 							if (!message.fromOtherUser)
-								info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
+								info += `<div class="text-light bg-secondary p-2 	rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
 							else
 								info += `<div class="text-dark p-2 rounded me-auto text-start mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
 						});
@@ -104,6 +88,21 @@ document.addEventListener('DOMContentLoaded', function() {
 					// Update HTML Content
 					document.getElementById('selectedContactName').innerHTML = data.contactName;
 					document.getElementById('chat-messages').innerHTML = info;
+					document.getElementById('chatDropdownMenu').innerHTML = `<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+																				<i class="bi bi-three-dots-vertical h4 text-light"></i>
+																			</button>
+																			<!-- Dropdown Menu -->
+																			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+																				<!-- Menu Options -->
+																				<li><a class="dropdown-item" data-value="Block">Block</a></li>
+																				<li><a class="dropdown-item" data-value="Invite To Play">Invite To Play</a></li>
+																				<li><a class="dropdown-item" data-value="Profile">Profile</a></li>
+																			</ul>
+																			<select class="custom-select" id="hiddenSelect">
+																				<option value="Block">Block</option>
+																				<option value="Invite To Play">Invite To Play</option>
+																				<option value="Profile">Profile</option>
+																			</select>`
 
 					// Scroll To Bottom Of Chat Window
 					chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -165,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log("Connection Closed");
 	};
 });
-
 
 // document.addEventListener('DOMContentLoaded', function() {
 // 	const chatModal = document.getElementById('chat-modal');
