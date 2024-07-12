@@ -273,11 +273,10 @@ var Game = {
 				this.player.y = this.canvas.height - this.player.height;
 			// Same for the AI
 			if (this.ai.y <= 0) this.ai.y = 0;
-			else if (this.ai.y >= this.canvas.height - this.ai.height)
+			else if (this.ai.y >= this.canvas.height - this.ai.height) 
 				this.ai.y = this.canvas.height - this.ai.height;
 		}
 	},
-
 	backendUpdate: function(gameState) {
 		Pong.ball.x = gameState.ball_x;
 		Pong.ball.y = gameState.ball_y;
@@ -297,21 +296,21 @@ var Game = {
 		
 		Pong.draw();
 	},
-
+	
 	// Draw the objects to the canvas element
 	draw: function () {
 		// Clear the Canvas
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+	
 		// Set the fill style to black
 		this.context.fillStyle = this.color;
-
+	
 		// Draw the background
 		this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+	
 		// Set the fill style to white (For the paddles and the ball)
 		this.context.fillStyle = "#ffffff";
-
+	
 		// Draw the Player
 		this.context.fillRect(
 			this.player.x,
@@ -319,7 +318,7 @@ var Game = {
 			this.player.width,
 			this.player.height
 		);
-
+	
 		// Draw the Ai
 		this.context.fillRect(
 			this.ai.x,
@@ -327,7 +326,7 @@ var Game = {
 			this.ai.width,
 			this.ai.height
 		);
-
+	
 		// Draw the Ball
 		if (Pong._turnDelayIsOver.call(this)) {
 			this.context.fillRect(
@@ -337,9 +336,9 @@ var Game = {
 				this.ball.height
 			);
 		}
-
+	
 		this.context.fillStyle = "#ffffff";
-
+	
 		// Draw the net (Line in the middle)
 		this.context.beginPath();
 		this.context.setLineDash([7, 15]);
@@ -348,14 +347,14 @@ var Game = {
 		this.context.lineWidth = 10;
 		this.context.strokeStyle = "#ffffff";
 		this.context.stroke();
-
+	
 		// Set the default canvas font and align it to the center
 		this.context.font = "100px Courier New";
 		this.context.textAlign = "center";
-
+	
 		let leftScore;
 		let rightScore;
-
+	
 		if (this.side == "left") {
 			leftScore = this.player.score;
 			rightScore = this.ai.score;
@@ -363,43 +362,43 @@ var Game = {
 			leftScore = this.ai.score;
 			rightScore = this.player.score;
 		}
-
+	
 		// Draw the players score (left)
 		this.context.fillText(
 			leftScore.toString(),
 			this.canvas.width / 2 - 300,
 			200
 		);
-
+	
 		// Draw the paddles score (right)
 		this.context.fillText(
 			rightScore.toString(),
 			this.canvas.width / 2 + 300,
 			200
 		);
-
+	
 		// Change the font size for the center score text
 		this.context.font = "30px Courier New";
-
+	
 		// Draw the winning score (center)
 		this.context.fillText(
 			"Round " + (Pong.round + 1),
 			this.canvas.width / 2,
 			35
 		);
-
+	
 		// Change the font size for the center score value
 		this.context.font = "40px Courier";
 	},
-
+	
 	loop: function () {
 		Pong.update();
 		Pong.draw();
-
+	
 		// If the game is not over, draw the next frame.
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
 	},
-
+	
 	listen: function () {
 		document.addEventListener("keydown", function (key) {
 			// Handle up arrow and w key events
@@ -418,66 +417,24 @@ var Game = {
 				}
 			}
 		});
-
+	
 		// Stop the player from moving when there are no keys being pressed.
 		document.addEventListener("keyup", function (key) {
 			Pong.player.move = DIRECTION.IDLE;
 			SockOut.toggleMove(DIRECTION.IDLE, Pong.player.y);
 		});
 	},
-
-	// // Reset the ball location, the player turns and set a delay before the next round begins.
-	// _resetTurn: function (victor, loser) {
-	//     this.ball = Ball.new.call(this, this.ball.speed);
-	//     this.turn = loser;
-	//     this.timer = new Date().getTime();
-	//     this.color = colors[color_increment++];
-
-	//     if (color_increment >= colors.length) color_increment = 0;
-	// },
-
+	
 	// Wait for a delay to have passed after each turn.
 	_turnDelayIsOver: function () {
 		return new Date().getTime() - this.timer >= 1000;
 	},
-
+	
 	// Select a random color as the background of each level/round.
 	_generateRoundColor: function () {
 		var newColor = colors[Math.floor(Math.random() * colors.length)];
 		if (newColor === this.color) return Pong._generateRoundColor();
 		return newColor;
-	},
+	}
 };
-
-
-
-
-// // Handle ai (AI) UP and DOWN movement
-// if (this.ai.y > this.ball.y - this.ai.height / 2) {
-// 	if (this.ball.moveX === DIRECTION.RIGHT)
-// 		this.ai.y -= this.ai.speed / 1.5;
-// 	else this.ai.y -= this.ai.speed / 4;
-// }
-// if (this.ai.y < this.ball.y - this.ai.height / 2) {
-// 	if (this.ball.moveX === DIRECTION.RIGHT)
-// 		this.ai.y += this.ai.speed / 1.5;
-// 	else this.ai.y += this.ai.speed / 4;
-// }
-
-// // Handle ai (AI) wall collision
-// if (this.ai.y >= this.canvas.height - this.ai.height)
-// 	this.ai.y = this.canvas.height - this.ai.height;
-// else if (this.ai.y <= 0) this.ai.y = 0;
-// // Handle ai-ball collision
-// if (
-// 	this.ball.x - this.ball.width <= this.ai.x &&
-// 	this.ball.x >= this.ai.x - this.ai.width
-// ) {
-// 	if (
-// 		this.ball.y <= this.ai.y + this.ai.height &&
-// 		this.ball.y + this.ball.height >= this.ai.y
-// 	) {
-// 		this.ball.x = this.ai.x - this.ball.width;
-// 		this.ball.moveX = DIRECTION.LEFT;
-// 	}
-// }
+export { startGame };
