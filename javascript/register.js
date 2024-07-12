@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		const formData = new FormData();
 		formData.append('avatar', file);
 
-		// Send Post Request To API With The 	Avatar
+		// Send Post Request To API With The Avatar
 		fetch('API PATH', {
 			method: 'POST',
 			body: formData
