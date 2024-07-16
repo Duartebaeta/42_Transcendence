@@ -61,22 +61,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Submit Avatar
 document.addEventListener("DOMContentLoaded", function() {
-	document.getElementById('registerAvatarBtn').addEventListener('click', function() {
-		const file =  document.getElementById('avatarImg').files[0];
-	
-		// Create FormData Object For Avatar Img
-		const formData = new FormData();
-		formData.append('avatar', file);
+	const registerAvatarInput = document.getElementById('avatarImg');
+	const registerAvatarBtn = document.getElementById('registerAvatarBtn');
 
-		// Send Post Request To API With The Avatar
-		fetch('API PATH', {
-			method: 'POST',
-			body: formData
-		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
-	})
+	registerAvatarInput.addEventListener('change', function () {
+		const fileName = registerAvatarInput.files[0] ? registerAvatarInput.files[0].name : 'Upload Avatar';
+		registerAvatarBtn.textContent = fileName;
+	});
+
+	// Change Button Name To File Name For Better Readability	
+	registerAvatarBtn.addEventListener('click', function() {
+		const file = registerAvatarInput.files[0];
+
+		if (file) {
+			// Create FormData Object For Avatar Img
+			const formData = new FormData();
+			formData.append('avatar', file);
+
+			// Send Post Request To API With The Avatar
+			fetch('API PATH', {
+				method: 'POST',
+				body: formData
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+		}
+	});
 })
 
 // Show Password Button at Register

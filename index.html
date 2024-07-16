@@ -554,38 +554,40 @@
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<!-- Change Username -->
-					<div class="d-flex align-items-center mb-3">
-						<p class="text-light pe-3 mb-0">Change Username</p>
-						<input id="newUsername" type="text" class="form-control w-auto" placeholder="New Username">
-						<div class="text-center ps-3">
-							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
+					<div class="row align-items-center">
+						<!-- Change Avatar -->
+						<div class="col-4 text-center" style="margin-top: -40px;">
+							<!-- Current Avatar -->
+							<i class="bi bi-person-square text-light register-icon"></i>
+							<div class="text-center">
+								<input type="file" class="file-input" id="settingsAvatarImg" name="settingsAvatarImg" accept="image/*" style="display:none;">
+								<button id="settingsAvatarBtn" type="button" class="btn bg-gradient" style="background-color: rgb(238, 130, 238)" onclick="document.getElementById('settingsAvatarImg').click();">Change Avatar</button>
+							</div>
 						</div>
-					</div>					
-					<!-- Change Password -->
-					<div class="d-flex align-items-center mb-3">
-						<p class="text-light pe-3 mb-0">Change Password</p>
-						<input id="newPassword" type="text" class="form-control w-auto" placeholder="New Password">
-						<div class="text-center ps-3">
-							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
-						</div>
-					</div>		
-					<!-- Change Avatar -->
-					<div class="d-flex align-items-center mb-3">
-						<label for="settingAvatar" class="text-light pe-3 mb-0">Change Avatar:</label>
-						<div class="position-relative">
-							<input type="file" class="file-input" id="settingAvatar" name="settingAvatar" accept="image/*" style="display:none;">
-							<button type="button" class="btn btn-light btn-sm bg-gradient" onclick="document.getElementById('settingAvatar').click();">Choose file</button>
-						</div>
-						<div class="text-center ps-3">
-							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238);">Change</button>
+						<div class="col-8">
+							<!-- Change Username -->
+							<div class="d-flex align-items-center mb-3">
+								<p class="text-light pe-3 mb-0">Change Username</p>
+								<input id="newUsername" type="text" class="form-control w-auto" placeholder="New Username">
+								<div class="text-center ps-3">
+									<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
+								</div>
+							</div>					
+							<!-- Change Password -->
+							<div class="d-flex align-items-center mb-3">
+								<p class="text-light pe-3 mb-0">Change Password</p>
+								<input id="newPassword" type="text" class="form-control w-auto" placeholder="New Password">
+								<div class="text-center ps-3">
+									<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
+								</div>
+							</div>		
+							<!-- Toggle 2FA -->
+							<!-- <div class="d-flex">
+								<p class="text-light pe-3">Activate 2 Factor Authentication</p>
+								<input type="checkbox" class="form-check-input">
+							</div> -->
 						</div>
 					</div>
-					<!-- Toggle 2FA -->
-					<!-- <div class="d-flex">
-						<p class="text-light pe-3">Activate 2 Factor Authentication</p>
-						<input type="checkbox" class="form-check-input">
-					</div> -->
 				</div>
 			</div>
 		</div>
