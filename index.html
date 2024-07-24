@@ -53,7 +53,8 @@
 			
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
-				<div class="game-menu text-center">
+				<!-- Select Game Mode -->
+				<div class="game-menu text-center d-none">
 					<h1 class="text-light mb-5">Start game</h1>
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
@@ -79,7 +80,85 @@
 						</div>
 					</div>
 				</div>
-				
+
+				<!-- Tournament Waiting Room -->
+				<div class="text-center d-none">
+					<h1 class="text-light mb-5">Waiting For Players (4/6)</h1>
+					<div class="row">
+						<h2 class="mb-5">Lobby</h5>
+						<div class="col-6">
+							<p class="text-light">player name 1</p>
+							<p class="text-light">player name 2</p>
+							<p class="text-light">player name 3</p>
+						</div>
+						<div class="col-6">
+							<p class="text-light">player name 4</p>
+							<p class="text-light">...</p>
+							<p class="text-light">...</p>	
+						</div>
+					</div>
+				</div>
+
+				<!-- Tournament Brackets -->
+				<div class="container text-center">
+					<div class="row">
+						<div class="col-3 text-light">
+							<h3>Round 1</h3>
+						</div>
+						<div class="col-3 text-light">
+							<h3>Round 2</h3>
+						</div>
+						<div class="col-3 text-light">
+							<h3>Finals</h3>
+						</div>
+						<div class="col-3 text-light">
+							<h3>Winner</h3>
+						</div>
+					</div>
+					<!-- First Round -->
+					<div class="row">
+						<div class="col-3 bracket-column justify-content-center">
+							<div class="py-5 px-4">
+								<div class="border p-3 text-light">PLAYER 1</div>
+								<div class="border p-3 text-light">PLAYER 2</div>
+							</div>
+							<div class="py-5 px-4">
+								<div class="border p-3 text-light">PLAYER 3</div>
+								<div class="border p-3 text-light">PLAYER 4</div>
+							</div>
+							<div class="py-5 px-4">
+								<div class="border p-3 text-light">PLAYER 5</div>
+								<div class="border p-3 text-light">PLAYER 6</div>
+							</div>
+						</div>
+			
+						<!-- Round 2 -->
+						<div class="col-3 bracket-column justify-content-center">
+							<div class="py-5 px-4">
+								<div class="border p-3 text-light">PLAYER 1</div>
+								<div class="border p-3 text-light">PLAYER 2</div>
+							</div>
+							<div class="py-5 px-4">
+								<div class="border p-3 text-light">PLAYER 3</div>
+								<div class="border p-3 text-light">PLAYER 4</div>
+							</div>
+						</div>
+			
+						<!-- Round 3 -->
+						<div class="col-3 bracket-column justify-content-center">
+							<div class="py-5 px-4">
+								<div class="border p-3 text-light">PLAYER 1</div>
+								<div class="border p-3 text-light">PLAYER 2</div>
+							</div>
+						</div>
+			
+						<!-- Final Round -->
+						<div class="col-3 bracket-column justify-content-center">
+							<div class="border px-3 py-4 text-light">Player 1</div>
+						</div>
+					</div>
+				</div>
+
 				<!-- <div class="game hidden">
 					<canvas></canvas>
 					<p>Control the left player by using up and down arrow keys</p>
