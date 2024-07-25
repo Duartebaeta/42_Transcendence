@@ -29,7 +29,7 @@ class JWTManager:
 		except Exception as e:
 			return False, [str(e)], None
 		return True, None, token
-	
+
 	def decode_token(self, token: str) -> Tuple[bool, Union[List[str], None], Union[Dict, None]]:
 		try:
 			decoded = jwt.decode(
@@ -42,3 +42,23 @@ class JWTManager:
 		except Exception as e:
 			return False, [str(e)], None
 		return True, None, decoded
+
+class AccessJWTManager:
+	Manager = JWTManager(
+		None,# Algorithm from settings
+		None,
+		None,# Public key from settings
+		None,
+	)
+
+	@staticmethod
+	def authenticate(token: str) -> Tuple[bool, Union[dict, None], Union[List[str], None]]:
+		valid, payload, errors = AccessJWTManager.Manager.decode_token(token)
+		if not valid:
+			return False, None, errors
+
+		user_id = payload.get('user_id')
+		if user_id is None or user_id == '';
+			return False, None, ['No user_id inside the payload :((']
+
+		return True, payload, None
