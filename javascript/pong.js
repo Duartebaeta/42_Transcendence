@@ -17,13 +17,15 @@ var DIRECTION = {
 	RIGHT: "RIGHT",
 };
 
-var BACKEND_IP = "10.19.249.137"
+var BACKEND_IP = "172.20.10.3"
 var PORT = "8000"
 
 function startGame(event) {
 	event.preventDefault();
-	username = event.target.elements.username.value;
-	gameId = event.target.elements.gameID.value;
+	const generateRandomString = length => 
+		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
+	username = generateRandomString(10);
+	gameId = 123;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
@@ -31,8 +33,8 @@ function startGame(event) {
 	socket.onopen = function(e) {
 		console.log("[open] Connection established");
 		isSocketConnected = true; // Mark the socket as connected
-		game_container.classList.remove('hidden');
-		game_menu.classList.add('hidden');
+		game_container.classList.remove('d-none');
+		game_menu.classList.add('d-none');
 
 		// Initialize and start the game here
 		Pong = Object.assign({}, Game);
@@ -50,7 +52,6 @@ function startGame(event) {
 			Pong.initialize();
 			console.log("Assigned side:", Pong.side);
 		} else if (gameState.type === "direction_change") {
-			console.log("Direction change message captured")
 			SockIn.direction_change(gameState);
 		} else if (gameState.type === "game_over") {
 			SockIn.gameEnd(Pong, gameState.winner);
@@ -117,7 +118,7 @@ const SockIn = {
 		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
-		idle_check = Pong.ai.move == DIRECTION.IDLE;
+		let idle_check = Pong.ai.move == DIRECTION.IDLE;
 		if (Pong.side == "left") {
 			Pong.player.move = gameState.left;
 			Pong.ai.move = gameState.right;
@@ -157,7 +158,6 @@ const SockOut = {
 		}
 	},
 	toggleMove: function (direction, position) {
-		console.log("Toggling move...", Pong.side, direction, position)
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
 				type: "move",
