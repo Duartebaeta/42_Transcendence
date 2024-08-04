@@ -53,7 +53,6 @@ const Game = {
 		this.ai = Ai.new.call(this, 'right');
 		this.ball = Ball.new.call(this);
 
-		this.ai.speed = 5;
 		this.running = this.over = false;
 		this.turn = this.ai;
 		this.timer = this.round = 0;
@@ -95,6 +94,9 @@ const Game = {
 			if (this.player.move === DIRECTION.UP) this.player.y -= this.player.speed;
 			else if (this.player.move === DIRECTION.DOWN) this.player.y += this.player.speed;
 
+			if (this.ai.move === DIRECTION.UP) this.ai.y -= this.ai.speed;
+			else if (this.ai.move === DIRECTION.DOWN) this.ai.y += this.ai.speed;
+
 			if (Pong._turnDelayIsOver.call(this) && this.turn) {
 				this.ball.moveX = this.turn === this.player ? DIRECTION.LEFT : DIRECTION.RIGHT;
 				this.ball.moveY = [DIRECTION.UP, DIRECTION.DOWN][Math.round(Math.random())];
@@ -109,15 +111,6 @@ const Game = {
 			else if (this.ball.moveY === DIRECTION.DOWN) this.ball.y += (this.ball.speed / 1.5);
 			if (this.ball.moveX === DIRECTION.LEFT) this.ball.x -= this.ball.speed;
 			else if (this.ball.moveX === DIRECTION.RIGHT) this.ball.x += this.ball.speed;
-
-			if (this.ai.y > this.ball.y - (this.ai.height / 2)) {
-				if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y -= this.ai.speed / 1.5;
-				else this.ai.y -= this.ai.speed / 4;
-			}
-			if (this.ai.y < this.ball.y - (this.ai.height / 2)) {
-				if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y += this.ai.speed / 1.5;
-				else this.ai.y += this.ai.speed / 4;
-			}
 
 			if (this.ai.y >= this.canvas.height - this.ai.height) this.ai.y = this.canvas.height - this.ai.height;
 			else if (this.ai.y <= 0) this.ai.y = 0;
@@ -140,7 +133,7 @@ const Game = {
 		if (this.player.score === rounds[this.round]) {
 			if (!rounds[this.round + 1]) {
 				this.over = true;
-				setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
+				setTimeout(function () { Pong.endGameMenu('Left Wins!'); }, 1000);
 			} else {
 				this.color = this._generateRoundColor();
 				this.player.score = this.ai.score = 0;
@@ -151,7 +144,7 @@ const Game = {
 			}
 		} else if (this.ai.score === rounds[this.round]) {
 			this.over = true;
-			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
+			setTimeout(function () { Pong.endGameMenu('Right Wins!'); }, 1000);
 		}
 	},
 
@@ -202,10 +195,14 @@ const Game = {
 				window.requestAnimationFrame(Pong.loop);
 			}
 
-			if (key.keyCode === 38 || key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-			if (key.keyCode === 40 || key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
+			console.log(key.keyCode);
+
+			if (key.keyCode === 38) Pong.player.move = DIRECTION.UP;
+			if (key.keyCode === 87) Pong.ai.move = DIRECTION.UP;
+			if (key.keyCode === 40) Pong.player.move = DIRECTION.DOWN;
+			if (key.keyCode === 83) Pong.ai.move = DIRECTION.DOWN;
 		});
-		document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; });
+		document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; Pong.ai.move = DIRECTION.IDLE;});
 	},
 	
 	_resetTurn: function(victor, loser) {
@@ -229,11 +226,11 @@ const Game = {
 
 let Pong = Object.assign({}, Game);
 
-function startSinglePlayer() {
+function startLocal() {
 	document.querySelector('.game').classList.remove('d-none');
 	document.querySelector('.game').classList.add('d-block');
 	document.querySelector('.game-menu').classList.add('d-none');
 	Pong.initialize();
 }
 
-export { startSinglePlayer };
+export { startLocal };
