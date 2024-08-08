@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const remoteModeBtn = document.getElementById('remoteModeBtn');
 	const tournamentModeBtn = document.getElementById('tournamentModeBtn');
 
-	const gameHiddenDiv = document.getElementById('tournamentDisplayName');
+	const gameHiddenDiv = document.getElementById('tournamentPlayerInfo');
 	const createBtn = document.getElementById('createRemoteBtn');
 	const joinBtn = document.getElementById('joinRemoteBtn');
 	const createTournamentBtn = document.getElementById('createTournamentBtn');
