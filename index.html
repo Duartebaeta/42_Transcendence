@@ -54,7 +54,7 @@
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
 				<!-- Select Game Mode -->
-				<div class="game-menu text-center d-none">
+				<div class="game-menu text-center">
 					<h1 class="text-light mb-5">Start game</h1>
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
@@ -75,8 +75,12 @@
 						</form>
 						<!-- Join And Create Game Button -->
 						<div class="my-3">
-							<button id="joinGameBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
-							<button id="createGameBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
+							<button id="joinRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
+							<button id="createRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
+						</div>
+						<div class="my-3">
+							<button id="joinTournamentBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Tournament</button>
+							<button id="createTournamentBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Tournament</button>
 						</div>
 					</div>
 				</div>
@@ -100,7 +104,7 @@
 				</div>
 
 				<!-- Tournament Brackets -->
-				<div class="container text-center">
+				<div class="container text-center d-none">
 					<div class="row">
 						<div class="col-3 text-light">
 							<h3>Round 1</h3>

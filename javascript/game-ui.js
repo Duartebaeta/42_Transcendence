@@ -1,13 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const aiModeBtn = document.getElementById('aiModeBtn');
-    const localModeBtn = document.getElementById('localModeBtn');
-    const remoteModeBtn = document.getElementById('remoteModeBtn');
-    const tournamentModeBtn = document.getElementById('tournamentModeBtn');
+	const aiModeBtn = document.getElementById('aiModeBtn');
+	const localModeBtn = document.getElementById('localModeBtn');
+	const remoteModeBtn = document.getElementById('remoteModeBtn');
+	const tournamentModeBtn = document.getElementById('tournamentModeBtn');
 
-    const gameHiddenDiv = document.getElementById('tournamentDisplayName');
-	const createBtn = document.getElementById('createGameBtn');
-    const joinBtn = document.getElementById('joinGameBtn');
-	
+	const gameHiddenDiv = document.getElementById('tournamentDisplayName');
+	const createBtn = document.getElementById('createRemoteBtn');
+	const joinBtn = document.getElementById('joinRemoteBtn');
+	const createTournamentBtn = document.getElementById('createTournamentBtn');
+	const joinTournamentBtn = document.getElementById('joinTournamentBtn');
 
 	// vs AI Mode
     aiModeBtn.addEventListener('click', function() {
@@ -19,8 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		// Display Selected Mode Options
 		gameHiddenDiv.classList.add('d-none');
+		createTournamentBtn.classList.add('d-none');
+		joinTournamentBtn.classList.add('d-none');
+
 		createBtn.classList.remove('d-none');
-		joinBtn.classList.add('d-none');
     });
 
 	// Local vs Mode
@@ -33,8 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Display Selected Mode Options
 		gameHiddenDiv.classList.add('d-none');
+		createTournamentBtn.classList.add('d-none');
+		joinTournamentBtn.classList.add('d-none');
+
 		createBtn.classList.remove('d-none');
-		joinBtn.classList.add('d-none');
     });
 
 	// Remote vs Mode
@@ -47,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Display Selected Mode Options
 		gameHiddenDiv.classList.add('d-none');
+		createTournamentBtn.classList.add('d-none');
+		joinTournamentBtn.classList.add('d-none');
+
 		createBtn.classList.remove('d-none');
 		joinBtn.classList.remove('d-none');
     });
@@ -61,7 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Display Selected Mode Options
 		gameHiddenDiv.classList.remove('d-none');
-		createBtn.classList.remove('d-none');
-		joinBtn.classList.remove('d-none');
+		createTournamentBtn.classList.remove('d-none');
+		joinTournamentBtn.classList.remove('d-none');
+
+		createBtn.classList.add('d-none');
+		joinBtn.classList.add('d-none');
     });
 });
