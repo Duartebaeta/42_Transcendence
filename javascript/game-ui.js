@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const joinBtn = document.getElementById('joinRemoteBtn');
 	const createTournamentBtn = document.getElementById('createTournamentBtn');
 	const joinTournamentBtn = document.getElementById('joinTournamentBtn');
+	
 
 	// vs AI Mode
     aiModeBtn.addEventListener('click', function() {
