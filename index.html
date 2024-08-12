@@ -54,7 +54,7 @@
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
 				<!-- Select Game Mode -->
-				<div class="game-menu text-center">
+				<div class="game-menu text-center d-none">
 					<h1 class="text-light mb-5">Start game</h1>
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
@@ -91,10 +91,9 @@
 				</div>
 
 				<!-- Tournament Waiting Room -->
-				<div class="text-center d-none">
+				<div class="text-center">
 					<h1 class="text-light mb-5">Waiting For Players (4/6)</h1>
 					<div class="row">
-						<h2 class="mb-5">Lobby</h5>
 						<div class="col-6">
 							<p class="text-light">player name 1</p>
 							<p class="text-light">player name 2</p>
@@ -105,6 +104,10 @@
 							<p class="text-light">...</p>
 							<p class="text-light">...</p>	
 						</div>
+						<h5 class="mt-5 d-flex justify-content-center text-light">
+							<p class="text-light" >Game Id:</p>
+							<p id="tournamentGameId" class="text-light">123456789</p>
+						</h5>
 					</div>
 				</div>
 
