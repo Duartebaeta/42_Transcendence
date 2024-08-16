@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		joinTournamentBtn.classList.add('d-none');
 
 		createBtn.classList.remove('d-none');
+		joinBtn.classList.add('d-none');
     });
 
 	// Local vs Mode
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		joinTournamentBtn.classList.add('d-none');
 
 		createBtn.classList.remove('d-none');
+		joinBtn.classList.add('d-none');
     });
 
 	// Remote vs Mode
