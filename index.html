@@ -53,8 +53,25 @@
 			
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
+				<!-- Temporary Tournament Selector For Testing -->
+				<div class="tournament-selector d-flex text-center">
+					<form id="tournamentForm" class="d-block">
+						{% csrf_token %}
+						<div class="my-4">
+							<input type="text" class="form-control text-center" placeholder="Tournament Display Name" id="tournamentDisplayName" required>
+							<input type="number" class="form-control text-center" placeholder="Game ID" id="tournamentID" required>
+						</div>
+						<div class="my-3">
+							<button id="joinTournamentBtn" type="submit" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Join Tournament</button>
+							<button id="createTournamentBtn" type="submit" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Create Tournament</button>
+						</div>
+					</form>
+				</div>
+
+				
+
 				<!-- Select Game Mode -->
-				<div class="game-menu text-center">
+				<div class="game-menu d-none text-center">
 					<h1 class="text-light mb-5">Start game</h1>
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
@@ -68,7 +85,7 @@
 						<!-- Tournaments Mode -->
 						<button id="tournamentModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Tournaments</button>
 						<!-- Tounament Display Name Selection Panel -->
-						<form id="tournamentDisplayName" class="d-none">
+						<form id="tournamentDisplayNameee" class="d-none">
 							<div class="my-4">
 								<input type="text" class="form-control text-center" placeholder="Tournament Display Name" required>
 							</div>
@@ -87,7 +104,7 @@
 					<div class="row">
 						<h2 class="mb-5">Lobby</h5>
 						<div class="col-6">
-							<p class="text-light">player name 1</p>
+							<p id="player1" class="text-light">player name 1</p>
 							<p class="text-light">player name 2</p>
 							<p class="text-light">player name 3</p>
 						</div>

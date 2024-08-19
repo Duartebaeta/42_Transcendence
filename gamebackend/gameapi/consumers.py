@@ -252,3 +252,44 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'right_score': event['right_score']
 		}))
 		# self.send_update()
+
+class TournamentConsumer(AsyncWebsocketConsumer):
+	async def connect(self):
+		self.tournament_id = self.scope['url_route']['kwargs']['tournament_id']
+		self.display_name = self.scope['url_route']['kwargs']['display_name']
+		self.group_name = f'tournament_{self.tournament_id}'
+
+		await self.channel_layer.group_add(
+			self.group_name,
+			self.channel_name
+		)
+
+		await self.accept()
+		print(f"{self.display_name} connected to tournament {self.tournament_id}")
+
+	async def disconnect(self, close_code):
+		await self.channel_layer.group_discard(
+			self.group_name,
+			self.channel_name
+		)
+		print(f"{self.display_name} disconnected from tournament {self.tournament_id}")
+
+	async def receive(self, text_data):
+		data = json.loads(text_data)
+		message_type = data.get('type')
+
+		if message_type == 'some_message_type':
+			# Handle messages related to the tournament
+			pass
+
+		await self.channel_layer.group_send(
+			self.group_name,
+			{
+				'type': 'tournament_message',
+				'message': data
+			}
+		)
+
+	async def tournament_message(self, event):
+		message = event['message']
+		await self.send(text_data=json.dumps(message))

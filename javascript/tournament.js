@@ -1,29 +1,29 @@
-let gameId = "";
-let username;
-let socket;
-let isSocketConnected = false;
-var Pong;
-
 var BACKEND_IP = "172.20.10.3"
 var PORT = "8000"
 
-function startTournament(event) {
-	event.preventDefault();
-	const generateRandomString = length => 
-		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
-	username = generateRandomString(10);
-	gameId = 123;
-	const waiting_room = document.querySelector('.waiting-room');
-	const game_menu = document.querySelector('.game-menu');
 
-	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
-	socket.onopen = function(e) {
-		console.log("[open] Connection established");
-		isSocketConnected = true; // Mark the socket as connected
-		waiting_room.classList.remove('d-none');
-		game_menu.classList.add('d-none');
+function startTournament(displayName, tournamentID) {
+	// Connect to WebSocket for the tournament
+	const socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/${tournamentID}/${displayName}/`);
 
+	socket.onopen = function () {
+		console.log('Connected to tournament:', tournamentID);
+		document.querySelector('.tournament-selector').classList.add('d-none');
+		document.querySelector('.waiting-room').classList.remove('d-none');
+		document.querySelector('#player1').textContent = displayName;
+	};
+
+	socket.onmessage = function (event) {
+		const data = JSON.parse(event.data);
+		// Handle incoming messages related to the tournament
+	};
+
+	socket.onclose = function () {
+		console.log('Disconnected from tournament:', tournamentID);
+	};
+
+	socket.onerror = function (error) {
+		console.error('WebSocket error:', error);
 	};
 }
-
 export { startTournament };
