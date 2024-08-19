@@ -1,8 +1,10 @@
 import jwt
+import os
 
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
-from typing import Tuple, Union, List, Dict
+load_dotenv('env/.env')
 
 class JWTManager:
 	def __init__(self, algorithm, private_key, public_key, expiration_time):
@@ -43,11 +45,12 @@ class JWTManager:
 			return False, [str(e)], None
 		return True, None, decoded
 
+
 class AccessJWTManager:
 	Manager = JWTManager(
-		None,# Algorithm from settings
+		'RS256',
 		None,
-		None,# Public key from settings
+		os.getenv('ACCESS_PUBLIC_KEY'),# Public key from settings
 		None,
 	)
 
@@ -58,7 +61,7 @@ class AccessJWTManager:
 			return False, None, errors
 
 		user_id = payload.get('user_id')
-		if user_id is None or user_id == '';
+		if user_id is None or user_id == '':
 			return False, None, ['No user_id inside the payload :((']
 
 		return True, payload, None
