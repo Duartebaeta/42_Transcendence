@@ -5,13 +5,13 @@ from datetime import datetime, timedelta
 from typing import Tuple, Union, List, Dict
 
 class JWTManager:
-	def __init__(self, algorithm: str, private_key: str, public_key: str, expiration_time: int):
+	def __init__(self, algorithm, private_key, public_key, expiration_time):
 		self.algorithm = algorithm
 		self.private_key = private_key
 		self.public_key = public_key
 		self.expiration_time = expiration_time
 
-	def encode_token(self, data: dict) -> Tuple[bool, Union[List[str], None], Union[str, None]]:
+	def encode_token(self, data):
 		now = datetime.now()
 		expiration_time = now + timedelta(minutes=self.expiration_time)
 
@@ -30,7 +30,7 @@ class JWTManager:
 			return False, [str(e)], None
 		return True, None, token
 
-	def decode_token(self, token: str) -> Tuple[bool, Union[List[str], None], Union[Dict, None]]:
+	def decode_token(self, token):
 		try:
 			decoded = jwt.decode(
 					token,
@@ -52,7 +52,7 @@ class AccessJWTManager:
 	)
 
 	@staticmethod
-	def authenticate(token: str) -> Tuple[bool, Union[dict, None], Union[List[str], None]]:
+	def authenticate(token):
 		valid, payload, errors = AccessJWTManager.Manager.decode_token(token)
 		if not valid:
 			return False, None, errors
