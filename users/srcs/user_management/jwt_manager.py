@@ -48,5 +48,24 @@ class UserAccessJWTManager:
 		'RS256',
 		settings.PRIVATE_ACCESS_KEY,
 		None,
-
+		settings.ACCESS_KEY_EXPIRATION_TIME
 	)
+
+	@staticmethod
+	def generate_token(user_id):
+		if not valid_user_id(user_id):
+			return False, None, ['Invalid user_id, big no no']
+		return UserAccessJWTManager.Manager.encode_token({'user_id': user_id, 'token_type': 'access'})
+
+	@staticmethod
+	def authenticate(jwt_token):
+		is_valid , payload, errors = AccessJWTManager.authenticate(jwt_token)
+
+		if not is_valid:
+			return False, None, errors
+		user_id = payload.get('user_id')
+		if user_id is None or user_id == '':
+			return False, None, ['We searched the payload and no user_id was found wtff']
+		if not valid_user_id(user_id):
+			return False, None, ['Invalid user_id']
+		return True, user_id, None

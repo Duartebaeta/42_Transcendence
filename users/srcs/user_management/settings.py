@@ -48,6 +48,7 @@ PRIVATE_ACCESS_KEY = os.getenv('PRIVATE_ACCESS_KEY')
 
 
 REFRESH_KEY_EXPIRATION_TIME = 44640 # 60 (minutes) * 24 (hours) * 31 (days)
+ACCESS_KEY_EXPIRATION_TIME = 10 # 10 minutes
 
 ACTIVATE_ACCOUNT_URL = 'https://localhost:8000/account/active'
 
