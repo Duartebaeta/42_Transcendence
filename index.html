@@ -84,25 +84,33 @@
 						<button id="remoteModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Remote vs</button>
 						<!-- Tournaments Mode -->
 						<button id="tournamentModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Tournaments</button>
-						<!-- Tounament Display Name Selection Panel -->
-						<form id="tournamentDisplayNameee" class="d-none">
+						<!-- Tounament Info Panel -->
+						<form id="tournamentPlayerInfo" class="d-none">
+							<!-- Display Name -->
 							<div class="my-4">
 								<input type="text" class="form-control text-center" placeholder="Tournament Display Name" required>
+							</div>
+							<!-- Game Id -->
+							<div class="my-4">
+								<input type="text" class="form-control text-center" placeholder="Game Id" required>
 							</div>
 						</form>
 						<!-- Join And Create Game Button -->
 						<div class="my-3">
-							<button id="joinGameBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
-							<button id="createGameBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
+							<button id="joinRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
+							<button id="createRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
+						</div>
+						<div class="my-3">
+							<button id="joinTournamentBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Tournament</button>
+							<button id="createTournamentBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" formnovalidate style="background-color: rgb(238, 130, 238)">Create Tournament</button>
 						</div>
 					</div>
 				</div>
 
 				<!-- Tournament Waiting Room -->
-				<div class="text-center d-none waiting-room">
+				<div class="text-center">
 					<h1 class="text-light mb-5">Waiting For Players (4/6)</h1>
 					<div class="row">
-						<h2 class="mb-5">Lobby</h5>
 						<div class="col-6">
 							<p id="player1" class="text-light">player name 1</p>
 							<p class="text-light">player name 2</p>
@@ -113,11 +121,15 @@
 							<p class="text-light">...</p>
 							<p class="text-light">...</p>	
 						</div>
+						<h5 class="mt-5 d-flex justify-content-center text-light">
+							<p class="text-light" >Game Id:</p>
+							<p id="tournamentGameId" class="text-light">123456789</p>
+						</h5>
 					</div>
 				</div>
 
 				<!-- Tournament Brackets -->
-				<div class="container text-center d-none">
+				<div class="container text-center d-none d-none">
 					<div class="row">
 						<div class="col-3 text-light">
 							<h3>Round 1</h3>
