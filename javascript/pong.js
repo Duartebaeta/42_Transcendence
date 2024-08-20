@@ -17,7 +17,7 @@ var DIRECTION = {
 	RIGHT: "RIGHT",
 };
 
-var BACKEND_IP = "172.20.10.3"
+var BACKEND_IP = "192.168.68.66"
 var PORT = "8000"
 
 function startGame(event) {

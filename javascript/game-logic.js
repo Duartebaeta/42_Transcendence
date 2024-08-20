@@ -4,7 +4,6 @@ import { startLocal } from "./local.js";
 import { startTournament } from "./tournament.js";
 
 document.addEventListener('DOMContentLoaded', function () {
-	console.log('DOM loaded');
 	document.getElementById('aiModeBtn').addEventListener('click', startSinglePlayer);
 	document.getElementById('localModeBtn').addEventListener('click', startLocal);
 	document.getElementById('remoteModeBtn').addEventListener('click', startGame);
@@ -45,7 +44,7 @@ function getCookie(name) {
 }
 
 function joinTournament(displayName, tournamentID, csrftoken) {
-	fetch(`http://172.20.10.3:8000/api/tournament/${tournamentID}`)
+	fetch(`http://192.168.68.66:8000/api/tournament/${tournamentID}`)
 		.then(response => {
 			if (response.ok) {
 				startTournament(displayName, tournamentID);
@@ -60,7 +59,7 @@ function joinTournament(displayName, tournamentID, csrftoken) {
 
 function createTournament(csrftoken) {
 	console.log('token: ', csrftoken);
-	fetch('http://172.20.10.3:8000/api/tournament/create/', {
+	fetch('http://192.168.68.66:8000/api/tournament/create/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
