@@ -9,6 +9,8 @@ var Pong;
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
 
+const BASE_SPEED = 0.01;
+
 var DIRECTION = {
 	IDLE: "IDLE",
 	UP: "UP",
@@ -83,7 +85,7 @@ var Ball = {
 			y: this.canvas.height / 2 - 9,
 			moveX: DIRECTION.LEFT,
 			moveY: DIRECTION.DOWN,
-			speed: 8,
+			speed: this.canvas.width * BASE_SPEED,
 		};
 	},
 };
@@ -98,7 +100,7 @@ var Paddle = {
 			y: this.canvas.height / 2 - 35,
 			score: 0,
 			move: DIRECTION.IDLE,
-			speed: 8,
+			speed: this.canvas.height * BASE_SPEED,
 		};
 	},
 };
@@ -188,7 +190,6 @@ var Game = {
 		this.ai = Paddle.new.call(this, opponent);
 		this.ball = Ball.new.call(this);
 
-		this.ai.speed = 8;
 		this.running = this.over = false;
 		this.turn = this.ai;
 		this.timer = this.round = 0;

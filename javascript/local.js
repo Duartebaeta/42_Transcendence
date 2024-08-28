@@ -7,11 +7,13 @@ const DIRECTION = {
 	RIGHT: 4
 };
 
+const BASE_SPEED = 0.015;
+
 const rounds = [7];
 const colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
 
 const Ball = {
-	new: function (incrementedSpeed) {
+	new: function () {
 		return {
 			width: 18,
 			height: 18,
@@ -19,7 +21,7 @@ const Ball = {
 			y: (this.canvas.height / 2) - 9,
 			moveX: DIRECTION.IDLE,
 			moveY: DIRECTION.IDLE,
-			speed: incrementedSpeed || 7
+			speed: this.canvas.width * BASE_SPEED
 		};
 	}
 };
@@ -33,7 +35,7 @@ const Ai = {
 			y: (this.canvas.height / 2) - 35,
 			score: 0,
 			move: DIRECTION.IDLE,
-			speed: 8
+			speed: this.canvas.height * BASE_SPEED
 		};
 	}
 };
@@ -137,9 +139,9 @@ const Game = {
 			} else {
 				this.color = this._generateRoundColor();
 				this.player.score = this.ai.score = 0;
-				this.player.speed += 0.5;
-				this.ai.speed += 1;
-				this.ball.speed += 1;
+				// this.player.speed += 0.5;
+				// this.ai.speed += 1;
+				// this.ball.speed += 1;
 				this.round += 1;
 			}
 		} else if (this.ai.score === rounds[this.round]) {
