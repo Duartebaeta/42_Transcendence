@@ -9,9 +9,13 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 
+from dotenv import load_dotenv
 from pathlib import Path
 from decouple import config
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# User, email and password verification rules
 USERNAME_MIN_LENGTH = 3
 USERNAME_MAX_LENGTH = 20
 EMAIL_MAX_LENGTH = 382
@@ -37,6 +42,14 @@ EMAIL_TOP_LEVEL_DOMAIN_MAX_LENGTH = 63
 EMAIL_VERIFICATION_TOKEN_MAX_LENGTH = 100
 PASSWORD_MIN_LENGTH = 8
 PASSWORD_MAX_LENGTH = 50
+
+# Passwords and secret keys!!! please load from  a env
+REFRESH_KEY = os.getenv('SECRET_REFRESH_KEY')
+PRIVATE_ACCESS_KEY = os.getenv('PRIVATE_ACCESS_KEY')
+
+
+REFRESH_KEY_EXPIRATION_TIME = 44640 # 60 (minutes) * 24 (hours) * 31 (days)
+ACCESS_KEY_EXPIRATION_TIME = 10 # 10 minutes
 
 ACTIVATE_ACCOUNT_URL = 'https://localhost:8000/account/active'
 

@@ -1,4 +1,7 @@
+myenv/
 .env
 venv/
 **/__pycache__/*
 Taskfile.yml
+private_key.pem
+public_key.pem
