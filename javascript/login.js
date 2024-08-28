@@ -29,30 +29,34 @@ document.addEventListener('DOMContentLoaded', function() {
 		};
 
 		// Send the request using Fetch API
-		fetch("login-check.json", request, {
-			method: 'GET',
-			credentials: 'include' // Store cookies
-		})
+		fetch("login-check.json", request)	
 		.then(function(response) {
-			//  Check if response status is OK (optional)
 			if (response.ok) {
-				// If response status is 200 OK, hide the modal
+				// Successfully Received Tokens
+				const accessToken = data.access_token;
+				const refreshToken = data.refresh_token;
+	
+				// Store Tokens (Local Storage)
+				localStorage.setItem('accessToken', accessToken);
+				localStorage.setItem('refreshToken', refreshToken);
+
+				// Hide Login Modal
 				var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
 				myModal.hide();
 			}
 			else {
-				// If response status is not OK, show error message
+				// If Response Status is Not OK, Show Error Message
 				response.json().then(function(data) {
 						var firstErrorMessage = data.errors[0];
 
 						document.getElementById('loginErrorMessage').innerText = firstErrorMessage;
 						document.getElementById('loginErrorMessage').style.display = 'block';
 				})
-				.catch(function(error) {
-					// Handle errors
-					console.error('Error:', error);
-				});
 			}
+		})
+		.catch(function(error) {
+			// Handle errors
+			console.error('Error:', error);
 		});
 	});
 });
@@ -71,4 +75,3 @@ document.addEventListener("DOMContentLoaded", function() {
 			passwordInput.setAttribute('type', 'password');
 	})	
 });
-
