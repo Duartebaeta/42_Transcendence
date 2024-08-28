@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			method: 'GET',
 			url: '',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + accessToken
 			}
 		}
 		
