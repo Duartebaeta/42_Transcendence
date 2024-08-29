@@ -9,6 +9,8 @@ var Pong;
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
 
+const BASE_SPEED = 0.01;
+
 var DIRECTION = {
 	IDLE: "IDLE",
 	UP: "UP",
@@ -22,8 +24,10 @@ var PORT = "8000"
 
 function startGame(event) {
 	event.preventDefault();
-	username = event.target.elements.username.value;
-	gameId = event.target.elements.gameID.value;
+	const generateRandomString = length => 
+		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
+	username = generateRandomString(10);
+	gameId = 123;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
@@ -31,8 +35,8 @@ function startGame(event) {
 	socket.onopen = function(e) {
 		console.log("[open] Connection established");
 		isSocketConnected = true; // Mark the socket as connected
-		game_container.classList.remove('hidden');
-		game_menu.classList.add('hidden');
+		game_container.classList.remove('d-none');
+		game_menu.classList.add('d-none');
 
 		// Initialize and start the game here
 		Pong = Object.assign({}, Game);
@@ -50,7 +54,6 @@ function startGame(event) {
 			Pong.initialize();
 			console.log("Assigned side:", Pong.side);
 		} else if (gameState.type === "direction_change") {
-			console.log("Direction change message captured")
 			SockIn.direction_change(gameState);
 		} else if (gameState.type === "game_over") {
 			SockIn.gameEnd(Pong, gameState.winner);
@@ -82,7 +85,7 @@ var Ball = {
 			y: this.canvas.height / 2 - 9,
 			moveX: DIRECTION.LEFT,
 			moveY: DIRECTION.DOWN,
-			speed: 8,
+			speed: this.canvas.width * BASE_SPEED,
 		};
 	},
 };
@@ -97,7 +100,7 @@ var Paddle = {
 			y: this.canvas.height / 2 - 35,
 			score: 0,
 			move: DIRECTION.IDLE,
-			speed: 8,
+			speed: this.canvas.height * BASE_SPEED,
 		};
 	},
 };
@@ -117,7 +120,7 @@ const SockIn = {
 		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
-		idle_check = Pong.ai.move == DIRECTION.IDLE;
+		let idle_check = Pong.ai.move == DIRECTION.IDLE;
 		if (Pong.side == "left") {
 			Pong.player.move = gameState.left;
 			Pong.ai.move = gameState.right;
@@ -157,7 +160,6 @@ const SockOut = {
 		}
 	},
 	toggleMove: function (direction, position) {
-		console.log("Toggling move...", Pong.side, direction, position)
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
 				type: "move",
@@ -188,7 +190,6 @@ var Game = {
 		this.ai = Paddle.new.call(this, opponent);
 		this.ball = Ball.new.call(this);
 
-		this.ai.speed = 8;
 		this.running = this.over = false;
 		this.turn = this.ai;
 		this.timer = this.round = 0;
@@ -273,11 +274,10 @@ var Game = {
 				this.player.y = this.canvas.height - this.player.height;
 			// Same for the AI
 			if (this.ai.y <= 0) this.ai.y = 0;
-			else if (this.ai.y >= this.canvas.height - this.ai.height)
+			else if (this.ai.y >= this.canvas.height - this.ai.height) 
 				this.ai.y = this.canvas.height - this.ai.height;
 		}
 	},
-
 	backendUpdate: function(gameState) {
 		Pong.ball.x = gameState.ball_x;
 		Pong.ball.y = gameState.ball_y;
@@ -297,21 +297,21 @@ var Game = {
 		
 		Pong.draw();
 	},
-
+	
 	// Draw the objects to the canvas element
 	draw: function () {
 		// Clear the Canvas
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+	
 		// Set the fill style to black
 		this.context.fillStyle = this.color;
-
+	
 		// Draw the background
 		this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+	
 		// Set the fill style to white (For the paddles and the ball)
 		this.context.fillStyle = "#ffffff";
-
+	
 		// Draw the Player
 		this.context.fillRect(
 			this.player.x,
@@ -319,7 +319,7 @@ var Game = {
 			this.player.width,
 			this.player.height
 		);
-
+	
 		// Draw the Ai
 		this.context.fillRect(
 			this.ai.x,
@@ -327,7 +327,7 @@ var Game = {
 			this.ai.width,
 			this.ai.height
 		);
-
+	
 		// Draw the Ball
 		if (Pong._turnDelayIsOver.call(this)) {
 			this.context.fillRect(
@@ -337,9 +337,9 @@ var Game = {
 				this.ball.height
 			);
 		}
-
+	
 		this.context.fillStyle = "#ffffff";
-
+	
 		// Draw the net (Line in the middle)
 		this.context.beginPath();
 		this.context.setLineDash([7, 15]);
@@ -348,14 +348,14 @@ var Game = {
 		this.context.lineWidth = 10;
 		this.context.strokeStyle = "#ffffff";
 		this.context.stroke();
-
+	
 		// Set the default canvas font and align it to the center
 		this.context.font = "100px Courier New";
 		this.context.textAlign = "center";
-
+	
 		let leftScore;
 		let rightScore;
-
+	
 		if (this.side == "left") {
 			leftScore = this.player.score;
 			rightScore = this.ai.score;
@@ -363,43 +363,43 @@ var Game = {
 			leftScore = this.ai.score;
 			rightScore = this.player.score;
 		}
-
+	
 		// Draw the players score (left)
 		this.context.fillText(
 			leftScore.toString(),
 			this.canvas.width / 2 - 300,
 			200
 		);
-
+	
 		// Draw the paddles score (right)
 		this.context.fillText(
 			rightScore.toString(),
 			this.canvas.width / 2 + 300,
 			200
 		);
-
+	
 		// Change the font size for the center score text
 		this.context.font = "30px Courier New";
-
+	
 		// Draw the winning score (center)
 		this.context.fillText(
 			"Round " + (Pong.round + 1),
 			this.canvas.width / 2,
 			35
 		);
-
+	
 		// Change the font size for the center score value
 		this.context.font = "40px Courier";
 	},
-
+	
 	loop: function () {
 		Pong.update();
 		Pong.draw();
-
+	
 		// If the game is not over, draw the next frame.
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
 	},
-
+	
 	listen: function () {
 		document.addEventListener("keydown", function (key) {
 			// Handle up arrow and w key events
@@ -418,66 +418,24 @@ var Game = {
 				}
 			}
 		});
-
+	
 		// Stop the player from moving when there are no keys being pressed.
 		document.addEventListener("keyup", function (key) {
 			Pong.player.move = DIRECTION.IDLE;
 			SockOut.toggleMove(DIRECTION.IDLE, Pong.player.y);
 		});
 	},
-
-	// // Reset the ball location, the player turns and set a delay before the next round begins.
-	// _resetTurn: function (victor, loser) {
-	//     this.ball = Ball.new.call(this, this.ball.speed);
-	//     this.turn = loser;
-	//     this.timer = new Date().getTime();
-	//     this.color = colors[color_increment++];
-
-	//     if (color_increment >= colors.length) color_increment = 0;
-	// },
-
+	
 	// Wait for a delay to have passed after each turn.
 	_turnDelayIsOver: function () {
 		return new Date().getTime() - this.timer >= 1000;
 	},
-
+	
 	// Select a random color as the background of each level/round.
 	_generateRoundColor: function () {
 		var newColor = colors[Math.floor(Math.random() * colors.length)];
 		if (newColor === this.color) return Pong._generateRoundColor();
 		return newColor;
-	},
+	}
 };
-
-
-
-
-// // Handle ai (AI) UP and DOWN movement
-// if (this.ai.y > this.ball.y - this.ai.height / 2) {
-// 	if (this.ball.moveX === DIRECTION.RIGHT)
-// 		this.ai.y -= this.ai.speed / 1.5;
-// 	else this.ai.y -= this.ai.speed / 4;
-// }
-// if (this.ai.y < this.ball.y - this.ai.height / 2) {
-// 	if (this.ball.moveX === DIRECTION.RIGHT)
-// 		this.ai.y += this.ai.speed / 1.5;
-// 	else this.ai.y += this.ai.speed / 4;
-// }
-
-// // Handle ai (AI) wall collision
-// if (this.ai.y >= this.canvas.height - this.ai.height)
-// 	this.ai.y = this.canvas.height - this.ai.height;
-// else if (this.ai.y <= 0) this.ai.y = 0;
-// // Handle ai-ball collision
-// if (
-// 	this.ball.x - this.ball.width <= this.ai.x &&
-// 	this.ball.x >= this.ai.x - this.ai.width
-// ) {
-// 	if (
-// 		this.ball.y <= this.ai.y + this.ai.height &&
-// 		this.ball.y + this.ball.height >= this.ai.y
-// 	) {
-// 		this.ball.x = this.ai.x - this.ball.width;
-// 		this.ball.moveX = DIRECTION.LEFT;
-// 	}
-// }
+export { startGame };

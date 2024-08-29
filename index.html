@@ -17,7 +17,7 @@
 	<script src="javascript/register.js" defer></script>
 	<script src="javascript/settings.js" defer></script>
 	<script src="javascript/match-history.js" defer></script>
-	<script src="javascript/pong.js" defer></script>
+	<script type="module" src="javascript/game-logic.js"></script>
 	<script src="javascript/game-ui.js" defer></script>
 	<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
@@ -53,16 +53,12 @@
 			
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
-
 				<!-- JWT Test -->
 				<div>
 					<button id="jwt-test-btn">jwt test</button>
 				</div>
-				
-				
-				
 				<!-- Select Game Mode -->
-				<div class="game-menu text-center d-none">
+				<div class="game-menu text-center">
 					<h1 class="text-light mb-5">Start game</h1>
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
@@ -85,32 +81,32 @@
 							<div class="my-4">
 								<input type="text" class="form-control text-center" placeholder="Game Id" required>
 							</div>
+							<!-- Join And Create Game Button -->
+							<div class="my-3">
+								<button id="joinTournamentBtn" type="submit" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Tournament</button>
+								<button id="createTournamentBtn" type="submit" class="btn bg-gradient btn-block mb-2 d-none" formnovalidate style="background-color: rgb(238, 130, 238)">Create Tournament</button>
+							</div>
 						</form>
-						<!-- Join And Create Game Button -->
 						<div class="my-3">
 							<button id="joinRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
 							<button id="createRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
-						</div>
-						<div class="my-3">
-							<button id="joinTournamentBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Tournament</button>
-							<button id="createTournamentBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" formnovalidate style="background-color: rgb(238, 130, 238)">Create Tournament</button>
 						</div>
 					</div>
 				</div>
 
 				<!-- Tournament Waiting Room -->
-				<div class="text-center d-none">
+				<div class="text-center d-none waiting-room">
 					<h1 class="text-light mb-5">Waiting For Players (4/6)</h1>
 					<div class="row">
 						<div class="col-6">
-							<p class="text-light">player name 1</p>
-							<p class="text-light">player name 2</p>
-							<p class="text-light">player name 3</p>
+							<p class="participant_name text-light">player name 1</p>
+							<p class="participant_name text-light">player name 2</p>
+							<p class="participant_name text-light">player name 3</p>
 						</div>
 						<div class="col-6">
-							<p class="text-light">player name 4</p>
-							<p class="text-light">...</p>
-							<p class="text-light">...</p>	
+							<p class="participant_name text-light">player name 4</p>
+							<p class="participant_name text-light">...</p>
+							<p class="participant_name text-light">...</p>	
 						</div>
 						<h5 class="mt-5 d-flex justify-content-center text-light">
 							<p class="text-light" >Game Id:</p>
@@ -120,7 +116,7 @@
 				</div>
 
 				<!-- Tournament Brackets -->
-				<div class="container text-center d-none">
+				<div class="container text-center d-none d-none">
 					<div class="row">
 						<div class="col-3 text-light">
 							<h3>Round 1</h3>
@@ -179,17 +175,17 @@
 					</div>
 				</div>
 
-				<!-- <div class="game hidden">
+				<div class="game d-none">
 					<canvas></canvas>
 					<p>Control the left player by using up and down arrow keys</p>
-				</div> -->
+				</div>
 			</main>
 		</div>
 	</div>
 	
 
 	<!-- Login Modal -->
-	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="login-modalo" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">

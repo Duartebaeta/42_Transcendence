@@ -252,3 +252,45 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'right_score': event['right_score']
 		}))
 		# self.send_update()
+
+class TournamentConsumer(AsyncWebsocketConsumer):
+	# Store all tournaments in memory
+	tournaments = {}
+	print(f"Tournaments: {tournaments}")
+
+	async def connect(self):
+		#Accept all connections
+		await self.accept()
+
+	async def disconnect(self, close_code):
+		print(f"Disconnected from tournament with {close_code}")
+
+	async def receive(self, text_data):
+		data = json.loads(text_data)
+		message_type = data.get('type')
+
+		if message_type == 'create_tournament':
+			# Create a new tournament with a unique ID
+			tournament_id = self.generate_tournament_id()
+			TournamentConsumer.tournaments[tournament_id] = {
+				'participants': []
+			}
+			await self.send(text_data=json.dumps({'type': 'tournament_created', 'displayName': data.get('displayName'), 'tournamentID': tournament_id}))
+			print(f"Tournament created with ID: {tournament_id}, {TournamentConsumer.tournaments}")
+
+		elif message_type == 'join_tournament':
+			# Handle joining the tournament
+			tournament_id = data.get('tournamentID')
+			if tournament_id in TournamentConsumer.tournaments:
+				display_name = data.get('displayName')
+				if display_name in TournamentConsumer.tournaments[tournament_id]['participants']:
+					await self.send(text_data=json.dumps({'type': 'duplicate_name', 'error': 'Display name already exists, please try another one'}))
+					return
+				await self.send(text_data=json.dumps({'type': 'tournament_joined', 'displayName': display_name, 'tournamentID': tournament_id}))
+			else:
+				await self.send(text_data=json.dumps({'type': 'tournament_error', 'error': 'Tournament not found'}))
+
+	def generate_tournament_id(self):
+		# Generate a unique ID for the tournament
+		import uuid
+		return str(uuid.uuid4())[:8]  # Example: use first 8 characters of a UUID
