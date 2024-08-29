@@ -53,23 +53,10 @@
 			
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
-				<!-- Temporary Tournament Selector For Testing -->
-				<div class="tournament-selector d-none text-center">
-					<form id="tournamentForm" class="d-block">
-						{% csrf_token %}
-						<div class="my-4">
-							<input type="text" class="form-control text-center" placeholder="Tournament Display Name" id="tournamentDisplayName" required>
-							<input type="number" class="form-control text-center" placeholder="Game ID" id="tournamentID" required>
-						</div>
-						<div class="my-3">
-							<button id="joinTournamentBtnTesting" type="submit" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Join Tournament</button>
-							<button id="createTournamentBtnTesting" type="submit" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Create Tournament</button>
-						</div>
-					</form>
+				<!-- JWT Test -->
+				<div>
+					<button id="jwt-test-btn">jwt test</button>
 				</div>
-
-				
-
 				<!-- Select Game Mode -->
 				<div class="game-menu text-center">
 					<h1 class="text-light mb-5">Start game</h1>
