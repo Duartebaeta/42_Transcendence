@@ -1,6 +1,4 @@
-var BACKEND_IP = "192.168.68.61"
-var PORT = "8000"
-
+import { BACKEND_IP, PORT } from "./game-logic.js";
 
 function startTournament(displayName, tournamentID) {
 	console.log('Starting tournament:', tournamentID, 'as', displayName);

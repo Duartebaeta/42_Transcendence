@@ -1,5 +1,7 @@
 // BACKEND CONECTION CODE
 // Global Variables
+import { BACKEND_IP, PORT } from "./game-logic.js";
+
 let gameId = "";
 let username;
 let socket;
@@ -18,9 +20,6 @@ var DIRECTION = {
 	LEFT: "LEFT",
 	RIGHT: "RIGHT",
 };
-
-var BACKEND_IP = "10.19.249.137"
-var PORT = "8000"
 
 function startGame(event) {
 	event.preventDefault();

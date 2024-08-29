@@ -4,10 +4,12 @@ import { startLocal } from "./local.js";
 import { startTournament } from "./tournament.js";
 
 let socket;
-let BACKEND_IP = "192.168.68.61"
+let BACKEND_IP = "10.19.249.137"
 let PORT = "8000"
 
 document.addEventListener('DOMContentLoaded', function () {
+	console.log(BACKEND_IP);
+
 	document.getElementById('aiModeBtn').addEventListener('click', startSinglePlayer);
 	document.getElementById('localModeBtn').addEventListener('click', startLocal);
 	document.getElementById('remoteModeBtn').addEventListener('click', startGame);
@@ -79,3 +81,5 @@ function createTournament(displayName) {
 	};
 	socket.send(JSON.stringify(message));
 }
+
+export { BACKEND_IP, PORT };
