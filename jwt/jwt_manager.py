@@ -29,8 +29,8 @@ class JWTManager:
 					algorithm=self.algorithm
 			)
 		except Exception as e:
-			return False, [str(e)], None
-		return True, None, token
+			return False, None, [str(e)]
+		return True, token, None
 
 	def decode_token(self, token):
 		try:
@@ -42,8 +42,8 @@ class JWTManager:
 			if decoded.get('exp') is None:
 				return False, ['No expiration time found'], None
 		except Exception as e:
-			return False, [str(e)], None
-		return True, None, decoded
+			return False, None, [str(e)]
+		return True, decoded, None
 
 
 class AccessJWTManager:
