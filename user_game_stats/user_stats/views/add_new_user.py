@@ -22,5 +22,20 @@ class AddNewUser(View):
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
 
+		if user_id is None or user_id == '':
+			return JsonResponse(status=400, data={'errors': ['No user_id was given']})
 		if username is None or username == '':
-			return JsonResponse(status=400, data={'errors': []})
+			return JsonResponse(status=400, data={'errors': ['No username was given']})
+		if not isinstance(user_id, int) or user_id < 0:
+			return JsonResponse(status=400, data={'errors': ['Given user_id is not valid']})
+
+		if User.objects.filter(id=user_id).exists():
+			return JsonResponse(status=400, data=['errors': ['User already exists with the same user_id']])
+
+		user = User.objects.create(id=user_id)
+		user.username = username
+		try:
+			user.save()
+		except Exception as e:
+			return JsonResponse(status=400, data={'errors': [e]})
+		return JsonResponse(status=201)
