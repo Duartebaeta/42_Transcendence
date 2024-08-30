@@ -9,9 +9,9 @@ from django.views import View
 from user_stats.models import User, Match
 
 @method_decorator(csrf_exempt, name='dispatch')
-class UserStats(View):
+class AddNewUser(View):
 	@csrf_exempt
-	def get(self, request):
+	def post(self, request):
 		try:
 			json_request = json.loads(request.body.decode('utf-8'))
 		except UnicodeDecodeError:
@@ -19,9 +19,8 @@ class UserStats(View):
 		except json.JSONDecodeError:
 			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 
+		user_id = json_request.get('user_id')
 		username = json_request.get('username')
+
 		if username is None or username == '':
-			return JsonResponse(status=400, data={'errors': ['No username was given, how am i suppose to give you their stats']})
-		try:
-			user = User.objects.get(username=username)
-		x
+			return JsonResponse(status=400, data={'errors': []})
