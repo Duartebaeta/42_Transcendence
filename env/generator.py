@@ -22,7 +22,7 @@ def write_env_variable(key, value, file):
 	if value is None:
 		print(f'[ERROR] The key {key} is missing or doesn\'t have a value in .env file')
 	fd = open(file, 'a')
-	variable = f'{key}={value}'
+	variable = f'{key}={value}\n'
 	fd.write(variable)
 
 
