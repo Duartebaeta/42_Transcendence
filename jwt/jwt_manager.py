@@ -25,7 +25,7 @@ class JWTManager:
 		try:
 			token = jwt.encode(
 					payload,
-					private_key=self.private_key,
+					self.private_key,
 					algorithm=self.algorithm
 			)
 		except Exception as e:
@@ -36,7 +36,7 @@ class JWTManager:
 		try:
 			decoded = jwt.decode(
 					token,
-					public_key=self.public_key,
+					self.public_key,
 					algorithms=[self.algorithm]
 			)
 			if decoded.get('exp') is None:
