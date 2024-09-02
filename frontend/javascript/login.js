@@ -39,15 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		})
 		.then(function(data) {
-			// data now contains the parsed JSON
-			console.log(data); // Log the JSON data
-			
 			const accessToken = data.access_token;
 			const refreshToken = data.refresh_token;
 
 			// Store Tokens (Local Storage)
-			localStorage.setItem('accessToken', accessToken);
-			localStorage.setItem('refreshToken', refreshToken);
+			storeTokens(accessToken, refreshToken);
 
 			// Hide Login Modal
 			var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));

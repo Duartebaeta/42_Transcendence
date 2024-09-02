@@ -13,14 +13,13 @@ document.addEventListener("DOMContentLoaded", function() {
 				const losses = data.losses;
 				const tournamentWins = data.tournamentWins;	
 				const points = data.points;
-				const graph = data.graph;
 
 				// Update HTML content
 				document.getElementById('gamesPlayed').innerText = gamesPlayed;
 				document.getElementById('wins').innerText = wins;
 				document.getElementById('losses').innerText = losses;
 				document.getElementById('tournamentWins').innerText = tournamentWins;
-				drawGraph(graph); // Draw points graph
+				drawGraph(points); // Draw points graph
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error);
