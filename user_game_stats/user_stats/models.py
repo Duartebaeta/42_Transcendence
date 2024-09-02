@@ -15,3 +15,4 @@ class Match(models.Model):
 	won = models.BooleanField(null=True)
 	player_score = models.IntegerField(null=True)
 	opponent_score = models.IntegerField(null=True)
+	time = models.DateTimeField(null=True)
