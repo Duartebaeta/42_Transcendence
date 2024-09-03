@@ -41,14 +41,14 @@ class SignUp(View):
 			return JsonResponse(status=400,
 					   	data={'errors': [f'It occurred an error while creating the user: {e}']})
 
-		try:
-			send_verification_email(request, user)
-		except Exception as e:
-			user.delete()
-			return JsonResponse(
-				status=400,
-				data={'errors': [f'Occurred an error while trying to send a verification email : {e}']}
-				)
+		# try:
+		# 	send_verification_email(request, user)
+		# except Exception as e:
+		# 	user.delete()
+		# 	return JsonResponse(
+		# 		status=400,
+		# 		data={'errors': [f'Occurred an error while trying to send a verification email : {e}']}
+		# 		)
 		return JsonResponse(status=201, data={'message': 'Account created'})
 
 	@staticmethod

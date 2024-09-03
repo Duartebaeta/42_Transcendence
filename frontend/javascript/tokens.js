@@ -47,10 +47,11 @@ async function authenticatedRequest(url, options = {}) {
 
     // Add the access token to the request headers
     options.headers = {
-        ...options.headers,
+        ...options.headers, // Combine previous header with current (spread syntax)
         'Authorization': `Bearer ${accessToken}`
     };
 
+	console.log(options);
     let response = await fetch(url, options);
 
     // If the access token has expired, refresh it and retry the request
