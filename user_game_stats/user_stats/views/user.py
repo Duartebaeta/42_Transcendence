@@ -37,7 +37,7 @@ class User(View):
 		try:
 			user.save()
 		except Exception as e:
-			return JsonResponse(status=400, data={'errors': [e]})
+			return JsonResponse(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=201)
 
 	@csrf_exempt
@@ -88,7 +88,8 @@ class User(View):
 		try:
 			user.save(update_fields=['wins', 'losses'])
 		except Exception as e:
-			return Json(status=400, data={'errors': [e]})
+			return Json(status=400, data={'errors': [str(e)]})
+		return JsonResponse(status=200)
 
 	@static_method
 	def update_user_stats(user, stats):
