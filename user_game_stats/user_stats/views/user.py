@@ -65,8 +65,47 @@ class User(View):
 			'tournamentWins': user.tournament_wins,
 			'points': last_matches_points,
 		}
-
 		return JsonResponse(status=200, data)
+
+	@csrf_exempt
+	def patch(request):
+		try:
+			json_request = json.loads(request.body.decode('utf-8'))
+		except UnicodeDecodeError:
+			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
+		except json.JSONDecodeError:
+			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+
+		username = json_request.get('username')
+		if username is None or username == '':
+			return JsonResponse(status=400, data={'errors': ['No such username was given (what the hell)']})
+		user = User.objects.filter(username=username).first()
+		if user is None:
+			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
+		success, errors = update_user_stats(user, json_request)
+		if not success:
+			return JsonResponse(status=400, data={'errors': [errors]})
+		try:
+			user.save(update_fields=['wins', 'losses'])
+		except Exception as e:
+			return Json(status=400, data={'errors': [e]})
+
+	@static_method
+	def update_user_stats(user, stats):
+		# For now only updatable field is game lost or won
+		won = stats.get('won')
+
+		if won is None or won == '':
+			return False, 'No information about who won the match'
+		if not isinstance(won, bool):
+			return False, 'Information of who won is not a bool'
+		if won:
+			user.wins += 1
+		else:
+			user.losses += 1
+		return True, None
+
+
 
 	@static_method
 	def get_last_five_matches(user_id):
