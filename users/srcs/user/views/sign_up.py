@@ -39,7 +39,7 @@ class SignUp(View):
 										password = make_password(json_request['password']))
 		except Exception as e:
 			return JsonResponse(status=400,
-					   	data={'errors': [f'It occurred an error while creating the user: {e}']})
+					   	data={'errors': [f'It occurred an error while creating the user: {str(e)}']})
 
 		try:
 			send_verification_email(request, user)
@@ -47,7 +47,7 @@ class SignUp(View):
 			user.delete()
 			return JsonResponse(
 				status=400,
-				data={'errors': [f'Occurred an error while trying to send a verification email : {e}']}
+				data={'errors': [f'Occurred an error while trying to send a verification email : {str(e)}']}
 				)
 		return JsonResponse(status=201, data={'message': 'Account created'})
 
