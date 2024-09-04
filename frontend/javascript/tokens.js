@@ -19,12 +19,12 @@ async function refreshAccessToken() {
     const refreshToken = getRefreshToken();
     if (!refreshToken) throw new Error("No refresh token available");
 
-    const response = await fetch(REFRESH_TOKEN_URL, {
+    const response = await fetch('http://127.0.0.1:8000/user/refresh_jwt', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ refreshToken })
+        body: JSON.stringify(refreshToken)
     });
 
     if (!response.ok) {
@@ -55,13 +55,14 @@ async function authenticatedRequest(url, options = {}) {
     let response = await fetch(url, options);
 
     // If the access token has expired, refresh it and retry the request
-    if (response.status === 401) {
+    if (response.status == 401) {
         try {
             accessToken = await refreshAccessToken();
             // Retry the original request with the new access token
             options.headers['Authorization'] = `Bearer ${accessToken}`;
             response = await fetch(url, options);
-        } catch (error) {
+        }
+		catch (error) {
             // Handle the error (e.g., log out the user)
             console.error("Failed to refresh token", error);
         }
