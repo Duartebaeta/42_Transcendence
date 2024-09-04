@@ -67,6 +67,7 @@ class User(View):
 		}
 		return JsonResponse(status=200, data)
 
+	#Might not use because post of match updates users either way
 	@csrf_exempt
 	def patch(request):
 		try:

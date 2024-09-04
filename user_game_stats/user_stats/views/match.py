@@ -56,8 +56,16 @@ class Match(View):
 				opponent_score=player_score,
 				#time
 			)
+			if won:
+				player.wins += 1
+				opponent.losses += 1
+			else:
+				player.losses += 1
+				opponent.wins += 1
 			player_match.save()
 			opponent_match.save()
+			player.save()
+			opponent.save()
 		except Exception as e:
 			return JsonResponse(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=200)
