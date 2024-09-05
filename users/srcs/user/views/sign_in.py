@@ -11,7 +11,7 @@ from django.views import View
 from django.db.models import Model
 from user.models import User
 
-from user_management.jwt_manager import RefreshJWTManager
+from user_management.jwt_manager import RefreshJWTManager, UserAccessJWTManager
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SignIn(View):
@@ -38,7 +38,10 @@ class SignIn(View):
 		if not check_password(password=user_password, encoded=user.password):
 			return JsonResponse(status=400, data={'errors': ['Wrong password']})
 
-		success, jwt_token, errors = RefreshJWTManager.generate_token(user.id)
+		success, refresh_token, errors = RefreshJWTManager.generate_token(user.id)
 		if not success:
 			return JsonResponse(status=500, data={'errors': errors})
-		return JsonResponse(status=200, data={'refresh_token': jwt_token})
+		success, access_token, errors = UserAccessJWTManager.generate_token(user.id)
+		if not success:
+			return JsonResponse(status=500, data={'errors': errors})
+		return JsonResponse(status=200, data={'refresh_token': refresh_token, 'access_token': access_token})
