@@ -21,19 +21,20 @@ var DIRECTION = {
 	RIGHT: "RIGHT",
 };
 
-function startGame(event) {
-	event.preventDefault();
+function startGame(GAME_ID) {
+	console.log("Starting game.......");
+
 	const generateRandomString = length => 
 		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
-	username = generateRandomString(10);
-	gameId = 123;
+	username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
+	gameId = GAME_ID;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
 	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
 	socket.onopen = function(e) {
 		console.log("[open] Connection established");
-		isSocketConnected = true; // Mark the socket as connected
+		isSocketConnected = true;
 		game_container.classList.remove('d-none');
 		game_menu.classList.add('d-none');
 

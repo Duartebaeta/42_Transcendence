@@ -1,4 +1,5 @@
 import { BACKEND_IP, PORT } from "./game-logic.js";
+import { startGame } from "./pong.js";
 
 function startTournament(displayName, tournamentID) {
 	console.log('Starting tournament:', tournamentID, 'as', displayName);

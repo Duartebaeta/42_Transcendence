@@ -17,6 +17,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.close()
 			return
 
+		if self.game_id not in GameManager.games:
+			await self.send(text_data=json.dumps({'type': 'game_error', 'error': 'Game not found'}))
+			await self.close()
+			return
+
 		self.game = Game.get_game(self.game_id)
 		self.side = self.game.add_player(self.username, self.channel_name)
 		self.game_group_name = f'game_{self.game_id}'
@@ -27,6 +32,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		)
 
 		await self.accept()
+		GameManager.games[self.game_id]['participants'].append(self.username)
 		print(f"Player {self.username} connected to game {self.game_id}")
 
 		# Send the player their assigned side
@@ -43,6 +49,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.game_group_name,
 			self.channel_name
 		)
+
+		GameManager.games[self.game_id]['participants'].remove(self.username)
+		if not GameManager.games[self.game_id]['participants']:
+			del GameManager.games[self.game_id]
+
 		print(f"Player {self.username} disconnected from game {self.game_id}")
 
 	async def receive(self, text_data):
@@ -256,7 +267,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 class TournamentConsumer(AsyncWebsocketConsumer):
 	# Store all tournaments in memory
 	tournaments = {}
-	print(f"Tournaments: {tournaments}")
 
 	async def connect(self):
 		#Accept all connections
@@ -292,5 +302,41 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 	def generate_tournament_id(self):
 		# Generate a unique ID for the tournament
+		import uuid
+		return str(uuid.uuid4())[:8]  # Example: use first 8 characters of a UUID
+
+class GameManager(AsyncWebsocketConsumer):
+	games = {}
+
+	async def connect(self):
+		#Accept all connections
+		await self.accept()
+
+	async def disconnect(self, close_code):
+		print(f"Disconnected from game with {close_code}")
+
+	async def receive(self, text_data):
+		data = json.loads(text_data)
+		message_type = data.get('type')
+
+		if message_type == 'create_game':
+			# Create a new game with a unique ID
+			game_id = self.generate_game_id()
+			GameManager.games[game_id] = {
+				'participants': []
+			}
+			await self.send(text_data=json.dumps({'type': 'game_created', 'gameID': game_id}))
+			print(f"Game created with ID: {game_id}, {GameManager.games}")
+
+		elif message_type == 'join_game':
+			# Handle joining the game
+			game_id = data.get('gameID')
+			if game_id in GameManager.games:
+				await self.send(text_data=json.dumps({'type': 'game_joined', 'gameID': game_id}))
+			else:
+				await self.send(text_data=json.dumps({'type': 'game_error', 'error': 'Game not found'}))
+
+	def generate_game_id(self):
+		# Generate a unique ID for the game
 		import uuid
 		return str(uuid.uuid4())[:8]  # Example: use first 8 characters of a UUID

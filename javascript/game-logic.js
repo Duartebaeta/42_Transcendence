@@ -3,8 +3,9 @@ import { startGame } from "./pong.js";
 import { startLocal } from "./local.js";
 import { startTournament } from "./tournament.js";
 
-let socket;
-let BACKEND_IP = "10.19.249.137"
+let TournamentSocket;
+let RemoteSocket;
+let BACKEND_IP = "172.16.0.95"
 let PORT = "8000"
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -12,21 +13,54 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	document.getElementById('aiModeBtn').addEventListener('click', startSinglePlayer);
 	document.getElementById('localModeBtn').addEventListener('click', startLocal);
-	document.getElementById('remoteModeBtn').addEventListener('click', startGame);
+	document.getElementById('remotePlayerInfo').addEventListener('submit', function(event){
+		event.preventDefault();
 
-	// Establish WebSocket connection
-	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/`);
+		// Establish WebSocket connection for GameManager
+		RemoteSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
 
-	// Handle incoming messages from the backend
-	socket.onmessage = function(event) {
-		const data = JSON.parse(event.data);
-		handleWebSocketMessage(data);
-	};
+		RemoteSocket.onmessage = function(event) {
+			console.log('Received message:', event.data);
+			const data = JSON.parse(event.data);
+			handleWebSocketMessage(data);
+		};
+
+		let clickedButton = document.activeElement;
+		let gameID;
+
+		if (clickedButton.id === 'joinRemoteBtn') {
+			gameID = event.target.elements[0].value;
+			if (gameID === '') {
+				alert('Please enter a game ID');
+				return;
+			}
+			joinRemote(gameID);
+		} else if (clickedButton.id === 'createRemoteBtn') {
+			createRemote();
+		}
+	});
+
+	// // Establish WebSocket connection for TournamentManager
+	// TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/`);
+
+	// // Establish WebSocket connection for GameManager
+	// RemoteSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
+
 
 	let tournamentForm = document.getElementById('tournamentPlayerInfo');
 
 	tournamentForm.addEventListener('submit', function(event) {
 		event.preventDefault();
+
+		// Establish WebSocket connection for TournamentManager
+		TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/`);
+		// Handle incoming messages from the backend
+		TournamentSocket.onmessage = function(event) {
+			console.log('Received message:', event.data);
+			const data = JSON.parse(event.data);
+			handleWebSocketMessage(data);
+		};
+
 		console.log('Form submitted:', event.target);
 		let clickedButton = document.activeElement;
 		let tournamentId;
@@ -35,6 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (clickedButton.id === 'joinTournamentBtn') {
 			tournamentId = event.target.elements[1].value;
+			if (tournamentId === '') {
+				alert('Please enter a tournament ID');
+				return;
+			}
 			joinTournament(tournamentDisplayName, tournamentId);
 		} else if (clickedButton.id === 'createTournamentBtn') {
 			createTournament(tournamentDisplayName);
@@ -60,6 +98,14 @@ function handleWebSocketMessage(data) {
 		// Handle duplicate display name
 		console.error('Error:', data);
 		alert('Display name already taken. Please choose a different name.');
+	} else if (data.type === 'game_joined') {
+		// Handle successful game joining
+		console.log("Game joined:", data);
+		startGame(data.gameID);
+	} else if (data.type === 'game_created') {
+		// Handle successful game creation
+		console.log("Game created:", data);
+		startGame(data.gameID);
 	}
 }
 
@@ -70,7 +116,10 @@ function joinTournament(displayName, tournamentID) {
 		displayName: displayName,
 		tournamentID: tournamentID
 	};
-	socket.send(JSON.stringify(message));
+	TournamentSocket.onopen = function () {
+		console.log('Connected to TournamentManager');
+		TournamentSocket.send(JSON.stringify(message));
+	}
 }
 
 function createTournament(displayName) {
@@ -79,7 +128,33 @@ function createTournament(displayName) {
 		type: 'create_tournament',
 		displayName: displayName
 	};
-	socket.send(JSON.stringify(message));
+	TournamentSocket.onopen = function () {
+		console.log('Connected to TournamentManager');
+		TournamentSocket.send(JSON.stringify(message));
+	};
+}
+
+function joinRemote(gameID) {
+	console.log('Joining remote game:', gameID);
+	const message = {
+		type: 'join_game',
+		gameID: gameID
+	};
+	RemoteSocket.onopen = function () {
+		console.log('Connected to GameManager');
+		RemoteSocket.send(JSON.stringify(message));
+	};
+}
+
+function createRemote() {
+	console.log('Creating remote game');
+	const message = {
+		type: 'create_game'
+	};
+	RemoteSocket.onopen = function () {
+		console.log('Connected to GameManager');
+		RemoteSocket.send(JSON.stringify(message));
+	};
 }
 
 export { BACKEND_IP, PORT };

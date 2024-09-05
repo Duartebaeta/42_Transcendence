@@ -1,7 +1,10 @@
 # game.py
-
-class Game:
+class Game():
 	games = {}
+
+	@classmethod
+	def check_game_exists(cls, game_id):
+		return game_id in cls.games
 
 	@classmethod
 	def get_game(cls, game_id):
