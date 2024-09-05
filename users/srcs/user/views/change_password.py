@@ -11,13 +11,20 @@ from django.views import View
 from user.models import User
 from user_management.utils import is_valid_password
 
+from user_management.jwt_manager import UserAccessJWTManager
+
 @method_decorator(csrf_exempt, name='dispatch')
 class ChangePassword(View):
 	@csrf_exempt
 	def post(self, request):
-		# TODO: verify what user is with JWT and get the id
+		access_token = request.headers.get('Authorization').split(' ')[1]
+		if access_token is None:
+			return JsonResponse(status=400, data={'errors': ['No access token given']})
+		success, user_id, errors = UserAccessJWTManager.authenticate(access_token)
+		if not success:
+			return JsonResponse(status=401, data={'errors': errors})
+
 		try:
-			user_id = 1
 			json_request = json.loads(request.body.decode('utf-8'))
 			user = User.objects.get(id=user_id)
 		except UnicodeDecodeError:
@@ -30,12 +37,12 @@ class ChangePassword(View):
 
 		new_password = json_request['new_password']
 		if check_password(password=new_password, encoded=user.password):
-			return JsonResponse(status=400, data={'errors': ['New password must be different from the previous one.... are you okay?']}) 
-		
+			return JsonResponse(status=400, data={'errors': ['New password must be different from the previous one.... are you okay?']})
+
 		is_valid, error = is_valid_password(new_password)
 		if not is_valid:
 			return JsonResponse(status=400, data={f'errors': [error]})
-		
+
 		user.password = make_password(new_password)
 		user.save(update_fields=["password"])
 		return JsonResponse(status=200, data={'message': 'Password was updated! Nice job team'})
