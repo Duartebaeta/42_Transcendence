@@ -27,13 +27,13 @@ def write_env_variable(key, value, file):
 
 
 generate_rsa_keys()
-os.rename('public_key.pem', 'env/public_key.pem')
+os.rename('public_key.pem', 'shared/public_key.pem')
+os.rename('private_key.pem', 'shared/private_key.pem')
 
 # Shared
 write_env_variable('DEGUB', os.getenv('DEBUG'), SHARED_ENV)
 write_env_variable('ACCESS_PUBLIC_KEY', open('env/public_key.pem').read(), SHARED_ENV)
 
 # User Management
-os.rename('private_key.pem', 'users/srcs/private_key.pem')
 write_env_variable('SECRET_REFRESH_KEY', os.urandom(32).hex(), USERS_ENV)
 write_env_variable('PRIVATE_ACCESS_KEY', open('users/srcs/private_key.pem').read(), USERS_ENV)
