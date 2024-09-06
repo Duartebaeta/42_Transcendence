@@ -7,13 +7,26 @@ document.getElementById('avatarImg').addEventListener('change', function () {
 
 // Clear input fields
 document.addEventListener("DOMContentLoaded", function() {
-	const settingsBtn = document.getElementById('settingsBtn');
+	let password = document.getElementById('newPassword');
 
-	settingsBtn.addEventListener('click', function() {
-		var newUsername = document.getElementById('newUsername');
-		var newPassword = document.getElementById('newPassword');
+	password.addEventListener('submit', function(e) {
+		e.preventDefault();
+		let passwordInput = document.getElementById('newPasswordInput')
 
-		newUsername.value = '';
-		newPassword.value = '';
-	});
+		var request = {
+		    method: 'POST', // HTTP method
+		    url: 'http://127.0.0.1:8000/user/change-password/',
+		    headers: {
+		        'Content-Type': 'application/json',
+		    },
+			body: JSON.stringify({ // Convert data to JSON string
+		        new_password: passwordInput.value
+		    })
+		};
+
+		authenticatedRequest(request.url, request) // TODO: change endpoint url
+		.then(response => response.json())
+		.then(data => console.log(data))
+		.catch(error => console.error('Request failed', error));
+	})
 });
