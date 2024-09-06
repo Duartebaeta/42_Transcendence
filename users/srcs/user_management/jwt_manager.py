@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from user_management.jwt.jwt_manager import JWTManager, AccessJWTManager
+from shared.jwt_manager import JWTManager, AccessJWTManager
 
 from user.models import User
 
