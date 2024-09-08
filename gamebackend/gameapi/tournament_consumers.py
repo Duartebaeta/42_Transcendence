@@ -2,6 +2,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .consumers import TournamentConsumer
 import json
+from .consumers import GameManager
 
 class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
@@ -16,7 +17,12 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 
 		await self.accept()
 		TournamentConsumer.tournaments[self.tournament_id]['participants'].append(self.display_name)
+		
 		print(f"{self.display_name} connected to tournament {self.tournament_id}")
+		
+		if len(TournamentConsumer.tournaments[self.tournament_id]['participants']) == 4:
+			await self.matchmaking()
+	
 
 	async def disconnect(self, close_code):
 		# Remove user from the tournament participants
@@ -66,6 +72,24 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 			'type': 'get_participants',
 			'participants': participants
 	}))
+
+	async def matchmaking(self):
+		gameID_1 = GameManager.create_game()
+		gameID_2 = GameManager.create_game()
+		# Send the gameID to the players
+		await self.channel_layer.group_send(
+			self.group_name,
+			{
+				'type': 'tournament_message',
+				'message': {
+					'type': 'tournament_full',	
+					'matching_1': [TournamentConsumer.tournaments[self.tournament_id]['participants'][0], TournamentConsumer.tournaments[self.tournament_id]['participants'][1]],
+					'matching_2': [TournamentConsumer.tournaments[self.tournament_id]['participants'][2], TournamentConsumer.tournaments[self.tournament_id]['participants'][3]],
+					'gameID_1': gameID_1,
+					'gameID_2': gameID_2
+				}
+			}
+		)
 
 	async def tournament_message(self, event):
 		message = event['message']

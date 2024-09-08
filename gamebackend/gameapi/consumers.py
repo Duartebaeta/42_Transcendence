@@ -2,6 +2,7 @@
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+import uuid
 import asyncio
 from urllib.parse import parse_qs
 from .game import Game
@@ -33,6 +34,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 		await self.accept()
 		GameManager.games[self.game_id]['participants'].append(self.username)
+		GameManager.games[self.game_id][self.side] = self.username
 		print(f"Player {self.username} connected to game {self.game_id}")
 
 		# Send the player their assigned side
@@ -147,6 +149,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 	def schedule_update(self):
 		if self.game.game_over:
+			GameManager.game_over(self.game_id)
 			return
 		loop = asyncio.get_event_loop()
 		loop.call_later(0.01, lambda: asyncio.create_task(self.game_update()))
@@ -251,6 +254,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.schedule_update()
 
 	async def update_game_state(self, event):
+		GameManager.games[self.game_id]['game_state'] = event
 		await self.send(text_data=json.dumps({
 			'type': 'update',
 			'ball_x': event['ball_x'],
@@ -262,7 +266,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'left_score': event['left_score'],
 			'right_score': event['right_score']
 		}))
-		# self.send_update()
 
 class TournamentConsumer(AsyncWebsocketConsumer):
 	# Store all tournaments in memory
@@ -321,10 +324,7 @@ class GameManager(AsyncWebsocketConsumer):
 
 		if message_type == 'create_game':
 			# Create a new game with a unique ID
-			game_id = self.generate_game_id()
-			GameManager.games[game_id] = {
-				'participants': []
-			}
+			game_id = create_game()
 			await self.send(text_data=json.dumps({'type': 'game_created', 'gameID': game_id}))
 			print(f"Game created with ID: {game_id}, {GameManager.games}")
 
@@ -336,7 +336,16 @@ class GameManager(AsyncWebsocketConsumer):
 			else:
 				await self.send(text_data=json.dumps({'type': 'game_error', 'error': 'Game not found'}))
 
-	def generate_game_id(self):
-		# Generate a unique ID for the game
-		import uuid
-		return str(uuid.uuid4())[:8]  # Example: use first 8 characters of a UUID
+	def create_game():
+		# Create a new game with a unique ID
+		game_id = str(uuid.uuid4())[:8]
+		GameManager.games[game_id] = {
+			'participants': []
+		}
+		return game_id
+
+	@classmethod
+	async def game_over(cls, game_id):
+		await self.send(text_data=json.dumps({'type': 'game_over', 'gameID': game_id, 'info': cls.games[game_id]}))
+		del cls.games[game_id]
+		print(f"Game {game_id} ended")
