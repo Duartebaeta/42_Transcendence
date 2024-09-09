@@ -45,7 +45,7 @@ PASSWORD_MAX_LENGTH = 50
 
 # Passwords and secret keys!!! please load from  a env
 REFRESH_KEY = os.getenv('SECRET_REFRESH_KEY')
-PRIVATE_ACCESS_KEY = open('shared/private_key.pem')
+PRIVATE_ACCESS_KEY = open('shared/private_key.pem').read()
 
 
 REFRESH_KEY_EXPIRATION_TIME = 44640 # 60 (minutes) * 24 (hours) * 31 (days)
