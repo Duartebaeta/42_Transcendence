@@ -5,3 +5,7 @@ venv/
 Taskfile.yml
 private_key.pem
 public_key.pem
+db.sqlite3
+package-lock.json
+package.json
+server.js

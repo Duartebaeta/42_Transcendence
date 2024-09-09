@@ -13,7 +13,7 @@ import os
 
 from dotenv import load_dotenv
 from pathlib import Path
-from decouple import config
+# from decouple import config
 
 load_dotenv()
 
@@ -45,7 +45,7 @@ PASSWORD_MAX_LENGTH = 50
 
 # Passwords and secret keys!!! please load from  a env
 REFRESH_KEY = os.getenv('SECRET_REFRESH_KEY')
-PRIVATE_ACCESS_KEY = os.getenv('PRIVATE_ACCESS_KEY')
+PRIVATE_ACCESS_KEY = open('shared/private_key.pem')
 
 
 REFRESH_KEY_EXPIRATION_TIME = 44640 # 60 (minutes) * 24 (hours) * 31 (days)
@@ -158,9 +158,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configurations
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
-EMAIL_USE_TLS = True
+# EMAIL_HOST = config('EMAIL_HOST')
+# EMAIL_PORT = config('EMAIL_PORT', cast=int)
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+# EMAIL_USE_TLS = True

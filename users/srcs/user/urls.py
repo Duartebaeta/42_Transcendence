@@ -5,6 +5,7 @@ from user.views.sign_in import SignIn
 from user.views.change_username import ChangeUsername
 from user.views.change_password import ChangePassword
 from user.views.activate import Activate
+from user.views.refresh_jwt_token import RefreshJwtToken
 
 from user_management import settings
 
@@ -13,5 +14,6 @@ urlpatterns = [
 	path('sign-in/', SignIn.as_view(), name='signin'),
 	path('change-username/', ChangeUsername.as_view(), name='changeusername'),
 	path('change-password/', ChangePassword.as_view(), name='changepassword'),
-  path('activate/<uidb64>/<token>/', Activate.as_view(), name='activate'),
+	path('refresh_jwt/', RefreshJwtToken.as_view(), name='refreshjwt'),
+	path('activate/<uidb64>/<token>/', Activate.as_view(), name='activate'),
 ]

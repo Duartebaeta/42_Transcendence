@@ -12,15 +12,8 @@ from user_management.jwt_manager import RefreshJWTManager, UserAccessJWTManager
 @method_decorator(csrf_exempt, name='dispatch')
 class RefreshJwtToken(View):
 	@csrf_exempt
-	def post(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
-
-		refresh_token = json_request.get('refresh_token')
+	def get(self, request):
+		refresh_token = request.headers.get('Authorization').split(' ')[1]
 		if refresh_token is None:
 			return JsonResponse(status=400, data={'errors': ['No refresh token given how am I supose to help you :((']})
 
