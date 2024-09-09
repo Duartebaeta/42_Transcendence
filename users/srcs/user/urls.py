@@ -6,6 +6,7 @@ from user.views.change_username import ChangeUsername
 from user.views.change_password import ChangePassword
 from user.views.activate import Activate
 from user.views.refresh_jwt_token import RefreshJwtToken
+from user.views.upload_avatar import UploadAvatar
 
 from user_management import settings
 
@@ -16,4 +17,5 @@ urlpatterns = [
 	path('change-password/', ChangePassword.as_view(), name='changepassword'),
 	path('refresh_jwt/', RefreshJwtToken.as_view(), name='refreshjwt'),
 	path('activate/<uidb64>/<token>/', Activate.as_view(), name='activate'),
+  path('upload-image/', UploadAvatar.as_view(), name='upload_avatar'),
 ]
