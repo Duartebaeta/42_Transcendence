@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
 from user_stats.models import User, Match
+from shared.jwt_manager import AccessJWTManager
 
 @method_decorator(csrf_exempt, name='dispatch')
 class User(View):
@@ -42,6 +43,16 @@ class User(View):
 
 	@csrf_exempt
 	def get(request):
+		access_token = request.get('Authorization').split(' ')[1]
+		if access_token is None:
+			return JsonResponse(status=401, data={'errors': ['No access token given']})
+		success, user_id, errors = AccessJWTManager.authenticate(access_token)
+		if not success:
+			return JsonResponse(status=401, data={'errors': errors})
+
+		if not User.objects.filter(id=user_id).exists():
+			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
+
 		try:
 			json_request = json.loads(request.body.decode('utf-8'))
 		except UnicodeDecodeError:
