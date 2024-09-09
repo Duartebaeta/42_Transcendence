@@ -30,7 +30,7 @@ class User(View):
 			return JsonResponse(status=400, data={'errors': ['Given user_id is not valid']})
 
 		if User.objects.filter(id=user_id).exists():
-			return JsonResponse(status=400, data=['errors': ['User already exists with the same user_id']])
+			return JsonResponse(status=400, data={'errors': ['User already exists with the same user_id']})
 
 		user = User.objects.create(id=user_id)
 		user.username = username
@@ -65,7 +65,7 @@ class User(View):
 			'tournamentWins': user.tournament_wins,
 			'points': last_matches_points,
 		}
-		return JsonResponse(status=200, data)
+		return JsonResponse(status=200, data=data)
 
 	#Might not use because post of match updates users either way
 	@csrf_exempt
@@ -92,7 +92,7 @@ class User(View):
 			return Json(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=200)
 
-	@static_method
+	@staticmethod
 	def update_user_stats(user, stats):
 		# For now only updatable field is game lost or won
 		won = stats.get('won')
@@ -108,8 +108,7 @@ class User(View):
 		return True, None
 
 
-
-	@static_method
+	@staticmethod
 	def get_last_five_matches(user_id):
 		last_matches = Match.objects.filter(id=user.id).order_by("-time")[:5]
 		last_matches_points = []

@@ -2,7 +2,7 @@ import json
 
 from django.http import JsonResponse
 
-from djnago.utils.decorators import method_decorator
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
@@ -70,7 +70,7 @@ class Match(View):
 			return JsonResponse(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=200)
 
-	@static_method
+	@staticmethod
 	def verify_all_infos(player_id, opponent_id, won, player_score, opponent_score):
 		success, error = verify_players_id(player_id)
 		if not success:
@@ -79,7 +79,7 @@ class Match(View):
 		if not success:
 			return False, error
 		if player_id == opponent_id:
-			return False, 'Player and opponent ids are the same(wtf how do you play against yourself)')
+			return False, 'Player and opponent ids are the same(wtf how do you play against yourself)'
 		if won is None or won == '':
 			return False, 'No indication of who won given'
 		if not isinstance(won, bool):
@@ -93,7 +93,7 @@ class Match(View):
 		#TODO: Verify if time valid
 		return True, None
 
-	@static_method
+	@staticmethod
 	def verify_players_id(id):
 		if id is None or id == '':
 			return False, 'No user id was given'
@@ -101,11 +101,11 @@ class Match(View):
 			return False, "Given user id is not a 'int'"
 		if id < 0:
 			return False, 'Given user id is not possible'
-		if not User.objects.filter(id=`).exists():
+		if not User.objects.filter(id=id).exists():
 			return False, 'No user with such id'
 		return True, None
 
-	@static_method
+	@staticmethod
 	def verify_players_scores(score):
 		if score is None or score == '':
 			return False, 'No score was given'
