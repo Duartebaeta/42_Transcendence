@@ -1,9 +1,10 @@
 from django.db import models
+from user_game_stats import settings
 
 # Create your models here.
 class User(models.Model):
 	id = models.IntegerField(primary_key=True)
-	username = models.CharField(unique=True)
+	username = models.CharField(unique=True, max_length=settings.USERNAME_MAX_LENGTH)
 	wins = models.IntegerField(default=0)
 	losses = models.IntegerField(default=0)
 	tournament_wins = models.IntegerField(default=0)
