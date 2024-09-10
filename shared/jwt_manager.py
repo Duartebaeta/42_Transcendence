@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-load_dotenv('env/.env')
+from shared import settings
 
 class JWTManager:
 	def __init__(self, algorithm, private_key, public_key, expiration_time):
@@ -50,7 +50,7 @@ class AccessJWTManager:
 	Manager = JWTManager(
 		'RS256',
 		None,
-		os.getenv('ACCESS_PUBLIC_KEY'),# Public key from settings
+		settings.ACCESS_PUBLIC_KEY,# Public key from settings
 		None,
 	)
 

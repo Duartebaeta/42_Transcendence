@@ -3,7 +3,7 @@ from rsa_keys import generate_rsa_keys
 from dotenv import load_dotenv, dotenv_values
 
 USERS_ENV = 'users/srcs/.env'
-SHARED_ENV = 'env/.env'
+SHARED_ENV = 'shared/.env'
 
 load_dotenv('.env')
 
@@ -32,8 +32,11 @@ os.rename('private_key.pem', 'shared/private_key.pem')
 
 # Shared
 write_env_variable('DEGUB', os.getenv('DEBUG'), SHARED_ENV)
-write_env_variable('ACCESS_PUBLIC_KEY', open('env/public_key.pem').read(), SHARED_ENV)
 
 # User Management
 write_env_variable('SECRET_REFRESH_KEY', os.urandom(32).hex(), USERS_ENV)
-write_env_variable('PRIVATE_ACCESS_KEY', open('users/srcs/private_key.pem').read(), USERS_ENV)
+write_env_variable('EMAIL_HOST', os.getenv('EMAIL_HOST'), USERS_ENV)
+write_env_variable('EMAIL_PORT', os.getenv('EMAIL_PORT'), USERS_ENV)
+write_env_variable('EMAIL_HOST_USER', os.getenv('EMAIL_HOST_USER'), USERS_ENV)
+write_env_variable('EMAIL_HOST_PASSWORD', os.getenv('EMAIL_HOST_PASSWORD'), USERS_ENV)
+write_env_variable('DEFAULT_FROM_EMAIL', os.getenv('DEFAULT_FROM_EMAIL'), USERS_ENV)

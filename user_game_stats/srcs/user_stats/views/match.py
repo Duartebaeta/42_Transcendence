@@ -12,7 +12,7 @@ from user_stats.models import User, Match
 @method_decorator(csrf_exempt, name='dispatch')
 class Match(View):
 	@csrf_exempt
-	def post(request):
+	def post(self, request):
 		try:
 			json_request = json.loads(request.body.decode('utf-8'))
 		except UnicodeDecodeError:
