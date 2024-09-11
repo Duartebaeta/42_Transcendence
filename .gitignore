@@ -8,6 +8,6 @@ public_key.pem
 db.sqlite3
 package-lock.json
 package.json
-server.js
+gitserver.js
 __init__.py
-node_modules/*
+node_modules/**
