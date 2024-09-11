@@ -24,5 +24,4 @@ class Activate(View):
 		else :
 			messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
 		# TODO: return a success page
-		return redirect('signin')
-
+		return redirect('http://localhost:3000/')

@@ -29,6 +29,8 @@ class SignIn(View):
 			if user_email is None or user_email == '':
 				return JsonResponse(status=400, data={'errors': ['No email was given']})
 			user = User.objects.get(email=user_email)
+			if not user.emailVerified:
+				return JsonResponse(status=400, data={'errors': ["You didn't verify your email :("]})
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['No User with such email']})
 
