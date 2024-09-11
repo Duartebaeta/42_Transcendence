@@ -46,10 +46,12 @@ class User(View):
 		access_token = request.get('Authorization').split(' ')[1]
 		if access_token is None:
 			return JsonResponse(status=401, data={'errors': ['No access token given']})
-		success, user_id, errors = AccessJWTManager.authenticate(access_token)
+		success, decoded_token, errors = AccessJWTManager.authenticate(access_token)
 		if not success:
 			return JsonResponse(status=401, data={'errors': errors})
-
+		user_id = decoded_token.get('user_id')
+		if user_id is None or user_id == '':
+			return JsonResponse(status=400, data={'errors': ['No user id in the give token']})
 		if not User.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
@@ -70,7 +72,7 @@ class User(View):
 
 		last_matches_points = get_last_five_matches(user.id)
 		data = {
-			'gamesPlayed': user.wins + user.losses,
+			'gamesPlayed': usuer.wins + user.losses,
 			'wins': user.wins,
 			'losses': user.losses,
 			'tournamentWins': user.tournament_wins,
