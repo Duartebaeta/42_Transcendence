@@ -13,7 +13,7 @@ from shared.jwt_manager import AccessJWTManager
 @method_decorator(csrf_exempt, name='dispatch')
 class User(View):
 	@csrf_exempt
-	def post(request):
+	def post(self, request):
 		try:
 			json_request = json.loads(request.body.decode('utf-8'))
 		except UnicodeDecodeError:
@@ -40,10 +40,10 @@ class User(View):
 			user.save()
 		except Exception as e:
 			return JsonResponse(status=400, data={'errors': [str(e)]})
-		return JsonResponse(status=201)
+		return JsonResponse(status=201, data={'message': 'user created'})
 
 	@csrf_exempt
-	def get(request):
+	def get(self, request):
 		access_token = request.get('Authorization').split(' ')[1]
 		if access_token is None:
 			return JsonResponse(status=401, data={'errors': ['No access token given']})
@@ -83,7 +83,7 @@ class User(View):
 
 	#Might not use because post of match updates users either way
 	@csrf_exempt
-	def patch(request):
+	def patch(self, request):
 		try:
 			json_request = json.loads(request.body.decode('utf-8'))
 		except UnicodeDecodeError:
