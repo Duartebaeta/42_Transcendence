@@ -91,12 +91,12 @@ class User(View):
 		except json.JSONDecodeError:
 			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 
-		username = json_request.get('username')
-		if username is None or username == '':
-			return JsonResponse(status=400, data={'errors': ['No such username was given (what the hell)']})
-		user = UserModel.objects.filter(username=username).first()
+		user_id = json_request.get('user_id')
+		if user_id is None or user_id == '':
+			return JsonResponse(status=400, data={'errors': ['No such user id was given (what the hell)']})
+		user = UserModel.objects.filter(id=user_id).first()
 		if user is None:
-			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
+			return JsonResponse(status=400, data={'errors': ['No such user with that user id(How did you even do that)']})
 		success, errors = update_user_stats(user, json_request)
 		if not success:
 			return JsonResponse(status=400, data={'errors': [errors]})

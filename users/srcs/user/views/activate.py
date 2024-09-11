@@ -40,10 +40,7 @@ def make_post_to_user_stats(user_id, username):
 	}
 	try:
 		response = requests.post(url, json=payload, headers=headers) # Sends the post request to User_Stats api
-		print('Reached here')
 		response.raise_for_status()
-		json_response = response.json()
-		print(json_response)
 		return True
 	#TODO: change this to be more readable
 	except Exception:
