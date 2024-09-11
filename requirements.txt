@@ -24,6 +24,7 @@ PYJWT==2.8.0
 pyOpenSSL==24.1.0
 python-dotenv==1.0.1
 redis==5.0.4
+Requests==2.32.3
 service-identity==24.1.0
 setuptools==69.5.1
 simplejwt==2.0.1
