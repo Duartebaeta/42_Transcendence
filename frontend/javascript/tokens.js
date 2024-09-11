@@ -22,9 +22,9 @@ async function refreshAccessToken() {
     const response = await fetch('http://127.0.0.1:8000/user/refresh_jwt', {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(refreshToken)
+            'Content-Type': 'application/json',
+			'Authorization': `Bearer ${refreshToken}`
+        }
     });
 
     if (!response.ok) {
@@ -32,8 +32,8 @@ async function refreshAccessToken() {
     }
 
     const data = await response.json();
-    const newAccessToken = data.accessToken;
-    const newRefreshToken = data.refreshToken;
+    const newAccessToken = data.access_token;
+    const newRefreshToken = data.refresh_token;
 
     // Store the new tokens
     storeTokens(newAccessToken, newRefreshToken);
@@ -51,7 +51,6 @@ async function authenticatedRequest(url, options = {}) {
         'Authorization': `Bearer ${accessToken}`
     };
 
-	console.log(options);
     let response = await fetch(url, options);
 
     // If the access token has expired, refresh it and retry the request

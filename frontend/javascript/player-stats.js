@@ -3,27 +3,35 @@ document.addEventListener("DOMContentLoaded", function() {
 	const updateButton = document.getElementById("statsBtn");
 
 	updateButton.addEventListener("click", function() {
-		// Fetch JSON data
-		fetch("player-stats.json")
-			.then(response => response.json())
-			.then(data => {
-				// Parse JSON data
-				const gamesPlayed = data.gamesPlayed;
-				const wins = data.wins;
-				const losses = data.losses;
-				const tournamentWins = data.tournamentWins;	
-				const points = data.points;
+		var request = {
+		    method: 'GET',
+		    url: 'http://127.0.0.1:8080/user_stats/user/',
+		    headers: {
+		        'Content-Type': 'application/json',
+		    }
+		};
 
-				// Update HTML content
-				document.getElementById('gamesPlayed').innerText = gamesPlayed;
-				document.getElementById('wins').innerText = wins;
-				document.getElementById('losses').innerText = losses;
-				document.getElementById('tournamentWins').innerText = tournamentWins;
-				drawGraph(points); // Draw points graph
-			})
-			.catch(error => {
-				console.error("Error fetching data:", error);
-			});
+		// Fetch JSON data
+		authenticatedRequest(request.url, request)
+		.then(response => response.json())
+		.then(data => {
+			// Parse JSON data
+			const gamesPlayed = data.gamesPlayed;
+			const wins = data.wins;
+			const losses = data.losses;
+			const tournamentWins = data.tournamentWins;	
+			const points = data.points;
+
+			// Update HTML content
+			document.getElementById('gamesPlayed').innerText = gamesPlayed;
+			document.getElementById('wins').innerText = wins;
+			document.getElementById('losses').innerText = losses;
+			document.getElementById('tournamentWins').innerText = tournamentWins;
+			drawGraph(points); // Draw points graph
+		})
+		.catch(error => {
+			console.error("Error fetching data:", error);
+		});
 	});
 });
 
