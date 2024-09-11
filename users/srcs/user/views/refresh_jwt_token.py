@@ -25,4 +25,7 @@ class RefreshJwtToken(View):
 		if not success or access_token is None:
 			return JsonResponse(status=400, data={'errors': errors})
 
-		return JsonResponse(status=200, data={'access_token': access_token})
+		success, refresh_token, errors = RefreshJWTManager.generate_token(user_id)
+		if not success or refresh_token is None:
+			return JsonResponse(status=400, data={'errors': errors})
+		return JsonResponse(status=200, data={'access_token': access_token, 'refresh_token': refresh_token})
