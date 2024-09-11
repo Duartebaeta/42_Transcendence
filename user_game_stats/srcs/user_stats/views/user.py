@@ -6,7 +6,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
-from user_stats.models import User, Match
+from user_stats.models import Match
+from user_stats.models import User as UserModel
 from shared.jwt_manager import AccessJWTManager
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -30,10 +31,10 @@ class User(View):
 		if not isinstance(user_id, int) or user_id < 0:
 			return JsonResponse(status=400, data={'errors': ['Given user_id is not valid']})
 
-		if User.objects.filter(id=user_id).exists():
+		if UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['User already exists with the same user_id']})
 
-		user = User.objects.create(id=user_id)
+		user = UserModel.objects.create(id=user_id)
 		user.username = username
 		try:
 			user.save()
@@ -52,7 +53,7 @@ class User(View):
 		user_id = decoded_token.get('user_id')
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No user id in the give token']})
-		if not User.objects.filter(id=user_id).exists():
+		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
 		try:
@@ -66,7 +67,7 @@ class User(View):
 		if username is None or username == '':
 			return JsonResponse(status=400, data={'errors': ['No username was given (no stats for you naugthy)']})
 
-		user = User.objects.filter(username=username).first()
+		user = UserModel.objects.filter(username=username).first()
 		if user is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
 
@@ -93,7 +94,7 @@ class User(View):
 		username = json_request.get('username')
 		if username is None or username == '':
 			return JsonResponse(status=400, data={'errors': ['No such username was given (what the hell)']})
-		user = User.objects.filter(username=username).first()
+		user = UserModel.objects.filter(username=username).first()
 		if user is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
 		success, errors = update_user_stats(user, json_request)
