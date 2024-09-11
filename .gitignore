@@ -10,4 +10,4 @@ package-lock.json
 package.json
 server.js
 __init__.py
-node_modules/
+node_modules/*
