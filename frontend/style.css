@@ -41,3 +41,7 @@
 	height: 100%;
 	border-right: 10px solid blue;
 } */
+
+.contactArea:hover {
+	background: rgb(66, 1, 66);
+}

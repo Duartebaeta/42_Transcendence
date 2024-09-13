@@ -39,7 +39,7 @@
 							<i class="bi bi-person h3"></i>
 						</button>
 						<!-- Chat Button -->
-						<button class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#chat-modal">
+						<button id="chatBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#chat-modal">
 							<i class="bi bi-chat h3"></i>
 						</button>
 						<!-- Match History Button -->
@@ -317,7 +317,7 @@
 	<!-- Chat Modal -->
 	<div id="chat-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl">
-			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
+			<div class="modal-content" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
 					<h5 class="modal-title text-light" id="staticBackdropLabel">Chat</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -331,286 +331,32 @@
 							<div class="flex-grow-1 overflow-auto" id="contacts" style="height: 500px;">
 								<!-- Example Contacts -->
 								<div class="p-2">
-									<!-- First Contact -->
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4> <!-- Contact Name -->
-											<p class="text-light mb-0">Last message sent/received</p> <!-- Last message -->
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<!-- Dropdown Menu -->
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<!-- Menu Options -->
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
-									<div class="d-flex align-items-start align-items-center">
-										<i class="bi bi-person-square text-light" style="font-size: 55px;"></i>
-										<div class="ms-3">
-											<h4 class="text-light mb-1">Person</h4>
-											<p class="text-light mb-0">Last message sent/received</p>
-										</div>
-										<div class="dropdown ms-auto">
-											<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-												<i class="bi bi-three-dots-vertical h4 text-light"></i>
-											</button>
-											<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-												<li><a class="dropdown-item" href="#" data-value="Block">Block</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Invite To Play">Invite To Play</a></li>
-												<li><a class="dropdown-item" href="#" data-value="Profile">Profile</a></li>
-											</ul>
-											<select class="custom-select" id="hiddenSelect">
-												<option value="Block">Block</option>
-												<option value="Invite To Play">Invite To Play</option>
-												<option value="Profile">Profile</option>
-											</select>
-										</div>
-									</div>
+									<!-- Contact Lis -->
+									<div id="chatContacts"></div>
 								</div>
 							</div>
 						</div>
 						<!-- Live Chat -->
 						<div class="col-8 d-flex flex-column">
 							<!-- Contact Messages -->
-							<div class="d-flex align-items-start align-items-center border-bottom">
+							<div class="d-flex align-items-center border-bottom">
 								<i class="bi bi-person-square text-light h1"></i>
-								<div class="ms-3">
-									<h4 class="text-light mb-1">Person</h4>
+								<div class="ms-3 d-flex">
+									<h4 id="selectedContactName" class="text-light mb-1"></h4>
+									<!-- TODO: make status display change if the player is online or offline -->
+									<h4 id="onlineStatus" class="text-light mb-1 ms-3">(Online)</h4>
 								</div>
-							</div>
+								<div id="chatDropdownMenu" class="dropdown ms-auto"></div>
+							</div>	
 							<!-- Messages Display -->
-							<div class="flex-grow-1 overflow-auto" id="chat-messages" style="height: 500px; flex-direction: column-reverse">
-								<!-- Example Messages -->
-								<div class="p-2">
-								<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">Hi!</div>
-								<div class="text-light bg-secondary p-2 rounded ms-auto text-end mb-2 px-3" style="max-width: 70%; display: table;">Hi there!</div>
-								<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
-								<div class="text-light bg-secondary p-2 rounded ms-auto text-end mb-2 px-3" style="max-width: 70%; display: table;">Hi theredadwadwa!</div>
-								<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
-								<div class="text-light bg-secondary p-2 rounded ms-auto text-end mb-2 px-3" style="max-width: 70%; display: table;">Hi therfwafa da wfe!</div>
-								<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
-								<div class="text-light bg-secondary p-2 rounded ms-auto text-end mb-2 px-3" style="max-width: 70%; display: table;">Hi the waw efa sfare!</div>
-								<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
-								<div class="text-light bg-secondary p-2 rounded ms-auto text-end mb-2 px-3" style="max-width: 70%; display: table;">Hi theaaaaaaaaaaaaaaaaaaaaare!</div>
-								<div class="text-dark p-2 rounded mb-2 px-3" style="background-color: orange; max-width: 70%; display: table;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin aliquet dignissim accumsan. Nam ullamcorper eget ipsum sed finibus. Ut feugiat libero eget leo porttitor, vitae gravida tellus tristique. Quisque ultricies augue vel venenatis efficitur. Sed eget auctor tellus, ac aliquam elit. Curabitur fermentum aliquam faucibus. Fusce eget sem sem. Aenean.</div>
-								<div class="text-light bg-secondary p-2 rounded ms-auto text-end mb-2 px-3" style="max-width: 70%; display: table;">Hi ther  dsa wa           e!</div>
-								</div>
-							</div>
+							<div class="flex-grow-1 overflow-auto d-flex flex-column" id="chat-messages" style="height: 500px;">
+								<!-- Contact Chat Messages -->
+							</div>	
 							<!-- Message Input And Send Button -->
 							<div class="d-flex border-top align-items-center">
-								<textarea class="form-control me-2 h-50" placeholder="Type message..." name="msg" required></textarea>
-								<button class="btn text-light h-50">
-								<i class="bi bi-send"></i>
+								<textarea id="messageTextArea" class="form-control me-2 h-50" placeholder="Type message..." name="msg" required></textarea>
+								<button id="sendMessagesBtn" class="btn text-light h-50">
+									<i class="bi bi-send"></i>
 								</button>
 							</div>
 						</div>
@@ -618,8 +364,7 @@
 				</div>
 		  	</div>
 		</div>
-	</div>
-	  
+	</div>	  
 
 	<!-- Match History Modal -->
 	<div class="modal fade" id="match-history-modal" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
