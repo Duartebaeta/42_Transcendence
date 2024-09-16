@@ -33,7 +33,6 @@ class ChangeUsername(View):
 			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['User does not exist']})
-		# TODO: handle exceptions from JWT management
 
 		new_username = json_request['new_username']
 		if user.username == new_username:
@@ -59,7 +58,7 @@ def update_username_on_stats(user_id, username):
 	}
 
 	try:
-		response = requests-patch(url, json=payload, headers=headers)
+		response = requests.patch(url, json=payload, headers=headers)
 		response.raise_for_status()
 		return True
 	except Exception:
