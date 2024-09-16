@@ -12,7 +12,7 @@ from chatapp.models import ChatRoom
 from shared.jwt_manager import AccessJWTManager
 
 @method_decorator(csrf_exempt, name='dispatch')
-class Index(View):
+class User(View):
 	@csrf_exempt
 	def get(self, request):
 		access_token = request.headers.get('Authorization').split(' ')[1]
@@ -35,9 +35,6 @@ class Index(View):
 			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 
 		user = UserModel.objects.filter(id=user_id).first()
-		if user is None:
-			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
-
 		#What information to give about each chat room?
 		chatrooms = ChatRoom.objects.filter(user1=user_id)
 
