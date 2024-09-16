@@ -37,6 +37,14 @@ function startTournament(displayName, tournamentID) {
 	TournamentSocket.onerror = function (error) {
 		console.error('WebSocket error:', error);
 	};
+
+	GameManagerSocket.onmessage = function (event) {
+		const data = JSON.parse(event.data);
+		// Handle incoming messages related to the game
+		if (data.type === 'game_ended') {
+			console.log('Game over received in tournament end:', data);
+		}
+	}
 }
 
 function populateWaitingRoom(data) {
@@ -50,9 +58,9 @@ function startRound(data, displayName) {
 	console.log('Starting round:', data);
 	document.querySelector('.waiting-room').classList.add('d-none');
 	if (data['matching_1'].includes(displayName)) {
-		startGame(data['gameID_1']);
+		console.log(startGame(data['gameID_1']));
 	} else {
-		startGame(data['gameID_2']);
+		console.log(startGame(data['gameID_2']));
 	}
 }
 

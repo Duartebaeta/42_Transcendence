@@ -1,3 +1,10 @@
+from channels.generic.websocket import AsyncWebsocketConsumer
+import json
+import uuid
+import asyncio
+from urllib.parse import parse_qs
+
+
 # game.py
 class Game():
 	games = {}
@@ -46,6 +53,9 @@ class Game():
 		if username in self.players:
 			del self.players[username]
 		self.ready_players.discard(username)
+
+	def get_players(self):
+		return self.players.keys()
 
 	def player_ready(self, username):
 		self.ready_players.add(username)

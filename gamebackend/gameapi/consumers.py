@@ -18,12 +18,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.close()
 			return
 
-		if self.game_id not in GameManager.games:
+		if not GameManager.check_game_exists(self.game_id):
 			await self.send(text_data=json.dumps({'type': 'game_error', 'error': 'Game not found'}))
 			await self.close()
 			return
 
-		self.game = Game.get_game(self.game_id)
+		self.game = await GameManager.get_game(self.game_id)
+		print(f"self.game: {self.game}")
 		self.side = self.game.add_player(self.username, self.channel_name)
 		self.game_group_name = f'game_{self.game_id}'
 
@@ -33,8 +34,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 		)
 
 		await self.accept()
-		GameManager.games[self.game_id]['participants'].append(self.username)
-		GameManager.games[self.game_id][self.side] = self.username
 		print(f"Player {self.username} connected to game {self.game_id}")
 
 		# Send the player their assigned side
@@ -52,8 +51,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
-		GameManager.games[self.game_id]['participants'].remove(self.username)
-		if not GameManager.games[self.game_id]['participants']:
+		if len(game.get_players()) == 0:
 			del GameManager.games[self.game_id]
 
 		print(f"Player {self.username} disconnected from game {self.game_id}")
@@ -100,37 +98,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 			position = text_data_json.get('position')
 			self.game.set_position(player, position)
 
-	async def start_countdown(self, event):
-		for i in range(5, 0, -1):
-			await self.channel_layer.group_send(
-				self.game_group_name,
-				{
-					'type': 'countdown',
-					'count': i
-				}
-			)
-			await asyncio.sleep(1)
-
-		await self.channel_layer.group_send(
-			self.game_group_name,
-			{
-				'type': 'start_game'
-			}
-		)
-
-	async def countdown(self, event):
-		count = event['count']
-		await self.send(text_data=json.dumps({
-			'type': 'countdown',
-			'count': count
-		}))
-
 	async def start_game(self, event):
 		print(f"Game {self.game_id} started")
 		await self.send(text_data=json.dumps({
 			'type': 'start_game',
 		}))
-		self.schedule_update()
+		await self.schedule_update()
 
 	async def game_over(self, event):
 		winner = event['winner']
@@ -147,9 +120,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'position': event['position']
 		}))
 
-	def schedule_update(self):
+	async def schedule_update(self):
 		if self.game.game_over:
-			GameManager.game_over(self.game_id)
+			await self.channel_layer.group_send(
+				'game_manager',  # Send to the GameManager group
+				{
+					'type': 'end_game',
+					'game_id': self.game_id,
+					'gameState': self.game.get_game_state()
+				}
+			)
 			return
 		loop = asyncio.get_event_loop()
 		loop.call_later(0.01, lambda: asyncio.create_task(self.game_update()))
@@ -201,7 +181,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 				self.game_group_name,
 				{
 					'type': 'game_over',
-					'winner': 'left'
+					'winner': 'left',
+					'game_state': self.game.get_game_state()
 				}
 			)
 		elif self.game.right_score == 5:
@@ -210,7 +191,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 				self.game_group_name,
 				{
 					'type': 'game_over',
-					'winner': 'right'
+					'winner': 'right',
+					'game_state': self.game.get_game_state()
 				}
 			)
 
@@ -251,10 +233,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 		await self.update_game_state(self.game.get_game_state())
 
 		# Schedule the next update
-		self.schedule_update()
+		await self.schedule_update()
 
 	async def update_game_state(self, event):
-		GameManager.games[self.game_id]['game_state'] = event
 		await self.send(text_data=json.dumps({
 			'type': 'update',
 			'ball_x': event['ball_x'],
@@ -308,44 +289,96 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 		import uuid
 		return str(uuid.uuid4())[:8]  # Example: use first 8 characters of a UUID
 
+
 class GameManager(AsyncWebsocketConsumer):
 	games = {}
 
 	async def connect(self):
-		#Accept all connections
+		# Accept all connections and add to a group
+		self.game_group_name = 'game_manager'
+
+		await self.channel_layer.group_add(
+			self.game_group_name,
+			self.channel_name
+		)
 		await self.accept()
 
 	async def disconnect(self, close_code):
-		print(f"Disconnected from game with {close_code}")
+		await self.channel_layer.group_discard(
+			self.game_group_name,
+			self.channel_name
+		)
+		print(f"Disconnected from GameManager with code {close_code}")
 
 	async def receive(self, text_data):
 		data = json.loads(text_data)
 		message_type = data.get('type')
 
 		if message_type == 'create_game':
-			# Create a new game with a unique ID
-			game_id = create_game()
+			game_id = self.create_game()
 			await self.send(text_data=json.dumps({'type': 'game_created', 'gameID': game_id}))
-			print(f"Game created with ID: {game_id}, {GameManager.games}")
-
 		elif message_type == 'join_game':
-			# Handle joining the game
 			game_id = data.get('gameID')
-			if game_id in GameManager.games:
+			if game_id in self.games:
 				await self.send(text_data=json.dumps({'type': 'game_joined', 'gameID': game_id}))
 			else:
 				await self.send(text_data=json.dumps({'type': 'game_error', 'error': 'Game not found'}))
 
-	def create_game():
+	def create_game(self):
 		# Create a new game with a unique ID
 		game_id = str(uuid.uuid4())[:8]
-		GameManager.games[game_id] = {
-			'participants': []
-		}
+		GameManager.games[game_id] = Game(game_id)  # Store a Game instance
 		return game_id
 
 	@classmethod
 	async def game_over(cls, game_id):
-		await self.send(text_data=json.dumps({'type': 'game_over', 'gameID': game_id, 'info': cls.games[game_id]}))
-		del cls.games[game_id]
-		print(f"Game {game_id} ended")
+		print(f"Ending game {game_id}")
+		if game_id in cls.games:
+			game = cls.games[game_id]
+			del cls.games[game_id]
+			print(f"Removed game {game_id} from GameManager")
+
+	@classmethod
+	async def get_game(cls, game_id):
+		if game_id not in cls.games:
+			cls.games[game_id] = Game(game_id)
+		return cls.games[game_id]
+
+	@classmethod
+	async def check_game_exists(cls, game_id):
+		return game_id in cls.games
+
+	async def create_games(self, event):
+		# Receive a message from TournamentConsumer for game creation
+		print("Creating games...")
+		if event['type'] == 'create_games':
+			game_id_1 = self.create_game()
+			game_id_2 = self.create_game()
+			await self.channel_layer.group_send(
+				event['tournament_group'],
+				{
+					'type': 'tournament_games_created',
+					'gameID_1': game_id_1,
+					'gameID_2': game_id_2
+				}
+			)
+	async def end_game(self, event):
+		game_id = event['game_id']
+		await GameManager.game_over(game_id)
+		print(f"Ending game {game_id} we reached it")
+		await self.channel_layer.group_send(
+			self.game_group_name,
+			{
+				'type': 'game_ended',
+				'game_id': game_id,
+				'gameState': event['gameState']
+			}
+		)
+
+	async def game_ended(self, event):
+		await self.send(text_data=json.dumps({
+			'type': 'game_ended',
+			'game_id': event['game_id'],
+			'gameState': event['gameState']
+		}))
+	
