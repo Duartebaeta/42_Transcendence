@@ -58,9 +58,9 @@ function startRound(data, displayName) {
 	console.log('Starting round:', data);
 	document.querySelector('.waiting-room').classList.add('d-none');
 	if (data['matching_1'].includes(displayName)) {
-		console.log(startGame(data['gameID_1']));
+		startGame(data['gameID_1'], displayName);
 	} else {
-		console.log(startGame(data['gameID_2']));
+		startGame(data['gameID_2'], displayName);
 	}
 }
 

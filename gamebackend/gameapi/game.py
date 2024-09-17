@@ -74,6 +74,17 @@ class Game():
 			"left_score": self.left_score,
 			"right_score": self.right_score
 		}
+  
+	def get_final_stats(self):
+		return {
+			"game_id": self.game_id,
+			"player": list(self.players.keys())[0],
+			"opponent": list(self.players.keys())[1],
+			"player_info": self.players,
+			"player_score": self.left_score,
+			"opponent_score": self.right_score,
+			"won": self.left_score > self.right_score
+		}
 
 	def get_ball_state(self):
 		return {

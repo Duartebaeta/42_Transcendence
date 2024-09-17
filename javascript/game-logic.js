@@ -40,13 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-	// // Establish WebSocket connection for TournamentManager
-	// TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/`);
-
-	// // Establish WebSocket connection for GameManager
-	// RemoteSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
-
-
 	let tournamentForm = document.getElementById('tournamentPlayerInfo');
 
 	tournamentForm.addEventListener('submit', function(event) {
@@ -101,10 +94,22 @@ function handleWebSocketMessage(data) {
 	} else if (data.type === 'game_joined') {
 		// Handle successful game joining
 		console.log("Game joined:", data);
+		const message = {
+			type: 'change_group',
+			game_id: data.gameID,
+			group_name: 'game_manager_' + data.gameID
+		};
+		RemoteSocket.send(JSON.stringify(message));
 		startGame(data.gameID);
 	} else if (data.type === 'game_created') {
 		// Handle successful game creation
 		console.log("Game created:", data);
+		const message = {
+			type: 'change_group',
+			game_id: data.gameID,
+			group_name: 'game_manager_' + data.gameID
+		};
+		RemoteSocket.send(JSON.stringify(message));
 		startGame(data.gameID);
 	}
 }

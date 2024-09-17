@@ -21,10 +21,15 @@ var DIRECTION = {
 	RIGHT: "RIGHT",
 };
 
-function startGame(GAME_ID) {
+function startGame(GAME_ID, _username = "") {
 	const generateRandomString = length => 
 		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
-	username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
+	username = _username
+	if (username == "")
+		username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
+
+	console.log(username)
+
 	gameId = GAME_ID;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
@@ -52,6 +57,7 @@ function startGame(GAME_ID) {
 			SockIn.direction_change(gameState);
 		} else if (gameState.type === "game_over") {
 			console.log("Game over. Winner:", gameState.winner);
+			Pong.backendUpdate(gameState.game_state);
 			SockIn.gameEnd(Pong, gameState.winner);
 		}
 	};
@@ -108,6 +114,7 @@ const SockIn = {
 	},
 	gameEnd: function (game, text) {
 		game.over = true;
+		console.log(text);
 		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
@@ -192,6 +199,7 @@ var Game = {
 	},
 
 	endGameMenu: function (text) {
+		console.log("Called");
 		// Change the canvas font size and color
 		Pong.context.font = "45px Courier New";
 		Pong.context.fillStyle = this.color;
