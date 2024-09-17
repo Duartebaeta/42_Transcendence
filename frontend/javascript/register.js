@@ -13,54 +13,87 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener('DOMContentLoaded', function() {
 	const registerRequestBtn = document.getElementById('registerForm');
 
-	registerRequestBtn.addEventListener('submit', function(e) {
+	registerRequestBtn.addEventListener('submit', async function(e) {
 		e.preventDefault();
-		// Retrieve email and password inputs
+
+		// Retrieve username, email, and password inputs
 		var usernameInput = document.getElementById('registerUsername');
 		var emailInput = document.getElementById('registerEmail');
 		var passwordInput = document.getElementById('registerPassword');
 
-		// Construct the request object
-		var request = {
-			method: 'POST', // HTTP method
-			url: 'http://127.0.0.1:8000/user/sign-up/',
-			headers: {
-				'Content-Type': 'application/json' 
-			},
-			body: JSON.stringify({ // Convert data to JSON string
-				username: usernameInput.value,
-				email: emailInput.value,
-				password: passwordInput.value
-			})
-		};
+		try {
+			// Get the base64 avatar using await
+			let avatarBase64 = await getRegisterAvatar();
 
-		// Send the request using Fetch API
-		fetch(request.url, request)
-			.then(function(response) {
-				// Check if response status is OK
-				if (response.ok) {
-					// If response status is 200 OK, hide the modal
-					var myModal = bootstrap.Modal.getInstance(document.getElementById('register-modal'));
-					myModal.hide();
-					myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
-					myModal.show()
-				}
-				else {
-					// If response status is not OK, show error message
-					response.json().then(function(data) {
-							var firstErrorMessage = data.errors[0];
+			// Construct the request object
+			var request = {
+				method: 'POST', // HTTP method
+				url: 'http://127.0.0.1:8000/user/sign-up/',
+				headers: {
+					'Content-Type': 'application/json' 
+				},
+				body: JSON.stringify({ // Convert data to JSON string
+					username: usernameInput.value,
+					email: emailInput.value,
+					password: passwordInput.value,
+					avatar: avatarBase64 // Send the base64 avatar data
+				})
+			};
 
-							document.getElementById('registerErrorMessage').innerText = firstErrorMessage;
-							document.getElementById('registerErrorMessage').style.display = 'block';
-						})
-					.catch(function(error) {
-						// Handle errors
-						console.error('Error:', error);
-					});
-				}
-			});	
+			console.log(request.body);
+			// Send the request using Fetch API
+			let response = await fetch(request.url, request);
+
+			if (response.ok) {
+				// If response status is 200 OK, hide the modal
+				var myModal = bootstrap.Modal.getInstance(document.getElementById('register-modal'));
+				myModal.hide();
+				myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
+				myModal.show()
+			} else {
+				// If response status is not OK, show error message
+				let data = await response.json();
+				let firstErrorMessage = data.errors[0];
+				document.getElementById('registerErrorMessage').innerText = firstErrorMessage;
+				document.getElementById('registerErrorMessage').style.display = 'block';
+			}
+		} catch (error) {
+			// Handle errors
+			console.error('Error:', error);
+		}
 	});
 });
+
+// Submit Avatar
+function getRegisterAvatar() {
+	return new Promise((resolve, reject) => {
+		const registerAvatarInput = document.getElementById('avatarImg');
+		const registerAvatarBtn = document.getElementById('registerAvatarBtn');
+
+		let file = registerAvatarInput.files[0]; // Get the file object
+
+		// If file does not exist, return Default
+		if (!file)
+			resolve("Default");
+
+		// Update button text with the file name
+		let fileName = file ? file.name : 'Upload Avatar';
+		registerAvatarBtn.textContent = fileName;
+
+		let reader = new FileReader();
+		reader.readAsDataURL(file);
+
+		reader.onload = function () {
+			let base64String = reader.result;
+			resolve(base64String); // Resolve with the base64 string
+		};
+
+		reader.onerror = function (error) {
+			console.error('Error reading file:', error);
+			reject(error); // Reject the promise in case of an error
+		};
+	});
+}
 
 // Show Password Button at Register
 document.addEventListener("DOMContentLoaded", function() {
