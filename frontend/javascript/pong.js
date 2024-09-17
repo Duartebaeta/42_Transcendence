@@ -21,19 +21,22 @@ var DIRECTION = {
 	RIGHT: "RIGHT",
 };
 
-function startGame(event) {
-	event.preventDefault();
+function startGame(GAME_ID, _username = "") {
 	const generateRandomString = length => 
 		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
-	username = generateRandomString(10);
-	gameId = 123;
+	username = _username
+	if (username == "")
+		username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
+
+	console.log(username)
+
+	gameId = GAME_ID;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
 	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
 	socket.onopen = function(e) {
-		console.log("[open] Connection established");
-		isSocketConnected = true; // Mark the socket as connected
+		isSocketConnected = true;
 		game_container.classList.remove('d-none');
 		game_menu.classList.add('d-none');
 
@@ -44,17 +47,17 @@ function startGame(event) {
 	socket.onmessage = function(event) {
 		const gameState = JSON.parse(event.data);
 		if (gameState.type === "start_game") {
-			console.log("Both players are ready. Starting the game...");
 			SockIn.gameStart(Pong);
 		} else if (gameState.type === "update") {
 			Pong.backendUpdate(gameState);
 		} else if (gameState.type === "assign_side") {
 			Pong.side = gameState.side;
 			Pong.initialize();
-			console.log("Assigned side:", Pong.side);
 		} else if (gameState.type === "direction_change") {
 			SockIn.direction_change(gameState);
 		} else if (gameState.type === "game_over") {
+			console.log("Game over. Winner:", gameState.winner);
+			Pong.backendUpdate(gameState.game_state);
 			SockIn.gameEnd(Pong, gameState.winner);
 		}
 	};
@@ -105,17 +108,13 @@ var Paddle = {
 };
 
 const SockIn = {
-	initialize: function (game) {
-		console.log("Initializing socket events...");
-	},
 	gameStart: function (game) {
-		console.log("Game started...");
 		game.running = true;
 		window.requestAnimationFrame(Pong.loop.bind(Pong));
 	},
 	gameEnd: function (game, text) {
-		console.log("Game ended...");
 		game.over = true;
+		console.log(text);
 		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
@@ -137,7 +136,6 @@ const SockIn = {
 
 const SockOut = {
 	gameStart: function () {
-		console.log("Starting game...");
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
 				type: 'ready',
@@ -197,11 +195,11 @@ var Game = {
 		Pong.menu();
 		Pong.listen();
 	
-		SockIn.initialize(this);
 		SockOut.gameStart();
 	},
 
 	endGameMenu: function (text) {
+		console.log("Called");
 		// Change the canvas font size and color
 		Pong.context.font = "45px Courier New";
 		Pong.context.fillStyle = this.color;

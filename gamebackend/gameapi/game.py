@@ -1,7 +1,17 @@
-# game.py
+from channels.generic.websocket import AsyncWebsocketConsumer
+import json
+import uuid
+import asyncio
+from urllib.parse import parse_qs
 
-class Game:
+
+# game.py
+class Game():
 	games = {}
+
+	@classmethod
+	def check_game_exists(cls, game_id):
+		return game_id in cls.games
 
 	@classmethod
 	def get_game(cls, game_id):
@@ -44,6 +54,9 @@ class Game:
 			del self.players[username]
 		self.ready_players.discard(username)
 
+	def get_players(self):
+		return self.players.keys()
+
 	def player_ready(self, username):
 		self.ready_players.add(username)
 
@@ -60,6 +73,17 @@ class Game:
 			"right_y": self.right_y,
 			"left_score": self.left_score,
 			"right_score": self.right_score
+		}
+  
+	def get_final_stats(self):
+		return {
+			"game_id": self.game_id,
+			"player": list(self.players.keys())[0],
+			"opponent": list(self.players.keys())[1],
+			"player_info": self.players,
+			"player_score": self.left_score,
+			"opponent_score": self.right_score,
+			"won": self.left_score > self.right_score
 		}
 
 	def get_ball_state(self):
