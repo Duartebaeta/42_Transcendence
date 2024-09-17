@@ -1,4 +1,3 @@
-// Clear input fields
 document.addEventListener("DOMContentLoaded", function() {
 	const registerbtn = document.getElementById('registerBtn');
 
@@ -68,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function getRegisterAvatar() {
 	return new Promise((resolve, reject) => {
 		const registerAvatarInput = document.getElementById('avatarImg');
-		const registerAvatarBtn = document.getElementById('registerAvatarBtn');
+		const registerAvatarBtn = document.getElementById('avatarImg');
 
 		let file = registerAvatarInput.files[0]; // Get the file object
 
