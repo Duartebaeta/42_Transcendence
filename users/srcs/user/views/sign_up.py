@@ -1,4 +1,4 @@
-import json
+from shared.util import load_json_request
 from datetime import datetime, timedelta, timezone
 
 from django.contrib.auth.hashers import make_password
@@ -22,13 +22,9 @@ from user_management import settings
 class SignUp(View):
 	@csrf_exempt
 	def post(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
-
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return err
 		errors = self.user_info_validation(json_request)
 		if errors:
 			return JsonResponse(status=400, data={'errors': errors})

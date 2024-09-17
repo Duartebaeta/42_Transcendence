@@ -1,4 +1,4 @@
-import json
+from shared.util import load_json_request
 
 from django.http import JsonResponse
 
@@ -13,12 +13,9 @@ from user_stats.models import User, Match
 class Match(View):
 	@csrf_exempt
 	def post(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return err
 
 		player_id = json_request.get('player')
 		opponent_id = json_request.get('opponent')

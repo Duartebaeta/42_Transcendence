@@ -1,5 +1,7 @@
 import json
 
+from shared.util import load_json_request
+
 from django.http import JsonResponse
 
 from django.utils.decorators import method_decorator
@@ -11,7 +13,6 @@ from user_management.utils import is_valid_username
 
 from user_management.jwt_manager import UserAccessJWTManager
 
-import requests
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ChangeUsername(View):
@@ -23,14 +24,11 @@ class ChangeUsername(View):
 		success, user_id, errors = UserAccessJWTManager.authenticate(access_token)
 		if not success:
 			return JsonResponse(status=401, data={'errors': errors})
-
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return err
 		try:
-			json_request = json.loads(request.body.decode('utf-8'))
 			user = User.objects.get(id=user_id)
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['User does not exist']})
 
