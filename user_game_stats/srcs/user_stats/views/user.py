@@ -1,5 +1,7 @@
 import json
 
+from shared.util import load_json_request
+
 from django.http import JsonResponse
 
 from django.utils.decorators import method_decorator
@@ -14,12 +16,9 @@ from shared.jwt_manager import AccessJWTManager
 class User(View):
 	@csrf_exempt
 	def post(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return err
 
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
@@ -56,12 +55,9 @@ class User(View):
 		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return err
 
 		username = json_request.get('username')
 		if username is None or username == '':
@@ -84,12 +80,9 @@ class User(View):
 	#Might not use because post of match updates users either way
 	@csrf_exempt
 	def patch(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return err
 
 		user_id = json_request.get('user_id')
 		if user_id is None or user_id == '':
