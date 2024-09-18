@@ -28,7 +28,7 @@ class ChangePassword(View):
 
 		json_request, err = load_json_request(request)
 		if err is not None:
-			return err
+			return JsonResponse(status=400, data={'errors': [err]})
 
 		try:
 			user = User.objects.get(id=user_id)

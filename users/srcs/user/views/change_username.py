@@ -1,5 +1,5 @@
 import json
-
+import requests
 from shared.util import load_json_request
 
 from django.http import JsonResponse
@@ -26,7 +26,7 @@ class ChangeUsername(View):
 			return JsonResponse(status=401, data={'errors': errors})
 		json_request, err = load_json_request(request)
 		if err is not None:
-			return err
+			return JsonResponse(status=400, data={'errors': [err]})
 		try:
 			user = User.objects.get(id=user_id)
 		except User.DoesNotExist:
@@ -41,23 +41,24 @@ class ChangeUsername(View):
 			return JsonResponse(status=400, data={f'errors': [error]})
 
 		user.username = new_username;
-		if not update_username_on_stats(user.id, new_username):
+		if not self.update_username_on_stats(user.id, new_username):
 			return JsonResponse(status=400, data={'errors': ["Couldn't update username on user stats"]})
 		user.save(update_fields=["username"])
 		# Send update to User in user_stats
 		return JsonResponse(status=200, data={'message': 'Username changed :) great job'})
 
-def update_username_on_stats(user_id, username):
-	url = "http://127.0.0.1:8080/user_stats/user/"
-	headers = {'Content-Type': 'application/json'}
-	payload = {
-		'user_id': user_id,
-		'new_username': username
-	}
+	@staticmethod
+	def update_username_on_stats(user_id, username):
+		url = "http://127.0.0.1:8080/user_stats/user/"
+		headers = {'Content-Type': 'application/json'}
+		payload = {
+			'user_id': user_id,
+			'new_username': username
+		}
 
-	try:
-		response = requests.patch(url, json=payload, headers=headers)
-		response.raise_for_status()
-		return True
-	except Exception:
-		return False
+		try:
+			response = requests.patch(url, json=payload, headers=headers)
+			response.raise_for_status()
+			return True
+		except Exception:
+			return False

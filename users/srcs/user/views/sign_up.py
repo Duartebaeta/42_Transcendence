@@ -24,7 +24,7 @@ class SignUp(View):
 	def post(self, request):
 		json_request, err = load_json_request(request)
 		if err is not None:
-			return err
+			return JsonResponse(status=400, data={'errors': [err]})
 		errors = self.user_info_validation(json_request)
 		if errors:
 			return JsonResponse(status=400, data={'errors': errors})
