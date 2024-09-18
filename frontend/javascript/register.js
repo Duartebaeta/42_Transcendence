@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		try {
 			// Get the base64 avatar using await
-			let avatarBase64 = await getRegisterAvatar();
+			let avatarBase64 = await getAvatarBase64();
+
+			document.getElementById('registerAvatarImg').src = avatarBase64;
 
 			// Construct the request object
 			var request = {
@@ -62,37 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	});
 });
-
-// Submit Avatar
-function getRegisterAvatar() {
-	return new Promise((resolve, reject) => {
-		const registerAvatarInput = document.getElementById('avatarImg');
-		const registerAvatarBtn = document.getElementById('avatarImg');
-
-		let file = registerAvatarInput.files[0]; // Get the file object
-
-		// If file does not exist, return Default
-		if (!file)
-			resolve("Default");
-
-		// Update button text with the file name
-		let fileName = file ? file.name : 'Upload Avatar';
-		registerAvatarBtn.textContent = fileName;
-
-		let reader = new FileReader();
-		reader.readAsDataURL(file);
-
-		reader.onload = function () {
-			let base64String = reader.result;
-			resolve(base64String); // Resolve with the base64 string
-		};
-
-		reader.onerror = function (error) {
-			console.error('Error reading file:', error);
-			reject(error); // Reject the promise in case of an error
-		};
-	});
-}
 
 // Show Password Button at Register
 document.addEventListener("DOMContentLoaded", function() {
