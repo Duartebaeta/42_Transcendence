@@ -8,11 +8,12 @@ from django.views import View
 
 from chatapp.models import User as UserModel
 from chatapp.models import ChatRoom
+from django.db.models import Q
 
 from shared.jwt_manager import AccessJWTManager
 
 @method_decorator(csrf_exempt, name='dispatch')
-class Index(View):
+class User(View):
 	@csrf_exempt
 	def get(self, request):
 		access_token = request.headers.get('Authorization').split(' ')[1]
@@ -27,22 +28,24 @@ class Index(View):
 		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		user = UserModel.objects.get(user_id)
+		chatrooms = ChatRoom.objects.filter(Q(user1=user) | Q(user2=user))
+		contacts = []
+		for chat in chatrooms:
+			if user == chat.user1:
+				contact = chat.user2.username
+			else:
+				contact = chat.user1.username
+			last_message = chat.messages.filter(user=contact).order_by('-date').first()
+			if last_message is None:
+				last_message = ''
+			result = {
+				'contact': contact,
+				'last_message': last_message,
+			}
+			contacts.append(result)
 
-		user = UserModel.objects.filter(id=user_id).first()
-		if user is None:
-			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
-
-		#What information to give about each chat room?
-		chatrooms = ChatRoom.objects.filter(user1=user_id)
-
-		return JsonResponse(status=200, data=data)
-
+		return JsonResponse(status=200, data={'contacts': contacts})
 
 	@csrf_exempt
 	def post(self, request):
