@@ -34,7 +34,6 @@ class ChangePassword(View):
 			user = User.objects.get(id=user_id)
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['User does not exist']})
-		# TODO: handle exceptions from JWT management
 
 		new_password = json_request['new_password']
 		if check_password(password=new_password, encoded=user.password):
