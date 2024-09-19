@@ -6,9 +6,25 @@ function getAvatarBase64() {
 
 		let file = registerAvatarInput.files[0]; // Get the file object
 
-		// If file does not exist, return Default
-		if (!file)
-			resolve("Default");
+		// If file does not exist, return Default avatar
+		if (!file) {
+			const imageUrl = './defaultAvatar.png';
+
+			fetch(imageUrl)
+			.then(response => response.blob()) // Convert the response to a Blob
+			.then(blob => {
+				const reader = new FileReader();
+				reader.readAsDataURL(blob);
+
+				reader.onload = function() {
+					const defaultAvatar = reader.result;
+					resolve(defaultAvatar);
+				};
+			})
+			.catch(error => {
+				console.error('Error fetching the image:', error);
+			});
+		}
 
 		// Update button text with the file name
 		let fileName = file ? file.name : 'Upload Avatar';
