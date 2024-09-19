@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
 from user.models import User
-from user_management.utils import is_valid_password
+from user.utils import is_valid_password
 
 from user_management.jwt_manager import UserAccessJWTManager
 
