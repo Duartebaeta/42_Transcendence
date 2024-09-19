@@ -18,11 +18,10 @@
 	<script src="javascript/settings.js" defer></script>
 	<script src="javascript/match-history.js" defer></script>
 	<script type="module" src="javascript/game-logic.js"></script>
-	<script src="javascript/game-ui.js" defer></script>
 	<script src="javascript/tokens.js" defer></script>
+	<script src="javascript/avatar.js" defer></script>
+	<script src="javascript/game-ui.js" defer></script>
 	<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-	
-	<script src="javascript/jwt-test.js" defer></script>
 
 	<!-- Icons -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -90,10 +89,16 @@
 								<button id="createTournamentBtn" type="submit" class="btn bg-gradient btn-block mb-2 d-none" formnovalidate style="background-color: rgb(238, 130, 238)">Create Tournament</button>
 							</div>
 						</form>
-						<div class="my-3">
-							<button id="joinRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
-							<button id="createRemoteBtn" type="button" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
-						</div>
+						<form id="remotePlayerInfo" class="d-none">
+							<!-- Game Id -->
+							<div class="my-4">
+								<input type="text" class="form-control text-center" placeholder="Game Id">
+							</div>
+							<div class="my-3">
+								<button id="joinRemoteBtn" type="submit" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Join Game</button>
+								<button id="createRemoteBtn" type="submit" class="btn bg-gradient btn-block mb-2 d-none" style="background-color: rgb(238, 130, 238)">Create Game</button>
+							</div>
+						</form>
 					</div>
 				</div>
 
@@ -102,30 +107,25 @@
 					<h1 class="text-light mb-5">Waiting For Players (4/6)</h1>
 					<div class="row">
 						<div class="col-6">
-							<p class="participant_name text-light">player name 1</p>
-							<p class="participant_name text-light">player name 2</p>
-							<p class="participant_name text-light">player name 3</p>
+							<p class="participant_name text-light">Waiting for player...</p>
+							<p class="participant_name text-light">Waiting for player...</p>
 						</div>
 						<div class="col-6">
-							<p class="participant_name text-light">player name 4</p>
-							<p class="participant_name text-light">...</p>
-							<p class="participant_name text-light">...</p>	
+							<p class="participant_name text-light">Waiting for player...</p>
+							<p class="participant_name text-light">Waiting for player...</p>	
 						</div>
 						<h5 class="mt-5 d-flex justify-content-center text-light">
 							<p class="text-light" >Game Id:</p>
-							<p id="tournamentGameId" class="text-light">123456789</p>
+							<p id="tournamentGameId" class="text-light"></p>
 						</h5>
 					</div>
 				</div>
 
 				<!-- Tournament Brackets -->
-				<div class="container text-center d-none d-none">
+				<div class="container text-center d-none">
 					<div class="row">
 						<div class="col-3 text-light">
 							<h3>Round 1</h3>
-						</div>
-						<div class="col-3 text-light">
-							<h3>Round 2</h3>
 						</div>
 						<div class="col-3 text-light">
 							<h3>Finals</h3>
@@ -138,42 +138,26 @@
 					<div class="row">
 						<div class="col-3 bracket-column justify-content-center">
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">PLAYER 1</div>
-								<div class="border p-3 text-light">PLAYER 2</div>
+								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light">...</div>
 							</div>
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">PLAYER 3</div>
-								<div class="border p-3 text-light">PLAYER 4</div>
-							</div>
-							<div class="py-5 px-4">
-								<div class="border p-3 text-light">PLAYER 5</div>
-								<div class="border p-3 text-light">PLAYER 6</div>
+								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light">...</div>
 							</div>
 						</div>
 			
-						<!-- Round 2 -->
+						<!-- Finals -->
 						<div class="col-3 bracket-column justify-content-center">
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">PLAYER 1</div>
-								<div class="border p-3 text-light">PLAYER 2</div>
-							</div>
-							<div class="py-5 px-4">
-								<div class="border p-3 text-light">PLAYER 3</div>
-								<div class="border p-3 text-light">PLAYER 4</div>
-							</div>
-						</div>
-			
-						<!-- Round 3 -->
-						<div class="col-3 bracket-column justify-content-center">
-							<div class="py-5 px-4">
-								<div class="border p-3 text-light">PLAYER 1</div>
-								<div class="border p-3 text-light">PLAYER 2</div>
+								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light">...</div>
 							</div>
 						</div>
 			
 						<!-- Final Round -->
 						<div class="col-3 bracket-column justify-content-center">
-							<div class="border px-3 py-4 text-light">Player 1</div>
+							<div class="border px-3 py-4 text-light">...</div>
 						</div>
 					</div>
 				</div>
@@ -185,7 +169,6 @@
 			</main>
 		</div>
 	</div>
-	
 
 	<!-- Login Modal -->
 	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -228,7 +211,7 @@
 	<!-- Register Modal -->
 	<div id="register-modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
-			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
+			<div class="modal-content" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
 					<h5 class="modal-title text-light" id="staticBackdropLabel">Register</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-toggle="modal" data-bs-target="#login-modal"></button>
@@ -317,7 +300,7 @@
 	<!-- Chat Modal -->
 	<div id="chat-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl">
-			<div class="modal-content" style="background-color: rgb(80, 0, 80);">
+			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
 					<h5 class="modal-title text-light" id="staticBackdropLabel">Chat</h5>
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -331,7 +314,7 @@
 							<div class="flex-grow-1 overflow-auto" id="contacts" style="height: 500px;">
 								<!-- Example Contacts -->
 								<div class="p-2">
-									<!-- Contact Lis -->
+									<!-- First Contact -->
 									<div id="chatContacts"></div>
 								</div>
 							</div>

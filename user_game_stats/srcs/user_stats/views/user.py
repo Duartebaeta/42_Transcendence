@@ -1,5 +1,7 @@
 import json
 
+from shared.util import load_json_request
+
 from django.http import JsonResponse
 
 from django.utils.decorators import method_decorator
@@ -14,12 +16,9 @@ from shared.jwt_manager import AccessJWTManager
 class User(View):
 	@csrf_exempt
 	def post(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
 
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
@@ -44,7 +43,7 @@ class User(View):
 
 	@csrf_exempt
 	def get(self, request):
-		access_token = request.get('Authorization').split(' ')[1]
+		access_token = request.headers.get('Authorization').split(' ')[1]
 		if access_token is None:
 			return JsonResponse(status=401, data={'errors': ['No access token given']})
 		success, decoded_token, errors = AccessJWTManager.authenticate(access_token)
@@ -52,16 +51,13 @@ class User(View):
 			return JsonResponse(status=401, data={'errors': errors})
 		user_id = decoded_token.get('user_id')
 		if user_id is None or user_id == '':
-			return JsonResponse(status=400, data={'errors': ['No user id in the give token']})
+			return JsonResponse(status=400, data={'errors': ['No user id in the given token']})
 		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
 
 		username = json_request.get('username')
 		if username is None or username == '':
@@ -71,9 +67,9 @@ class User(View):
 		if user is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
 
-		last_matches_points = get_last_five_matches(user.id)
+		last_matches_points = self.get_last_five_matches(user.id)
 		data = {
-			'gamesPlayed': usuer.wins + user.losses,
+			'gamesPlayed': user.wins + user.losses,
 			'wins': user.wins,
 			'losses': user.losses,
 			'tournamentWins': user.tournament_wins,
@@ -84,12 +80,9 @@ class User(View):
 	#Might not use because post of match updates users either way
 	@csrf_exempt
 	def patch(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
 
 		user_id = json_request.get('user_id')
 		if user_id is None or user_id == '':
@@ -97,13 +90,13 @@ class User(View):
 		user = UserModel.objects.filter(id=user_id).first()
 		if user is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that user id(How did you even do that)']})
-		success, errors = update_user_stats(user, json_request)
+		success, errors = self.update_user_stats(user, json_request)
 		if not success:
 			return JsonResponse(status=400, data={'errors': [errors]})
 		try:
 			user.save(update_fields=['wins', 'losses'])
 		except Exception as e:
-			return Json(status=400, data={'errors': [str(e)]})
+			return JsonResponse(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=200)
 
 	@staticmethod
@@ -124,7 +117,7 @@ class User(View):
 
 	@staticmethod
 	def get_last_five_matches(user_id):
-		last_matches = Match.objects.filter(id=user.id).order_by("-time")[:5]
+		last_matches = Match.objects.filter(id=user_id).order_by("-time")[:5]
 		last_matches_points = []
 
 		for match in last_matches:

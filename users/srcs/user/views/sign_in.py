@@ -1,4 +1,4 @@
-import json
+from shared.util import load_json_request
 
 from django.http import JsonResponse
 
@@ -17,13 +17,9 @@ from user_management.jwt_manager import RefreshJWTManager, UserAccessJWTManager
 class SignIn(View):
 	@csrf_exempt
 	def post(self, request):
-		try:
-			json_request = json.loads(request.body.decode('utf-8'))
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
-
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
 		try:
 			user_email = json_request.get('email')
 			if user_email is None or user_email == '':

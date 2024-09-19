@@ -1,5 +1,7 @@
 import json
 
+from shared.util import load_json_request
+
 from django.http import JsonResponse
 
 from django.contrib.auth.hashers import (check_password, make_password)
@@ -24,13 +26,12 @@ class ChangePassword(View):
 		if not success:
 			return JsonResponse(status=401, data={'errors': errors})
 
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
+
 		try:
-			json_request = json.loads(request.body.decode('utf-8'))
 			user = User.objects.get(id=user_id)
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['User does not exist']})
 		# TODO: handle exceptions from JWT management

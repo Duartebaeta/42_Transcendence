@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const tournamentModeBtn = document.getElementById('tournamentModeBtn');
 
 	const gameHiddenDiv = document.getElementById('tournamentPlayerInfo');
+	const remoteHiddenDiv = document.getElementById('remotePlayerInfo');
 	const createBtn = document.getElementById('createRemoteBtn');
 	const joinBtn = document.getElementById('joinRemoteBtn');
 	const createTournamentBtn = document.getElementById('createTournamentBtn');
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Display Selected Mode Options
 		gameHiddenDiv.classList.add('d-none');
+		remoteHiddenDiv.classList.remove('d-none');
 		createTournamentBtn.classList.add('d-none');
 		joinTournamentBtn.classList.add('d-none');
 
@@ -72,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// Display Selected Mode Options
 		gameHiddenDiv.classList.remove('d-none');
+		remoteHiddenDiv.classList.add('d-none');
 		createTournamentBtn.classList.remove('d-none');
 		joinTournamentBtn.classList.remove('d-none');
 

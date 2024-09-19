@@ -27,7 +27,6 @@ class Activate(View):
 			messages.success(request, 'Your account has been activated.')
 		else :
 			messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
-		# TODO: return a success page
 		return redirect('http://localhost:3000/')
 
 def make_post_to_user_stats(user_id, username):

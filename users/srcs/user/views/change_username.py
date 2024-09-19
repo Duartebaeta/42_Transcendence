@@ -1,4 +1,6 @@
 import json
+import requests
+from shared.util import load_json_request
 
 from django.http import JsonResponse
 
@@ -11,7 +13,6 @@ from user_management.utils import is_valid_username
 
 from user_management.jwt_manager import UserAccessJWTManager
 
-import requests
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ChangeUsername(View):
@@ -23,17 +24,13 @@ class ChangeUsername(View):
 		success, user_id, errors = UserAccessJWTManager.authenticate(access_token)
 		if not success:
 			return JsonResponse(status=401, data={'errors': errors})
-
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
 		try:
-			json_request = json.loads(request.body.decode('utf-8'))
 			user = User.objects.get(id=user_id)
-		except UnicodeDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid UTF-8 encoded bytes']})
-		except json.JSONDecodeError:
-			return JsonResponse(status=400, data={'errors': ['Invalid JSON data format']})
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['User does not exist']})
-		# TODO: handle exceptions from JWT management
 
 		new_username = json_request['new_username']
 		if user.username == new_username:
@@ -44,23 +41,24 @@ class ChangeUsername(View):
 			return JsonResponse(status=400, data={f'errors': [error]})
 
 		user.username = new_username;
-		if not update_username_on_stats(user.id, new_username):
+		if not self.update_username_on_stats(user.id, new_username):
 			return JsonResponse(status=400, data={'errors': ["Couldn't update username on user stats"]})
 		user.save(update_fields=["username"])
 		# Send update to User in user_stats
 		return JsonResponse(status=200, data={'message': 'Username changed :) great job'})
 
-def update_username_on_stats(user_id, username):
-	url = "http://127.0.0.1:8080/user_stats/user/"
-	headers = {'Content-Type': 'application/json'}
-	payload = {
-		'user_id': user_id,
-		'new_username': username
-	}
+	@staticmethod
+	def update_username_on_stats(user_id, username):
+		url = "http://127.0.0.1:8080/user_stats/user/"
+		headers = {'Content-Type': 'application/json'}
+		payload = {
+			'user_id': user_id,
+			'new_username': username
+		}
 
-	try:
-		response = requests-patch(url, json=payload, headers=headers)
-		response.raise_for_status()
-		return True
-	except Exception:
-		return False
+		try:
+			response = requests.patch(url, json=payload, headers=headers)
+			response.raise_for_status()
+			return True
+		except Exception:
+			return False
