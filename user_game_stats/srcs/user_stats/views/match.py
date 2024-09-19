@@ -80,11 +80,11 @@ class Match(View):
 		opponent = User.objects.filer(id=opponent_id).first()
 		try:
 			player_match = MatchModel.create(
-				player,
-				opponent,
-				won,
-				player_score,
-				opponent_score,
+				player=player,
+				opponent=opponent,
+				won=won,
+				player_score=player_score,
+				opponent_score=opponent_score,
 				#time
 			)
 			opponent_match = MatchModel.create(
