@@ -2,6 +2,7 @@ from django.db import models
 # from django.contrib.auth.models import User
 from shared import settings as shared_settings
 
+
 # Create your models here.
 
 class User(models.Model):
@@ -32,6 +33,13 @@ class ChatMessage(models.Model):
 	room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages')
 	message = models.TextField()
 	date = models.DateTimeField(auto_now=True)
+
+	def to_json(self):
+		return {
+			'user': self.user.username,
+			'message': self.message,
+			'date': self.date
+		}
 
 	class Meta:
 		ordering = ('-date',)

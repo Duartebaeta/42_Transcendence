@@ -16,18 +16,18 @@ from shared.jwt_manager import AccessJWTManager
 class BlockUser(View):
 	@csrf_exempt
 	def post(self, request):
-		# access_token = request.headers.get('Authorization').split(' ')[1]
-		# if access_token is None:
-		# 	return JsonResponse(status=401, data={'errors': ['No access token given']})
-		# success, decoded_token, errors = AccessJWTManager.authenticate(access_token)
-		# if not success:
-		# 	return JsonResponse(status=401, data={'errors': errors})
-		# user_id = decoded_token.get('user_id')
-		# if user_id is None or user_id == '':
-		# 	return JsonResponse(status=400, data={'errors': ['No user id in the given token']})
-		# if not User.objects.filter(id=user_id).exists():
-		# 	return JsonResponse(status=400, data={'errors': ['There is no user with such id(Where did you get this boy -.-)']})
-		user_id = 1
+		access_token = request.headers.get('Authorization').split(' ')[1]
+		if access_token is None:
+			return JsonResponse(status=401, data={'errors': ['No access token given']})
+		success, decoded_token, errors = AccessJWTManager.authenticate(access_token)
+		if not success:
+			return JsonResponse(status=401, data={'errors': errors})
+		user_id = decoded_token.get('user_id')
+		if user_id is None or user_id == '':
+			return JsonResponse(status=400, data={'errors': ['No user id in the given token']})
+		if not User.objects.filter(id=user_id).exists():
+			return JsonResponse(status=400, data={'errors': ['There is no user with such id(Where did you get this boy -.-)']})
+
 		json_request, err = load_json_request(request)
 		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})

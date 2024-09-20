@@ -8,7 +8,7 @@ from django.views import View
 
 from shared.util import load_json_request
 
-from chatapp.models import User, Friend
+from chatapp.models import User, BlockedUser, Friend
 
 from shared.jwt_manager import AccessJWTManager
 
@@ -70,10 +70,10 @@ class FriendView(View):
 		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})
 
-		unfriend_username = json_request.get('user')
-		if unfriend_username is None or unfriend_username == '':
+		UnfriendUsername = json_request.get('user')
+		if UnfriendUsername is None or UnfriendUsername == '':
 			return JsonResponse(status=400, data={'errors': ['No username given to friend a user(How do i know who you wanna unfriend dumb dumb)']})
-		userUnfriend = User.objects.filter(username=unfriend_username).first()
+		userUnfriend = User.objects.filter(username=UnfriendUsername).first()
 		if userUnfriend is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that username']})
 
