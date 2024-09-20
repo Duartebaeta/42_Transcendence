@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(response => response.json())
 			.then(data => {
 				const contacts = data.contacts;
+				console.log(data);
 				
 				// Create HTML Content For Contacts
 				let info = '';
@@ -174,3 +175,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		console.log("Connection Closed");
 	};
 })
+
+// Show friends only button
+document.addEventListener('DOMContentLoaded', function() {
+	const btn = document.getElementById('friendsOnlyBtn');
+
+	btn.addEventListener('click', function() {
+		if (btn.style.backgroundColor == 'rgba(220, 220, 220, 0.3)') // TODO: add code to toggle friends only
+			btn.style.backgroundColor = 'rgba(238, 130, 238, 1)';
+		else
+			btn.style.backgroundColor = 'rgba(220, 220, 220, 0.3)';
+	});
+});
