@@ -80,7 +80,6 @@ class Game():
 			"game_id": self.game_id,
 			"player": list(self.players.keys())[0],
 			"opponent": list(self.players.keys())[1],
-			"player_info": self.players,
 			"player_score": self.left_score,
 			"opponent_score": self.right_score,
 			"won": self.left_score > self.right_score

@@ -11,3 +11,4 @@ package.json
 __init__.py
 node_modules/**
 server.js
+apontamentos.txt

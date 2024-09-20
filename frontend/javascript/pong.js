@@ -28,14 +28,13 @@ function startGame(GAME_ID, _username = "") {
 	if (username == "")
 		username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
 
-	console.log(username)
-
 	gameId = GAME_ID;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
 	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
 	socket.onopen = function(e) {
+		console.log("[open] Connection established");
 		isSocketConnected = true;
 		game_container.classList.remove('d-none');
 		game_menu.classList.add('d-none');
@@ -56,7 +55,6 @@ function startGame(GAME_ID, _username = "") {
 		} else if (gameState.type === "direction_change") {
 			SockIn.direction_change(gameState);
 		} else if (gameState.type === "game_over") {
-			console.log("Game over. Winner:", gameState.winner);
 			Pong.backendUpdate(gameState.game_state);
 			SockIn.gameEnd(Pong, gameState.winner);
 		}
@@ -68,7 +66,6 @@ function startGame(GAME_ID, _username = "") {
 		} else {
 			console.log('[close] Connection died');
 		}
-		document.getElementById("status").textContent = "Disconnected";
 		isSocketConnected = false; // Mark the socket as disconnected
 	};
 	
@@ -114,8 +111,8 @@ const SockIn = {
 	},
 	gameEnd: function (game, text) {
 		game.over = true;
-		console.log(text);
 		Pong.endGameMenu(text);
+		socket.close();
 	},
 	direction_change: function(gameState) {
 		let idle_check = Pong.ai.move == DIRECTION.IDLE;
@@ -137,6 +134,7 @@ const SockIn = {
 const SockOut = {
 	gameStart: function () {
 		if (isSocketConnected) {
+			console.log(socket);
 			socket.send(JSON.stringify({
 				type: 'ready',
 				player: username  // Change to player username in future
@@ -194,12 +192,12 @@ var Game = {
 
 		Pong.menu();
 		Pong.listen();
-	
+		
+		// if socket is open send ready message
 		SockOut.gameStart();
 	},
 
 	endGameMenu: function (text) {
-		console.log("Called");
 		// Change the canvas font size and color
 		Pong.context.font = "45px Courier New";
 		Pong.context.fillStyle = this.color;
