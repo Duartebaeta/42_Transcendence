@@ -24,8 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Get the base64 avatar using await
 			let avatarBase64 = await getAvatarBase64();
 
-			document.getElementById('registerAvatarImg').src = avatarBase64;
-
 			// Construct the request object
 			var request = {
 				method: 'POST', // HTTP method

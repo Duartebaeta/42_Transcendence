@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	updateButton.addEventListener("click", function() {
 		var request = {
-		    method: 'GET',
-		    url: 'http://127.0.0.1:8080/user_stats/user/',
-		    headers: {
-		        'Content-Type': 'application/json',
-		    }
+			method: 'GET',
+			url: 'http://127.0.0.1:8080/user_stats/user/',
+			headers: {
+				'Content-Type': 'application/json',
+			}
 		};
-
+		
 		// Fetch JSON data
 		authenticatedRequest(request.url, request)
 		.then(response => response.json())
@@ -21,12 +21,14 @@ document.addEventListener("DOMContentLoaded", function() {
 			const losses = data.losses;
 			const tournamentWins = data.tournamentWins;	
 			const points = data.points;
+			const avatar = data.avatar;
 
 			// Update HTML content
 			document.getElementById('gamesPlayed').innerText = gamesPlayed;
 			document.getElementById('wins').innerText = wins;
 			document.getElementById('losses').innerText = losses;
 			document.getElementById('tournamentWins').innerText = tournamentWins;
+			document.getElementById('playerStatsAvatar').src = avatar;
 			drawGraph(points); // Draw points graph
 		})
 		.catch(error => {

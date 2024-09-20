@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
 from user.models import User
-from user_management.utils import is_valid_username
+from user.utils import is_valid_username
 
 from user_management.jwt_manager import UserAccessJWTManager
 
@@ -41,15 +41,17 @@ class ChangeUsername(View):
 			return JsonResponse(status=400, data={f'errors': [error]})
 
 		user.username = new_username;
-		if not self.update_username_on_stats(user.id, new_username):
+		if not self.update_username(user.id, new_username):
 			return JsonResponse(status=400, data={'errors': ["Couldn't update username on user stats"]})
 		user.save(update_fields=["username"])
 		# Send update to User in user_stats
 		return JsonResponse(status=200, data={'message': 'Username changed :) great job'})
 
 	@staticmethod
-	def update_username_on_stats(user_id, username):
-		url = "http://127.0.0.1:8080/user_stats/user/"
+	def update_username(user_id, username):
+		urls = ["http://127.0.0.1:8080/user_stats/user/",
+				"http://127.0.0.1:9000/rooms/user"
+				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {
 			'user_id': user_id,
@@ -57,8 +59,9 @@ class ChangeUsername(View):
 		}
 
 		try:
-			response = requests.patch(url, json=payload, headers=headers)
-			response.raise_for_status()
+			for url in urls:
+				response = requests.patch(url, json=payload, headers=headers)
+				response.raise_for_status()
 			return True
 		except Exception:
 			return False

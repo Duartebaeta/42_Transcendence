@@ -15,7 +15,7 @@ from django.views import View
 from user.utils import send_verification_email
 
 from user.models import User
-from user_management.utils import (is_valid_username, is_valid_email, is_valid_password)
+from user.utils import (is_valid_username, is_valid_email, is_valid_password)
 from user_management import settings
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -33,7 +33,8 @@ class SignUp(View):
 			user = User.objects.create(
 				username = json_request['username'],
 				email = json_request['email'],
-				password = make_password(json_request['password'])
+				password = make_password(json_request['password']),
+				avatar = json_request.get('avatar')
 			)
 		except Exception as e:
 			return JsonResponse(status=400,
@@ -51,9 +52,10 @@ class SignUp(View):
 
 	@staticmethod
 	def user_info_validation(json_request):
-		username  = json_request['username']
-		email = json_request['email']
-		password = json_request['password']
+		username  = json_request.get('username')
+		email = json_request.get('email')
+		password = json_request.get('password')
+		avatar = json_request.get('avatar')
 
 		errors = []
 
@@ -66,6 +68,8 @@ class SignUp(View):
 		valid_password, password_error = is_valid_password(password)
 		if not valid_password:
 			errors.append(password_error)
+		if avatar is None:
+			errors.append('No avatar was given')
 
 		return errors
 

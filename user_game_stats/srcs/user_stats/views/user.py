@@ -22,11 +22,14 @@ class User(View):
 
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
+		avatar = json_request.get('avatar')
 
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No user_id was given']})
 		if username is None or username == '':
 			return JsonResponse(status=400, data={'errors': ['No username was given']})
+		if avatar is None or avatar == '':
+			return JsonResponse(status=400, data={'errorr': ['No avatar was given(i wanna see your face tf)']})
 		if not isinstance(user_id, int) or user_id < 0:
 			return JsonResponse(status=400, data={'errors': ['Given user_id is not valid']})
 
@@ -35,6 +38,7 @@ class User(View):
 
 		user = UserModel.objects.create(id=user_id)
 		user.username = username
+		user.avatar = avatar
 		try:
 			user.save()
 		except Exception as e:
@@ -69,6 +73,8 @@ class User(View):
 
 		last_matches_points = self.get_last_five_matches(user.id)
 		data = {
+			'username': user.username,
+			'avatar': user.avatar,
 			'gamesPlayed': user.wins + user.losses,
 			'wins': user.wins,
 			'losses': user.losses,
@@ -90,14 +96,20 @@ class User(View):
 		user = UserModel.objects.filter(id=user_id).first()
 		if user is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that user id(How did you even do that)']})
-		success, errors = self.update_user_stats(user, json_request)
-		if not success:
-			return JsonResponse(status=400, data={'errors': [errors]})
+
+		new_username = json_request.get('new_username')
+		new_avatar = json_request.get('new_avatar')
+
+		if new_username is not None:
+			user.username = new_username
+		if new_avatar is not None:
+			user.avatar = new_avatar
+		
 		try:
-			user.save(update_fields=['wins', 'losses'])
+			user.save(update_fields=['username', 'avatar'])
 		except Exception as e:
 			return JsonResponse(status=400, data={'errors': [str(e)]})
-		return JsonResponse(status=200)
+		return JsonResponse(status=200, data={'message': 'Successfully update informations'})
 
 	@staticmethod
 	def update_user_stats(user, stats):
