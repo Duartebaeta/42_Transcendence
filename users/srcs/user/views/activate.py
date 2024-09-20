@@ -30,7 +30,7 @@ class Activate(View):
 			messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
 		return redirect('http://localhost:3000/')
 
-	@csrf_exempt
+	@staticmethod
 	def create_user(user_id, username, avatar):
 		urls = ["http://127.0.0.1:8080/user_stats/user/",
 				# "http://127.0.0.1:9000/rooms/user/"

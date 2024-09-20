@@ -59,17 +59,20 @@ class User(View):
 		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
-		json_request, err = load_json_request(request)
-		if err is not None:
-			return JsonResponse(status=400, data={'errors': [err]})
+		if request.body:
+			json_request, err = load_json_request(request)
+			if err is not None:
+				return JsonResponse(status=400, data={'errors': [err]})
 
-		username = json_request.get('username')
-		if username is None or username == '':
-			return JsonResponse(status=400, data={'errors': ['No username was given (no stats for you naugthy)']})
+			username = json_request.get('username')
+			if username is None or username == '':
+				return JsonResponse(status=400, data={'errors': ['No username was given (no stats for you naugthy)']})
 
-		user = UserModel.objects.filter(username=username).first()
-		if user is None:
-			return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
+			user = UserModel.objects.filter(username=username).first()
+			if user is None:
+				return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
+		else:
+			user = UserModel.objects.get(user_id)
 
 		last_matches_points = self.get_last_five_matches(user.id)
 		data = {
@@ -79,7 +82,7 @@ class User(View):
 			'wins': user.wins,
 			'losses': user.losses,
 			'tournamentWins': user.tournament_wins,
-			'points': last_matches_points,
+			'points': last_matches_points
 		}
 		return JsonResponse(status=200, data=data)
 
