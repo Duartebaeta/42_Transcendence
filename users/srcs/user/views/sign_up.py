@@ -30,9 +30,11 @@ class SignUp(View):
 			return JsonResponse(status=400, data={'errors': errors})
 
 		try:
-			user = User.objects.create(username = json_request['username'],
-							  			email = json_request['email'],
-										password = make_password(json_request['password']))
+			user = User.objects.create(
+				username = json_request['username'],
+				email = json_request['email'],
+				password = make_password(json_request['password'])
+			)
 		except Exception as e:
 			return JsonResponse(status=400,
 					   	data={'errors': [f'It occurred an error while creating the user: {str(e)}']})
