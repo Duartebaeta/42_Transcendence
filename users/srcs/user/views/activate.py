@@ -21,7 +21,7 @@ class Activate(View):
 		except(TypeError, ValueError, OverflowError, User.DoesNotExist):
 			user = None
 		if user is not None and default_token_generator.check_token(user, token):
-			if not self.create_user(user.id, user.username, user.avatar):
+			if not self.create_user_db(user.id, user.username, user.avatar):
 				return HttpResponseBadRequest("Some error occured while creating user")
 			user.emailVerified = True
 			user.save()
@@ -31,7 +31,7 @@ class Activate(View):
 		return redirect('http://localhost:3000/')
 
 	@staticmethod
-	def create_user(user_id, username, avatar):
+	def create_user_db(user_id, username, avatar):
 		urls = ["http://127.0.0.1:8080/user_stats/user/",
 				# "http://127.0.0.1:9000/rooms/user/"
 				]

@@ -5,7 +5,7 @@ from user_game_stats import settings
 class User(models.Model):
 	id = models.IntegerField(primary_key=True)
 	username = models.CharField(unique=True, max_length=settings.USERNAME_MAX_LENGTH)
-	avatar = models.TextField()
+	avatar = models.TextField(null=True)
 	wins = models.IntegerField(default=0)
 	losses = models.IntegerField(default=0)
 	tournament_wins = models.IntegerField(default=0)

@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		.then(response => response.json())
 		.then(data => {
 			// Parse JSON data
+			const username = data.username;
 			const gamesPlayed = data.gamesPlayed;
 			const wins = data.wins;
 			const losses = data.losses;
@@ -24,12 +25,17 @@ document.addEventListener("DOMContentLoaded", function() {
 			const avatar = data.avatar;
 
 			// Update HTML content
+			document.getElementById('playerStatsUsername').innerText = username;
 			document.getElementById('gamesPlayed').innerText = gamesPlayed;
 			document.getElementById('wins').innerText = wins;
 			document.getElementById('losses').innerText = losses;
 			document.getElementById('tournamentWins').innerText = tournamentWins;
 			document.getElementById('playerStatsAvatar').src = avatar;
-			drawGraph(points); // Draw points graph
+			// Draw points graph
+			if (!points)
+				drawGraph([0, 0, 0, 0, 0, 0, 0]);
+			else
+				drawGraph(points);
 		})
 		.catch(error => {
 			console.error("Error fetching data:", error);

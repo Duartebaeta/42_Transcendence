@@ -23,6 +23,7 @@ class User(View):
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
 		avatar = json_request.get('avatar')
+		print(avatar)
 
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No user_id was given']})
@@ -72,7 +73,7 @@ class User(View):
 			if user is None:
 				return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
 		else:
-			user = UserModel.objects.get(user_id)
+			user = UserModel.objects.filter(id=user_id).first()
 
 		last_matches_points = self.get_last_five_matches(user.id)
 		data = {
