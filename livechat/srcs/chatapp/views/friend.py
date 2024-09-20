@@ -70,10 +70,10 @@ class FriendView(View):
 		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})
 
-		UnfriendUsername = json_request.get('user')
-		if UnfriendUsername is None or UnfriendUsername == '':
+		unfriend_username = json_request.get('user')
+		if unfriend_username is None or unfriend_username == '':
 			return JsonResponse(status=400, data={'errors': ['No username given to friend a user(How do i know who you wanna unfriend dumb dumb)']})
-		userUnfriend = User.objects.filter(username=UnfriendUsername).first()
+		userUnfriend = User.objects.filter(username=unfriend_username).first()
 		if userUnfriend is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that username']})
 
