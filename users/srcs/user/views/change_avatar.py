@@ -25,7 +25,7 @@ class ChangeAvatar(View):
 			return JsonResponse(status=400, data={'errors': [err]})
 		
 		try:
-			user = User.objects.get(user_id)
+			user = User.objects.filter(id=user_id).first()
 		except User.DoesNotExist:
 			return JsonResponse(status=400, data={'errors': ['User does not exist']})
 		
@@ -34,6 +34,11 @@ class ChangeAvatar(View):
 			return JsonResponse(status=400, data={'errors': ['No new avatar was given']})
 		
 		user.avatar = new_avatar
+		try:
+			user.save()
+		except Exception as e:
+			onResponse(status=500, data={'errors': [str(e)]})
+		return JsonResponse(status=200, data={'message': 'Avatar changed succesfully'})
 
 	@staticmethod
 	def update_avatar(user_id, new_avatar):
