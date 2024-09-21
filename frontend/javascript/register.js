@@ -22,7 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		try {
 			// Get the base64 avatar using await
-			let avatarBase64 = await getAvatarBase64();
+			const input = document.getElementById('avatarImg');
+			const btn = document.getElementById('avatarImgBtn');
+
+			changeAvatarBtnName(input, btn);
+
+			let avatarBase64 = await getAvatarBase64(input, btn);
 
 			// Construct the request object
 			var request = {

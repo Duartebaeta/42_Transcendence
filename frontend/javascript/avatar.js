@@ -1,21 +1,18 @@
 // Convert avatar to base64
-function getAvatarBase64() {
+function getAvatarBase64(input, btn) {
 	return new Promise((resolve, reject) => {
-		const registerAvatarInput = document.getElementById('avatarImg');
-		const registerAvatarBtn = document.getElementById('avatarImg');
-
-		let file = registerAvatarInput.files[0]; // Get the file object
+		let file = input.files[0]; // Get the file object
 
 		// If file does not exist, return Default avatar
 		if (!file) {
 			const imageUrl = './defaultAvatar.png';
-
+			
 			fetch(imageUrl)
 			.then(response => response.blob()) // Convert the response to a Blob
 			.then(blob => {
 				const reader = new FileReader();
 				reader.readAsDataURL(blob);
-
+				
 				reader.onload = function() {
 					const defaultAvatar = reader.result;
 					resolve(defaultAvatar);
@@ -24,11 +21,15 @@ function getAvatarBase64() {
 			.catch(error => {
 				console.error('Error fetching the image:', error);
 			});
+			return;
 		}
 
 		// Update button text with the file name
-		let fileName = file ? file.name : 'Upload Avatar';
-		registerAvatarBtn.textContent = fileName;
+		// input.addEventListener('change', function () {
+		// 	if (input.files && input.files.length > 0) {
+		// 		btn.textContent = input.files[0].name;
+		// 	}
+		// });
 
 		let reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -45,3 +46,10 @@ function getAvatarBase64() {
 	});
 }
 
+function changeAvatarBtnName(input, btn) {
+	input.addEventListener('change', function () {
+		if (input.files && input.files.length > 0) {
+			btn.textContent = input.files[0].name;
+		}
+	});
+}

@@ -55,12 +55,8 @@
 			
 			<!-- Game Content -->
 			<main class="col d-flex align-items-center justify-content-center">
-				<!-- JWT Test -->
-				<div>
-					<button id="jwt-test-btn">jwt test</button>
-				</div>
 				<!-- Select Game Mode -->
-				<div class="game-menu text-center d-none">
+				<div class="game-menu text-center">
 					<h1 class="text-light mb-5">Start game</h1>
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
@@ -226,7 +222,7 @@
 									<i class="bi bi-person-square text-light register-icon"></i>
 									<div class="text-center">
 										<input type="file" class="file-input" id="avatarImg" name="avatarImg" accept="image/*" style="display:none;">
-										<button type="button" class="btn bg-gradient" style="background-color: rgb(238, 130, 238)" onclick="document.getElementById('avatarImg').click();">Upload Avatar</button>
+										<button id="avatarImgBtn" type="button" class="btn bg-gradient" style="background-color: rgb(238, 130, 238)" onclick="document.getElementById('avatarImg').click();">Upload Avatar</button>
 									</div>
 								</div>
 								<!-- Register Components -->
@@ -382,13 +378,15 @@
 				</div>
 				<div class="modal-body">
 					<!-- Change Username -->
-					<div class="d-flex align-items-center mb-3">
-						<p class="text-light pe-3 mb-0">Change Username</p>
-						<input id="newUsername" type="text" class="form-control w-auto" placeholder="New Username">
-						<div class="text-center ps-3">
-							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
-						</div>
-					</div>					
+					<form id="newUsername">
+						<div class="d-flex align-items-center mb-3">
+							<p class="text-light pe-3 mb-0">Change Username</p>
+							<input id="newUsernameInput" type="text" class="form-control w-auto" placeholder="New Username">
+							<div class="text-center ps-3">
+								<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238)">Change</button>
+							</div>
+						</div>					
+					</form>
 					<!-- Change Password -->
 					<form id="newPassword">
 						<div class="d-flex align-items-center mb-3">
@@ -401,20 +399,15 @@
 					</form>
 					<!-- Change Avatar -->
 					<div class="d-flex align-items-center mb-3">
-						<label for="settingAvatar" class="text-light pe-3 mb-0">Change Avatar:</label>
+						<label for="settingsAvatar" class="text-light pe-3 mb-0">Change Avatar:</label>
 						<div class="position-relative">
-							<input type="file" class="file-input" id="settingAvatar" name="settingAvatar" accept="image/*" style="display:none;">
-							<button type="button" class="btn btn-light btn-sm bg-gradient" onclick="document.getElementById('settingAvatar').click();">Choose file</button>
+							<input type="file" class="file-input" id="settingsAvatar" name="settingsAvatar" accept="image/*" style="display:none;">
+							<button id="settingsAvatarBtn" type="button" class="btn btn-light btn-sm bg-gradient" onclick="document.getElementById('settingsAvatar').click();">Upload Avatar</button>
 						</div>
 						<div class="text-center ps-3">
-							<button type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238);">Change</button>
+							<button id="avatarSettingsSubmit" type="submit" class="btn btn-sm bg-gradient btn-block" style="background-color: rgb(238, 130, 238);">Change</button>
 						</div>
 					</div>
-					<!-- Toggle 2FA -->
-					<!-- <div class="d-flex">
-						<p class="text-light pe-3">Activate 2 Factor Authentication</p>
-						<input type="checkbox" class="form-check-input">
-					</div> -->
 				</div>
 			</div>
 		</div>
