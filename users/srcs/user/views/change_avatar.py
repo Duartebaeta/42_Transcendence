@@ -34,16 +34,18 @@ class ChangeAvatar(View):
 			return JsonResponse(status=400, data={'errors': ['No new avatar was given']})
 		
 		user.avatar = new_avatar
+		if not self.update_avatar(user_id, new_avatar):
+			return JsonResponse(status=400, data={'errors': ['Error while updating avatar in other micro services']})
 		try:
 			user.save()
 		except Exception as e:
-			onResponse(status=500, data={'errors': [str(e)]})
+			JsonResponse(status=500, data={'errors': [str(e)]})
 		return JsonResponse(status=200, data={'message': 'Avatar changed succesfully'})
 
 	@staticmethod
 	def update_avatar(user_id, new_avatar):
 		urls = ["http://127.0.0.1:8080/user_stats/user/",
-				"http://127.0.0.1:9000/rooms/user"
+				# "http://127.0.0.1:9000/rooms/user"
 				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {
