@@ -98,7 +98,7 @@ function endTournament(displayName, won = false) {
 	console.log('Ending tournament');
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let game_window = document.querySelector('.game');
-	let home_button = document.querySelector('#return-home');
+	let home_button = document.querySelector('#tournament-home-button');
 	let tournament_text_box = document.querySelector('#tournament-text-box');
 
 	if (won) {
@@ -113,10 +113,6 @@ function endTournament(displayName, won = false) {
 	tournament_text_box.classList.remove('d-none');
 
 	home_button.classList.remove('d-none');
-	home_button.addEventListener('click', function () {
-		window.location.reload();
-	});
-
 }
 
 function showBrackets(data, displayName, finalRound = false) {

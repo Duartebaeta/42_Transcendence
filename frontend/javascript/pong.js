@@ -8,7 +8,6 @@ let socket;
 let isSocketConnected = false;
 var Pong;
 let serving = false;
-let drawLock = false;
 
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
@@ -153,7 +152,6 @@ const SockIn = {
 const SockOut = {
 	gameStart: function () {
 		if (isSocketConnected) {
-			console.log(socket);
 			socket.send(JSON.stringify({
 				type: 'serve_ball'
 			}));
@@ -253,10 +251,8 @@ var Game = {
 	},
 
 	endGameMenu: function (text) {
-		console.log("Drawing end game menu: ", text);
 		// Draw all the Pong objects in their current state
 		Pong.draw();
-		drawLock = true;
 
 		// Change the canvas font size and color
 		this.context.font = "40px Courier New";
@@ -350,12 +346,13 @@ var Game = {
 			Pong.ai.score = gameState.left_score;
 		}
 		
-		Pong.draw();
+		if (!Pong.over) {
+			Pong.draw();
+		}
 	},
 	
 	// Draw the objects to the canvas element
 	draw: function () {
-		if (drawLock) return;
 		// Clear the Canvas
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	
@@ -449,8 +446,10 @@ var Game = {
 	},
 	
 	loop: function () {
-		Pong.update();
-		Pong.draw();
+		if (!Pong.over) {
+			Pong.update();
+			Pong.draw();
+		}
 	
 		// If the game is not over, draw the next frame.
 		if (!Pong.over) requestAnimationFrame(Pong.loop);

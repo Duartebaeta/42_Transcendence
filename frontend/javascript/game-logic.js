@@ -45,6 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
 	tournamentForm.addEventListener('submit', function(event) {
 		event.preventDefault();
 
+		let tournamentDisplayName = event.target.elements[0].value;
+		if (tournamentDisplayName === '') {
+			alert('Please enter a display name');
+			return;
+		}
+
 		// Establish WebSocket connection for TournamentManager
 		TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/`);
 		// Handle incoming messages from the backend
@@ -58,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		let clickedButton = document.activeElement;
 		let tournamentId;
 
-		let tournamentDisplayName = event.target.elements[0].value;
 
 		if (clickedButton.id === 'joinTournamentBtn') {
 			tournamentId = event.target.elements[1].value;
@@ -71,6 +76,14 @@ document.addEventListener('DOMContentLoaded', function () {
 			createTournament(tournamentDisplayName);
 		}
 	});
+
+	let home_btns = document.querySelectorAll('.home-button');
+	home_btns.forEach(home_button => {
+		home_button.addEventListener('click', function () {
+			window.location.reload();
+		});
+	});
+
 });
 
 function handleWebSocketMessage(data) {
