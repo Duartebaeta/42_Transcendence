@@ -40,9 +40,14 @@ class User(View):
 			last_message = chat.messages.filter(user=contact).order_by('-date').first()
 			if last_message is None:
 				last_message = ''
+			if user.friend1.filter(user2=contact).exists() or user.friend2.filter(user1=contact).exists():
+				friend = True
+			else:
+				friend = False
 			result = {
 				'contact': contact,
 				'last_message': last_message,
+				'friend': friend
 			}
 			contacts.append(result)
 
