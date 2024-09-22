@@ -8,6 +8,7 @@ let socket;
 let isSocketConnected = false;
 var Pong;
 let serving = false;
+let drawLock = false;
 
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
@@ -69,7 +70,7 @@ function startGame(GAME_ID, _username = "") {
 					text = "Waiting for opponent to serve";
 				}
 				Pong.serveBall(text);
-			}, 5000);  // 5000 milliseconds = 5 seconds
+			}, 3000);  // 5000 milliseconds = 5 seconds
 		}
 	};
 	
@@ -122,10 +123,15 @@ const SockIn = {
 		game.running = true;
 		window.requestAnimationFrame(Pong.loop.bind(Pong));
 	},
-	gameEnd: function (game, text) {
+	gameEnd: function (game, winner_side) {
 		game.over = true;
+		let text;
+		if (game.side == winner_side) {
+			text = "You win!";
+		} else {
+			text = "You lose!";
+		}
 		Pong.endGameMenu(text);
-		socket.close();
 	},
 	direction_change: function(gameState) {
 		let idle_check = Pong.ai.move == DIRECTION.IDLE;
@@ -247,26 +253,31 @@ var Game = {
 	},
 
 	endGameMenu: function (text) {
+		console.log("Drawing end game menu: ", text);
+		// Draw all the Pong objects in their current state
+		Pong.draw();
+		drawLock = true;
+
 		// Change the canvas font size and color
-		Pong.context.font = "45px Courier New";
-		Pong.context.fillStyle = this.color;
+		this.context.font = "40px Courier New";
+		this.context.fillStyle = this.color;
 
 		// Draw the rectangle behind the 'Press any key to begin' text.
-		Pong.context.fillRect(
-			Pong.canvas.width / 2 - 350,
-			Pong.canvas.height / 2 - 48,
+		this.context.fillRect(
+			this.canvas.width / 2 - 350,
+			this.canvas.height / 2 - 48,
 			700,
 			100
 		);
 
 		// Change the canvas color;
-		Pong.context.fillStyle = "#ffffff";
+		this.context.fillStyle = "#ffffff";
 
-		// Draw the end game menu text ('Game Over' and 'Winner')
-		Pong.context.fillText(
+		// Draw the 'press any key to begin' text
+		this.context.fillText(
 			text,
-			Pong.canvas.width / 2,
-			Pong.canvas.height / 2 + 15
+			this.canvas.width / 2,
+			this.canvas.height / 2 + 15
 		);
 	},
 
@@ -344,6 +355,7 @@ var Game = {
 	
 	// Draw the objects to the canvas element
 	draw: function () {
+		if (drawLock) return;
 		// Clear the Canvas
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	
@@ -462,7 +474,7 @@ var Game = {
 				}
 			}
 
-			if (serving == true && Pong.running == false) {
+			if (serving == true && Pong.running == false && Pong.side == "left") {
 				SockOut.gameStart();
 				serving = false;
 			}

@@ -45,3 +45,10 @@
 .contactArea:hover {
 	background: rgb(66, 1, 66);
 }
+
+.green-highlight {
+	background-color: #00ff00;
+}
+.red-highlight {
+	background-color: #ff0000;
+}

@@ -13,7 +13,6 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		self.tournament_id = self.scope['url_route']['kwargs']['tournament_id']
 		self.display_name = self.scope['url_route']['kwargs']['display_name']
 		self.group_name = f'tournament_{self.tournament_id}'
-		self.current_round = 1
 
 		# Add to the tournament group
 		await self.channel_layer.group_add(
@@ -29,6 +28,7 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		TournamentConsumer.tournaments[self.tournament_id]['participants'].append(self.display_name)
 
 		self.my_tournament = TournamentConsumer.tournaments[self.tournament_id]
+		self.my_tournament['current_round'] = 1
 
 		if len(self.my_tournament['participants']) == 4:
 			print(f"Starting tournament {self.tournament_id}")
@@ -68,15 +68,31 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 
 		elif data['type'] == 'game_over':
 			data = data['data']
+			print(f"Game over: {data}")
+			print(f"Current round: {self.my_tournament['current_round']}")
+			print(f"{self.display_name} is the winner: {self.display_name == data['winner']}")
 			if self.display_name == data['winner']:
-				curr_round = self.my_tournament['rounds'][f'round_{self.current_round}']
-				curr_round['winners'].append(data['winner'])
-				if len(curr_round['winners']) == 2:
-					self.current_round += 1
-					if self.current_round == 2:
-						await self.round_2(curr_round['winners'])
-					else:
-						pass
+				if self.my_tournament['current_round'] == 2:
+					print(f"Winner of tournament {self.tournament_id}: {data['winner']}")
+					self.my_tournament['winner'] = data['winner']
+					await self.channel_layer.group_send(
+						self.group_name,
+						{
+							'type': 'tournament_message',
+							'message': {
+								'type': 'tournament_winner',
+								'winner': data['winner'],
+								'participants': self.my_tournament['participants']
+							}
+						}
+					)
+				else:
+					curr_round = self.my_tournament['rounds'][f'round_{self.my_tournament['current_round']}']
+					curr_round['winners'].append(data['winner'])
+					if len(curr_round['winners']) == 2:
+						self.my_tournament['current_round'] += 1
+						if self.my_tournament['current_round'] == 2:
+							await self.round_2(curr_round['winners'])
 
 
 	async def round_1(self):
@@ -133,6 +149,7 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 				'message': {
 					'type': 'tournament_final',
 					'matching': [winners[0], winners[1]],
+					'participants': self.my_tournament['participants'],
 					'gameID': gameID
 				}
 			}

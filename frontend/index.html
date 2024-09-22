@@ -123,7 +123,7 @@
 
 				<!-- Tournament Brackets -->
 				<div class="container text-center d-none tournament-brackets">
-					<div class="row">
+					<div class="row justify-content-center">
 						<div class="col-3 text-light">
 							<h3>Round 1</h3>
 						</div>
@@ -135,7 +135,7 @@
 						</div>
 					</div>
 					<!-- First Round -->
-					<div class="row">
+					<div class="row justify-content-center">
 						<div class="col-3 bracket-column justify-content-center">
 							<div class="py-5 px-4">
 								<div class="border p-3 text-light round-1-participant">...</div>
@@ -150,18 +150,21 @@
 						<!-- Finals -->
 						<div class="col-3 bracket-column justify-content-center">
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">...</div>
-								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light round-2-participant">...</div>
+								<div class="border p-3 text-light round-2-participant">...</div>
 							</div>
 						</div>
 			
 						<!-- Winner -->
 						<div class="col-3 bracket-column justify-content-center">
-							<div class="border px-3 py-4 text-light">...</div>
+							<div class="border px-3 py-4 text-light tournament-winner">...</div>
 						</div>
 					</div>
+					<div id="tournament-text-box" class="d-none">
+						<h4 id="tournament-text" class="text-light"></h4>
+						<button id="return-home" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Main Menu</button>
+					</div>
 				</div>
-
 				<div class="game d-none">
 					<canvas></canvas>
 				</div>

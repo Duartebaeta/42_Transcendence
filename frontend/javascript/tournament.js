@@ -34,7 +34,10 @@ function startTournament(displayName, tournamentID) {
 		} else if (data.type === 'tournament_final') {
 			console.log('Final round:', data);
 			tournamentData = data;
-			startFinalRound(tournamentData, displayName);
+			showBrackets(tournamentData, displayName, true);
+		} else if (data.type === 'tournament_winner') {
+			console.log('Tournament winner:', data);
+			endTournament(displayName, data.winner === displayName);
 		}
 	};
 
@@ -49,8 +52,6 @@ function startTournament(displayName, tournamentID) {
 	GameManagerSocket.onmessage = function (event) {
 		console.log('Received message:', event.data)
 		const data = JSON.parse(event.data);
-		console.log('Parsed data:', data);
-		// Handle incoming messages related to the game
 		if (data.type === 'game_ended') {
 			console.log('Game over received in tournament end:', data);
 			let processed_data = {
@@ -58,7 +59,6 @@ function startTournament(displayName, tournamentID) {
 				'participants': [data.gameState.player, data.gameState.opponent],
 				'winner': data.gameState.won ? data.gameState.player : data.gameState.opponent
 			};
-			console.log('Processed data:', processed_data);
 			TournamentSocket.send(JSON.stringify({ type: 'game_over', data: processed_data }));
 		}
 		else {
@@ -94,23 +94,68 @@ function populateWaitingRoom(data) {
 	});
 }
 
-function showBrackets(data, displayName) {
+function endTournament(displayName, won = false) {
+	console.log('Ending tournament');
+	let tournamentBrackets = document.querySelector('.tournament-brackets');
+	let game_window = document.querySelector('.game');
+	let home_button = document.querySelector('#return-home');
+	let tournament_text_box = document.querySelector('#tournament-text-box');
+
+	if (won) {
+		document.querySelector('#tournament-text').innerHTML = 'Congratulations! You won the tournament!';
+		document.querySelector('.tournament-winner').innerHTML = displayName;
+	} else {
+		document.querySelector('#tournament-text').innerHTML = 'Better luck next time! You lost the tournament!';
+	}
+
+	tournamentBrackets.classList.remove('d-none');
+	game_window.classList.add('d-none');
+	tournament_text_box.classList.remove('d-none');
+
+	home_button.classList.remove('d-none');
+	home_button.addEventListener('click', function () {
+		window.location.reload();
+	});
+
+}
+
+function showBrackets(data, displayName, finalRound = false) {
 	console.log('Showing brackets:', data);
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let waitingRoom = document.querySelector('.waiting-room');
 	let players = document.querySelectorAll('.round-1-participant');
+	let game_window = document.querySelector('.game');
 
 	waitingRoom.classList.add('d-none');
+	game_window.classList.add('d-none');
 	data.participants.forEach(function (participant, counter) {
 		players[counter].innerHTML = participant;
 	});
+
+	if (finalRound) {
+		let final_players = document.querySelectorAll('.round-2-participant');
+		data.matching.forEach(function (participant, counter) {
+			final_players[counter].innerHTML = participant;
+		});
+		players.forEach(function (player) {
+			if (data.matching.includes(player.innerHTML)) {
+				player.classList.add('green-highlight');
+			} else {
+				player.classList.add('red-highlight');
+			}
+		});
+	}
+
 	tournamentBrackets.classList.remove('d-none');
 
 	setTimeout(function() {
 		tournamentBrackets.classList.add('d-none');
-		startRound(data, displayName);
+		if (finalRound) {
+			startFinalRound(data, displayName);
+		} else {
+			startRound(data, displayName);
+		}
 	}, 5000);  // 5000 milliseconds = 5 seconds
-
 
 }
 
@@ -146,16 +191,31 @@ function startRound(data, displayName) {
 		
 		startGame(data['gameID_2'], displayName);
 
-	} else if (data['lost'].includes(displayName)) {
+	} else {
 		// Display message that the player has lost
 		console.log('Player lost');
+		endTournament(displayName);
 	}
 }
 
 function startFinalRound(data, displayName) {
 	console.log('Starting final round:', data);
 	if (data['matching'].includes(displayName)) {
+		console.log('Starting game:', data['gameID']);
+		let message = JSON.stringify({
+			type: 'change_group',
+			game_id: data['gameID'],
+			group_name: 'game_manager_' + data['gameID']
+		});
+		
+		// Send the message via the function that handles the socket state
+		sendSocketMessage(message);
+
 		startGame(data['gameID'], displayName);
+	} else {
+		// Display message that the player has lost
+		console.log('Player lost');
+		endTournament(displayName);
 	}
 }
 
