@@ -56,12 +56,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		text_data_json = json.loads(text_data)
 		message_type = text_data_json.get('type')
 
-		if message_type == 'ready':
-			player = text_data_json.get('player')
-			self.game.player_ready(player)
-			print(f"Player {player} is ready in game {self.game_id}")
-			print(f"Players ready: {len(self.game.ready_players)}")
-
+		if message_type == 'serve_ball':
 			if self.game.all_players_ready():
 				print(f"Both players are ready in game {self.game_id}. Starting the game...")
 				await self.channel_layer.group_send(
@@ -70,6 +65,20 @@ class GameConsumer(AsyncWebsocketConsumer):
 						'type': 'start_game',
 					}
 				)
+
+		if message_type == 'ready':
+			player = text_data_json.get('player')
+			self.game.player_ready(player)
+			print(f"Player {player} is ready in game {self.game_id}")
+			print(f"Players ready: {len(self.game.ready_players)}")
+			if self.game.all_players_ready():
+				await self.channel_layer.group_send(
+					self.game_group_name,
+					{
+						'type': 'serve_ball',
+					}
+				)
+
 
 		elif message_type == 'move':
 			player = text_data_json.get('player')
@@ -100,6 +109,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type': 'start_game',
 		}))
 		await self.schedule_update()
+
+	async def serve_ball(self, event):
+		print(f"Ball served in game {self.game_id}")
+		await self.send(text_data=json.dumps({
+			'type': 'serve_ball',
+		}))
 
 	async def game_over(self, event):
 		winner = event['winner']

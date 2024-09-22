@@ -7,6 +7,7 @@ let username;
 let socket;
 let isSocketConnected = false;
 var Pong;
+let serving = false;
 
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
@@ -57,6 +58,18 @@ function startGame(GAME_ID, _username = "") {
 		} else if (gameState.type === "game_over") {
 			Pong.backendUpdate(gameState.game_state);
 			SockIn.gameEnd(Pong, gameState.winner);
+		} else if (gameState.type === "serve_ball") {
+			Pong.serveBall("Game is starting...");
+			setTimeout(function() {
+				serving = true;
+				let text;
+				if (Pong.side == "left") {
+					text = "Press any key to serve";
+				} else {
+					text = "Waiting for opponent to serve";
+				}
+				Pong.serveBall(text);
+			}, 5000);  // 5000 milliseconds = 5 seconds
 		}
 	};
 	
@@ -136,8 +149,17 @@ const SockOut = {
 		if (isSocketConnected) {
 			console.log(socket);
 			socket.send(JSON.stringify({
-				type: 'ready',
-				player: username  // Change to player username in future
+				type: 'serve_ball'
+			}));
+		} else {
+			console.log("WebSocket is not connected.");
+		}
+	},
+	readyUp: function () {
+		if (isSocketConnected) {
+			socket.send(JSON.stringify({
+				type: "ready",
+				player: username
 			}));
 		} else {
 			console.log("WebSocket is not connected.");
@@ -194,7 +216,34 @@ var Game = {
 		Pong.listen();
 		
 		// if socket is open send ready message
-		SockOut.gameStart();
+		SockOut.readyUp();
+	},
+
+	serveBall: function (text) {
+		// Draw all the Pong objects in their current state
+		Pong.draw();
+
+		// Change the canvas font size and color
+		this.context.font = "40px Courier New";
+		this.context.fillStyle = this.color;
+
+		// Draw the rectangle behind the 'Press any key to begin' text.
+		this.context.fillRect(
+			this.canvas.width / 2 - 350,
+			this.canvas.height / 2 - 48,
+			700,
+			100
+		);
+
+		// Change the canvas color;
+		this.context.fillStyle = "#ffffff";
+
+		// Draw the 'press any key to begin' text
+		this.context.fillText(
+			text,
+			this.canvas.width / 2,
+			this.canvas.height / 2 + 15
+		);
 	},
 
 	endGameMenu: function (text) {
@@ -412,6 +461,12 @@ var Game = {
 					SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
 				}
 			}
+
+			if (serving == true && Pong.running == false) {
+				SockOut.gameStart();
+				serving = false;
+			}
+
 		});
 	
 		// Stop the player from moving when there are no keys being pressed.
