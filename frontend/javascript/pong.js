@@ -446,7 +446,7 @@ var Game = {
 	},
 	
 	loop: function () {
-		if (!Pong.over) {
+		if (!Pong.over && serving == false) {
 			Pong.update();
 			Pong.draw();
 		}

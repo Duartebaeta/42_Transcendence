@@ -3,6 +3,7 @@ import { startGame } from "./pong.js";
 
 let TournamentSocket;
 let GameManagerSocket
+let currentRound = 1;
 let socketMessageQueue = [];
 
 function startTournament(displayName, tournamentID) {
@@ -30,14 +31,26 @@ function startTournament(displayName, tournamentID) {
 		} else if (data.type === 'tournament_full') {
 			console.log('Tournament is full:', data);
 			tournamentData = data;
-			showBrackets(tournamentData, displayName);
+			populateBrackets(data);
+			showBrackets();
+			setTimeout(function() {
+				startRound(tournamentData, displayName);
+			}
+			, 5000);
 		} else if (data.type === 'tournament_final') {
 			console.log('Final round:', data);
 			tournamentData = data;
-			showBrackets(tournamentData, displayName, true);
+			setTimeout(function() {
+				startFinalRound(tournamentData, displayName);
+			}
+			, 5000);
 		} else if (data.type === 'tournament_winner') {
 			console.log('Tournament winner:', data);
-			endTournament(displayName, data.winner === displayName);
+			endTournament(displayName, data.winner);
+		} else if (data.type === 'update_brackets') {
+			console.log('Updating brackets:', data);
+			tournamentData = data;
+			updateBrackets(tournamentData);
 		}
 	};
 
@@ -57,9 +70,12 @@ function startTournament(displayName, tournamentID) {
 			let processed_data = {
 				'gameID': data.gameState.game_id,
 				'participants': [data.gameState.player, data.gameState.opponent],
-				'winner': data.gameState.won ? data.gameState.player : data.gameState.opponent
+				'winner': data.gameState.won ? data.gameState.player : data.gameState.opponent,
+				'loser': data.gameState.won ? data.gameState.opponent : data.gameState.player
 			};
 			TournamentSocket.send(JSON.stringify({ type: 'game_over', data: processed_data }));
+			showBrackets();
+			
 		}
 		else {
 			console.log('Game over received in tournament end:', data);
@@ -94,14 +110,25 @@ function populateWaitingRoom(data) {
 	});
 }
 
-function endTournament(displayName, won = false) {
+function endTournament(displayName, winner = null) {
 	console.log('Ending tournament');
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let game_window = document.querySelector('.game');
 	let home_button = document.querySelector('#tournament-home-button');
 	let tournament_text_box = document.querySelector('#tournament-text-box');
+	let final_players = document.querySelectorAll('.round-2-participant');
 
-	if (won) {
+	if (winner != null) {
+		final_players.forEach(function (player) {
+			if (player.innerHTML == winner) {
+				player.classList.add('green-highlight');
+			} else {
+				player.classList.add('red-highlight');
+			}
+		});
+	}
+
+	if (winner == displayName) {
 		document.querySelector('#tournament-text').innerHTML = 'Congratulations! You won the tournament!';
 		document.querySelector('.tournament-winner').innerHTML = displayName;
 	} else {
@@ -115,50 +142,64 @@ function endTournament(displayName, won = false) {
 	home_button.classList.remove('d-none');
 }
 
-function showBrackets(data, displayName, finalRound = false) {
-	console.log('Showing brackets:', data);
+function populateBrackets(data) {
+	console.log('Populating brackets:', data);
+	let players = document.querySelectorAll('.round-1-participant');
+
+	players.forEach(function (player, index) {
+		player.innerHTML = data.participants[index];
+	});
+}
+
+function showBrackets() {
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let waitingRoom = document.querySelector('.waiting-room');
-	let players = document.querySelectorAll('.round-1-participant');
 	let game_window = document.querySelector('.game');
 
 	waitingRoom.classList.add('d-none');
 	game_window.classList.add('d-none');
-	data.participants.forEach(function (participant, counter) {
-		players[counter].innerHTML = participant;
-	});
+	tournamentBrackets.classList.remove('d-none');
+}
 
-	if (finalRound) {
-		let final_players = document.querySelectorAll('.round-2-participant');
-		data.matching.forEach(function (participant, counter) {
-			final_players[counter].innerHTML = participant;
-		});
+function updateBrackets(data) {
+	console.log('Showing brackets:', data);
+	let players = document.querySelectorAll('.round-1-participant');
+	let final_players = document.querySelectorAll('.round-2-participant');
+	let winner = document.querySelector('.tournament-winner');
+
+
+	if (data.round == 1) {
 		players.forEach(function (player) {
-			if (data.matching.includes(player.innerHTML)) {
+			if (data.winner == player.innerHTML) {
 				player.classList.add('green-highlight');
-			} else {
+			} else if (data.loser == player.innerHTML) {
 				player.classList.add('red-highlight');
 			}
 		});
+		final_players.forEach(function (player) {
+			if (player.dataset.gameId == data.gameID) {
+				player.innerHTML = data.winner;
+			}
+		});
+	} else if (data.round == 2) {
+		final_players.forEach(function (player) {
+			if (data.winner == player.innerHTML) {
+				player.classList.add('green-highlight');
+			} else if (data.loser == player.innerHTML) {
+				player.classList.add('red-highlight');
+			}
+		});
+		winner.innerHTML = data.winner;
 	}
-
-	tournamentBrackets.classList.remove('d-none');
-
-	setTimeout(function() {
-		tournamentBrackets.classList.add('d-none');
-		if (finalRound) {
-			startFinalRound(data, displayName);
-		} else {
-			startRound(data, displayName);
-		}
-	}, 5000);  // 5000 milliseconds = 5 seconds
-
 }
 
 function startRound(data, displayName) {
 	console.log('Starting round:', data);
+	let final_players = document.querySelectorAll('.round-2-participant');
 
-	//document.querySelector('.waiting-room').classList.add('d-none');
+	document.querySelector('.tournament-brackets').classList.add('d-none');
+	final_players[0].dataset.gameId = data['gameID_1'];
+	final_players[1].dataset.gameId = data['gameID_2'];
 
 	// Start round function
 	if (data['matching_1'].includes(displayName)) {
@@ -168,6 +209,7 @@ function startRound(data, displayName) {
 			game_id: data['gameID_1'],
 			group_name: 'game_manager_' + data['gameID_1']
 		});
+
 		
 		// Send the message via the function that handles the socket state
 		sendSocketMessage(message);
@@ -182,6 +224,7 @@ function startRound(data, displayName) {
 			group_name: 'game_manager_' + data['gameID_2']
 		});
 		
+
 		// Send the message via the function that handles the socket state
 		sendSocketMessage(message);
 		
@@ -196,6 +239,9 @@ function startRound(data, displayName) {
 
 function startFinalRound(data, displayName) {
 	console.log('Starting final round:', data);
+
+	document.querySelector('.tournament-brackets').classList.add('d-none');
+
 	if (data['matching'].includes(displayName)) {
 		console.log('Starting game:', data['gameID']);
 		let message = JSON.stringify({

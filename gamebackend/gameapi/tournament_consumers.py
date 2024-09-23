@@ -69,9 +69,21 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		elif data['type'] == 'game_over':
 			data = data['data']
 			print(f"Game over: {data}")
-			print(f"Current round: {self.my_tournament['current_round']}")
-			print(f"{self.display_name} is the winner: {self.display_name == data['winner']}")
 			if self.display_name == data['winner']:
+				await self.channel_layer.group_send(
+					self.group_name,
+					{
+						'type': 'tournament_message',
+						'message': {
+							'type': 'update_brackets',
+							'gameID': data['gameID'],
+							'winner': data['winner'],
+							'loser': data['loser'],
+							'round': self.my_tournament['current_round'],
+							'participants': self.my_tournament['participants']
+						}
+					}
+				)
 				if self.my_tournament['current_round'] == 2:
 					print(f"Winner of tournament {self.tournament_id}: {data['winner']}")
 					self.my_tournament['winner'] = data['winner']
