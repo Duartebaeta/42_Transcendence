@@ -23,7 +23,6 @@ class User(View):
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
 		avatar = json_request.get('avatar')
-		print(avatar)
 
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No user_id was given']})
