@@ -42,7 +42,7 @@ class ChangeUsername(View):
 
 		user.username = new_username;
 		if not self.update_username(user.id, new_username):
-			return JsonResponse(status=400, data={'errors': ["Couldn't update username on user stats"]})
+			return JsonResponse(status=400, data={'errors': ["Couldn't update username on other micro-services"]})
 		user.save(update_fields=["username"])
 		# Send update to User in user_stats
 		return JsonResponse(status=200, data={'message': 'Username changed :) great job'})
@@ -50,7 +50,7 @@ class ChangeUsername(View):
 	@staticmethod
 	def update_username(user_id, username):
 		urls = ["http://127.0.0.1:8080/user_stats/user/",
-				"http://127.0.0.1:9000/rooms/user"
+				# "http://127.0.0.1:9000/rooms/user"
 				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {
