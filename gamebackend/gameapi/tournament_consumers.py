@@ -14,6 +14,10 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		self.display_name = self.scope['url_route']['kwargs']['display_name']
 		self.group_name = f'tournament_{self.tournament_id}'
 
+		if TournamentConsumer.tournaments[self.tournament_id]['closed'] == True:
+			await self.close()
+			return
+
 		# Add to the tournament group
 		await self.channel_layer.group_add(
 			self.group_name,
@@ -32,11 +36,12 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 
 		if len(self.my_tournament['participants']) == 4:
 			print(f"Starting tournament {self.tournament_id}")
+			self.my_tournament['closed'] = True
 			await self.round_1()
 
 	async def disconnect(self, close_code):
 		if self.tournament_id in TournamentConsumer.tournaments:
-			participants = self.my_tournament['participants']
+			participants = TournamentConsumer.tournaments[self.tournament_id]['participants']
 			if self.display_name in participants:
 				participants.remove(self.display_name)
 

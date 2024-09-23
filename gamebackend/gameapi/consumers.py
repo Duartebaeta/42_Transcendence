@@ -301,7 +301,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			# Create a new tournament with a unique ID
 			tournament_id = self.generate_tournament_id()
 			TournamentConsumer.tournaments[tournament_id] = {
-				'participants': []
+				'participants': [],
+				'closed': False
 			}
 			await self.send(text_data=json.dumps({'type': 'tournament_created', 'displayName': data.get('displayName'), 'tournamentID': tournament_id}))
 			print(f"Tournament created with ID: {tournament_id}, {TournamentConsumer.tournaments}")

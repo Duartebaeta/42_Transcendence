@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	let tournamentForm = document.getElementById('tournamentPlayerInfo');
+	let tournamentFormBtn = document.querySelector('#tournamentModeBtn');
 
 	tournamentForm.addEventListener('submit', function(event) {
 		event.preventDefault();
@@ -57,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		TournamentSocket.onmessage = function(event) {
 			console.log('Received message:', event.data);
 			const data = JSON.parse(event.data);
+			tournamentFormBtn.classList.remove('bg-warning');
+			tournamentForm.classList.add('d-none');
 			handleWebSocketMessage(data);
 		};
 
@@ -76,14 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			createTournament(tournamentDisplayName);
 		}
 	});
-
-	let home_btns = document.querySelectorAll('.home-button');
-	home_btns.forEach(home_button => {
-		home_button.addEventListener('click', function () {
-			window.location.reload();
-		});
-	});
-
 });
 
 function handleWebSocketMessage(data) {

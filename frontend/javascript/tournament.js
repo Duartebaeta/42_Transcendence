@@ -117,6 +117,7 @@ function endTournament(displayName, winner = null) {
 	let home_button = document.querySelector('#tournament-home-button');
 	let tournament_text_box = document.querySelector('#tournament-text-box');
 	let final_players = document.querySelectorAll('.round-2-participant');
+	let game_menu = document.querySelector('.game-menu');
 
 	if (winner != null) {
 		final_players.forEach(function (player) {
@@ -140,6 +141,13 @@ function endTournament(displayName, winner = null) {
 	tournament_text_box.classList.remove('d-none');
 
 	home_button.classList.remove('d-none');
+	home_button.addEventListener('click', function () {
+		TournamentSocket.close();
+		GameManagerSocket.close();
+		tournamentBrackets.classList.add('d-none');
+		tournament_text_box.classList.add('d-none');
+		game_menu.classList.remove('d-none');
+	});
 }
 
 function populateBrackets(data) {
