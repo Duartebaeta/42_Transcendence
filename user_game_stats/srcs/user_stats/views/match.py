@@ -26,17 +26,20 @@ class Match(View):
 		if not User.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user wwith suck id (who are you scammer?)']})
 
-		json_request, err = load_json_request(request)
-		if err is not None:
-			return JsonResponse(status=400, data={'errors': [err]})
-		
-		username = json_request.get('username')
-		if username is None or username == '':
-			return JsonResponse(status=400, data={'errors': ['No username was given']})
-		
-		user = User.objects.filter(username=username).first()
-		if user is None:
-			return JsonResponse(status=400, data={'errors': ["There's no such user with that username"]})
+		if request.body:
+			json_request, err = load_json_request(request)
+			if err is not None:
+				return JsonResponse(status=400, data={'errors': [err]})
+			
+			username = json_request.get('username')
+			if username is None or username == '':
+				return JsonResponse(status=400, data={'errors': ['No username was given']})
+			
+			user = User.objects.filter(username=username).first()
+			if user is None:
+				return JsonResponse(status=400, data={'errors': ["There's no such user with that username"]})
+		else:
+			user = User.objects.filter(id=user_id).exists()
 		
 		last_matches = MatchModel.objects.filter(player=user).order_by("-time")[:10]
 		last_matches_info = []
@@ -66,13 +69,13 @@ class Match(View):
 		opponent_score = json_request.get('opponent_score')
 		#time = json_request.get('time')
 
-		success, error = self.verify_all_infos(
-			player_id,
-			opponent_id,
-			won,
-			player_score,
-			opponent_score
-		)
+		success, error = Match.verify_all_infos(
+			player_id=player_id,
+			opponent_id=opponent_id,
+			won=won,
+			player_score=player_score,
+			opponent_score=opponent_score
+			)
 		if not success:
 			return JsonResponse(status=400, data={'errors': [error]})
 
