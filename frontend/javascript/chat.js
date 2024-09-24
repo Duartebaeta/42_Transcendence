@@ -29,17 +29,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// Fetch And Display Contacts When Chat Button Is Clicked
 	chatBtn.addEventListener('click', function() {
+
+		var request = {
+		    method: 'GET', // HTTP method
+		    url: 'http://localhost:9000/rooms/user/',
+		    headers: {
+		        'Content-Type': 'application/json',
+		    }
+		};
+
 		// Send The Request Using Fetch API
-		fetch("/examples/chat-contacts.json")
+		authenticatedRequest(request.url, request)
 			.then(response => response.json())
 			.then(data => {
 				const contacts = data.contacts;
-				console.log(data);
 				
 				// Create HTML Content For Contacts
 				let info = '';
 				contacts.forEach(contact => {
-					info += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${contact.id}">
+					info += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${contact.name}">
 								<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
 								<div class="ms-3" style="width: 210px;">
 									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
@@ -67,8 +75,19 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (contactArea) {
 			const contactId = contactArea.getAttribute('data-contact-id');
 
+			var request = {
+				method: 'POST', // HTTP method
+				url: 'http://localhost:9000/rooms/chatroom/',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					user: contactId
+				})
+			};
+
 			// Send The Request Using Fetch API
-			fetch(`/examples/chat-logs-test/chat-messages-${contactId}.json`)
+			authenticatedRequest(request.url, request)
 				.then(response => response.json())
 				.then(data => {
 					let info = '';
