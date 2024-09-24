@@ -32,7 +32,7 @@ class Activate(View):
 
 	@staticmethod
 	def create_user_db(user_id, username, avatar):
-		urls = ["http://127.0.0.1:8080/user_stats/user/",
+		urls = ["http://127.0.0.1:8080/user-stats/user/",
 				# "http://127.0.0.1:9000/rooms/user/"
 				]
 		headers = {'Content-Type': 'application/json'}
