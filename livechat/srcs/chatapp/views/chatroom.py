@@ -37,6 +37,7 @@ class ChatRoomView(View):
 			return JsonResponse(status=400, data={'errors': [err]})
 
 		otherUsername = json_request.get('user')
+		print(otherUsername)
 		if otherUsername is None or otherUsername == '':
 			return JsonResponse(status=400, data={'errors': ['No username given to friend a user(How do i know who you wanna friend dumb dumb)']})
 		otherUser = User.objects.filter(username=otherUsername).first()
