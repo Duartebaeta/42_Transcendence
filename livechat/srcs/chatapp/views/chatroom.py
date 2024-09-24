@@ -19,7 +19,7 @@ from shared.jwt_manager import AccessJWTManager
 @method_decorator(csrf_exempt, name='dispatch')
 class ChatRoomView(View):
 	@csrf_exempt
-	def post(self, request):
+	def get(self, request):
 		access_token = request.headers.get('Authorization').split(' ')[1]
 		if access_token is None:
 			return JsonResponse(status=401, data={'errors': ['No access token given']})

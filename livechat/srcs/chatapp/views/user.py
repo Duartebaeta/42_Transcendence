@@ -35,8 +35,11 @@ class User(View):
 		for chat in chatrooms:
 			if user == chat.user1:
 				contact = chat.user2.username
+				avatar = chat.user2.avatar
 			else:
 				contact = chat.user1.username
+				avatar = chat.user1.avatar
+
 			last_message = chat.messages.filter(user=contact).order_by('-date').first()
 			if last_message is None:
 				last_message = ''
@@ -47,7 +50,8 @@ class User(View):
 			result = {
 				'contact': contact,
 				'last_message': last_message,
-				'friend': friend
+				'friend': friend,
+				'avatar': avatar
 			}
 			contacts.append(result)
 
@@ -61,11 +65,14 @@ class User(View):
 
 		user_id = json_request.get('user_id')
 		username = json_request.get('username')
+		avatar = json_request.get('avatar')
 
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No user_id was given']})
 		if username is None or username == '':
 			return JsonResponse(status=400, data={'errors': ['No username was given']})
+		if avatar is None or avatar == '':
+			return JsonResponse(status=400, data={'errors': ['No avatar was given']})
 		if not isinstance(user_id, int) or user_id < 0:
 			return JsonResponse(status=400, data={'errors': ['Given user_id is not valid']})
 
@@ -76,6 +83,7 @@ class User(View):
 
 		user = UserModel.objects.create(id=user_id)
 		user.username = username
+		user.avatar = avatar
 		try:
 			user.save()
 		except Exception as e:
@@ -89,18 +97,22 @@ class User(View):
 			return JsonResponse(status=400, data={'errors': [err]})
 		
 		user_id = json_request.get('user_id')
-		new_username = json_request.get('username')
-
 		if user_id is None or user_id == '':
-			return JsonResponse(status=400, data={'errors': ['No user_id was given']})
-		if new_username is None or new_username == '':
-			return JsonResponse(status=400, data={'errors': ['No new username was given ( do you want me to change the name or not?)']})
-		if not UserModel.objects.filter(id=user_id).exists():
-			return JsonResponse(status=400, data={'errors': ["There's no user with that id what you doing boy -.-"]})
-		if UserModel.objects.filter(username=new_username).exists():
-			return JsonResponse(status=400, data={'errors': ['Given new username is already in used']})
+			return JsonResponse(status=400, data={'errors': ['No such user id was given (what the hell)']})
+		user = UserModel.objects.filter(id=user_id).first()
+		if user is None:
+			return JsonResponse(status=400, data={'errors': ['No such user with that user id(How did you even do that)']})
+
+		new_username = json_request.get('new_username')
+		new_avatar = json_request.get('new_avatar')
+
+		if new_username is not None:
+			user.username = new_username
+		if new_avatar is not None:
+			user.avatar = new_avatar
 		
-		user = UserModel.objects.get(id=user_id)
-		user.username = new_username
-		user.save()
+		try:
+			user.save(update_fields=['username', 'avatar'])
+		except Exception as e:
+			return JsonResponse(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=200, data={'message': 'Password changed successfully, yipeeee'})

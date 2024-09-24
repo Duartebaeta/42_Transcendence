@@ -12,5 +12,4 @@ urlpatterns = [
     path('message/', MessageView.as_view(), name='message'),
 	path('block/',BlockUser.as_view(), name='block'),
 	path('friend/',FriendView.as_view(), name='friend'),
-    # path('<slug:username>/', views.chatroom, name='chatroom'),
 ]
