@@ -136,6 +136,9 @@ class User(View):
 		last_matches_points = []
 
 		for match in last_matches:
-			last_matches_points.append(match['player_score'])
+			last_matches_points.append(match.player_score)
+		
+		if len(last_matches_points) == 1:
+			last_matches_points.append(0)
 
-		return last_matches_points.reverse()
+		return last_matches_points[::-1]
