@@ -80,9 +80,9 @@ class Match(View):
 			return JsonResponse(status=400, data={'errors': [error]})
 
 		player = User.objects.filter(id=player_id).first()
-		opponent = User.objects.filer(id=opponent_id).first()
+		opponent = User.objects.filter(id=opponent_id).first()
 		try:
-			player_match = MatchModel.create(
+			player_match = MatchModel.objects.create(
 				player=player,
 				opponent=opponent,
 				won=won,
@@ -90,7 +90,7 @@ class Match(View):
 				opponent_score=opponent_score,
 				#time
 			)
-			opponent_match = MatchModel.create(
+			opponent_match = MatchModel.objects.create(
 				player=opponent,
 				opponent=player,
 				won=not won,
@@ -110,14 +110,14 @@ class Match(View):
 			opponent.save()
 		except Exception as e:
 			return JsonResponse(status=400, data={'errors': [str(e)]})
-		return JsonResponse(status=200)
+		return JsonResponse(status=200, data={'message': 'Successfuly created matches'})
 
 	@staticmethod
-	def verify_all_infos(self, player_id, opponent_id, won, player_score, opponent_score):
-		success, error = self.verify_players_id(player_id)
+	def verify_all_infos(player_id, opponent_id, won, player_score, opponent_score):
+		success, error = Match.verify_players_id(player_id)
 		if not success:
 			return False, error
-		success, error = self.verify_players_id(opponent_id)
+		success, error = Match.verify_players_id(opponent_id)
 		if not success:
 			return False, error
 		if player_id == opponent_id:
@@ -126,10 +126,10 @@ class Match(View):
 			return False, 'No indication of who won given'
 		if not isinstance(won, bool):
 			return False, 'Indication of who won must be with a bool'
-		success, error = self.verify_players_scores(player_score)
+		success, error = Match.verify_players_scores(player_score)
 		if not success:
 			return False, error
-		success, error = self.verify_players_scores(opponent_score)
+		success, error = Match.verify_players_scores(opponent_score)
 		if not success:
 			return False, error
 		#TODO: Verify if time valid
