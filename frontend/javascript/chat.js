@@ -1,7 +1,7 @@
 // Clear Chat Window After Leaving Chat Modal
 document.addEventListener('DOMContentLoaded', function() {
 	const chatModal = document.getElementById('chat-modal');
-	
+
 	chatModal.addEventListener('hidden.bs.modal', function() {
 		let	chatLogs = document.getElementById('chat-messages');
 
@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(response => response.json())
 			.then(data => {
 				const contacts = data.contacts;
-				
+				console.log(data.contacts);
+
 				// Create HTML Content For Contacts
 				let info = '';
 				contacts.forEach(contact => {
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 								<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
 								<div class="ms-3" style="width: 210px;">
 									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
-									<p class="text-light mb-0 text-truncate">${contact.lastMessage}</p>
+									<p class="text-light mb-0 text-truncate">${contact.last_message}</p>
 								</div>
 							</div>`;
 				});
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	document.getElementById('contacts').addEventListener('click', function(event) {
 		const contactArea = event.target.closest('.contactArea');
-				
+
 		if (contactArea) {
 			const contactId = contactArea.getAttribute('data-contact-id');
 
@@ -111,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 
 					// Update HTML Content
-					document.getElementById('selectedContactName').innerHTML = data.contactName;
+					document.getElementById('selectedContactName').innerHTML = contactId;
 					document.getElementById('chat-messages').innerHTML = info;
 					// Dropmenu Settings Button
 					document.getElementById('chatDropdownMenu').innerHTML = `<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				}
 
 				document.getElementById('chat-messages').innerHTML += messageHtml;
-				//chatWindow.scrollTop = chatWindow.scrollHeight; 
+				//chatWindow.scrollTop = chatWindow.scrollHeight;
 			}
 		}
 		catch (error) {
