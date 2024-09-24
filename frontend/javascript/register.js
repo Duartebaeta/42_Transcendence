@@ -1,3 +1,4 @@
+// Clean form
 document.addEventListener("DOMContentLoaded", function() {
 	const registerbtn = document.getElementById('registerBtn');
 

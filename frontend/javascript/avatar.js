@@ -24,13 +24,6 @@ function getAvatarBase64(input, btn) {
 			return;
 		}
 
-		// Update button text with the file name
-		// input.addEventListener('change', function () {
-		// 	if (input.files && input.files.length > 0) {
-		// 		btn.textContent = input.files[0].name;
-		// 	}
-		// });
-
 		let reader = new FileReader();
 		reader.readAsDataURL(file);
 

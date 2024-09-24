@@ -1,10 +1,3 @@
-// Change button for new avatar to the name of the file
-document.getElementById('avatarImg').addEventListener('change', function () {
-	var fileName = this.files[0].name;
-	var nextSibling = this.nextElementSibling;
-	nextSibling.innerText = fileName;
-});
-
 // Update username
 document.addEventListener("DOMContentLoaded", function() {
 	let password = document.getElementById('newUsername');
@@ -60,12 +53,12 @@ document.addEventListener("DOMContentLoaded", function() {
 // Update avatar
 document.addEventListener('DOMContentLoaded', function () {
 	try {
-		const btn = document.getElementById('settingsAvatarBtn'); // The button that will display the file name
-		const input = document.getElementById('settingsAvatar'); // The file input
-		const avatarSettingsBtn = document.getElementById('avatarSettingsSubmit'); // The submit button
+		const btn = document.getElementById('settingsAvatarBtn');
+		const input = document.getElementById('settingsAvatar');
+		const avatarSettingsBtn = document.getElementById('avatarSettingsSubmit');
 
 		changeAvatarBtnName(input, btn);
-		
+
 		// Event listener for avatar submission button
 		avatarSettingsBtn.addEventListener('click', async function () {
 			try {
@@ -104,4 +97,21 @@ document.addEventListener('DOMContentLoaded', function () {
 		// Handle any errors
 		console.error('Initialization error:', error);
 	}
+
+});
+
+// Clear input values
+document.addEventListener("DOMContentLoaded", function() {
+	const settingsBtn = document.getElementById('settingsBtn');
+
+	settingsBtn.addEventListener('click', function() {
+		const changeUsername = document.getElementById('newUsername');
+		const changePassword = document.getElementById('newPassword');
+		const changeAvatarBtn = document.getElementById('settingsAvatarBtn');
+		const changeAvatarInput = document.getElementById('settingsAvatar');
+
+		changeUsername.reset();
+		changePassword.reset();
+		changeAvatarBtn.innerText = "Upload Avatar";
+	});
 });
