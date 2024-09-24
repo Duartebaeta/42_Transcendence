@@ -35,6 +35,7 @@ class Game():
 		self.left_score = 0
 		self.right_score = 0
 		self.game_over = False
+		self.closed = False
 
 	def add_player(self, username, channel_name):
 		if len(self.players) == 0:

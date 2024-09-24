@@ -32,6 +32,17 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
+		if (len(list(self.game.get_players())) == 2):
+			self.game.closed = True
+			await self.channel_layer.group_send(
+				self.game_group_name,
+				{
+					'type': 'game_full',
+					'game_id': self.game_id,
+					'participants': list(self.game.get_players())
+				}
+			)
+
 		await self.accept()
 		print(f"Player {self.username} connected to game {self.game_id}")
 
@@ -109,6 +120,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type': 'start_game',
 		}))
 		await self.schedule_update()
+
+	async def game_full(self, event):
+		await self.send(text_data=json.dumps({
+			'type': 'game_full',
+			'game_id': event['game_id'],
+			'participants': event['participants']
+		}))
 
 	async def serve_ball(self, event):
 		print(f"Ball served in game {self.game_id}")

@@ -37,8 +37,11 @@ function startGame(GAME_ID, _username = "") {
 	socket.onopen = function(e) {
 		console.log("[open] Connection established");
 		isSocketConnected = true;
-		game_container.classList.remove('d-none');
 		game_menu.classList.add('d-none');
+		document.querySelectorAll('.remote_participant_name')[0].innerHTML = username;
+		document.querySelector('.remote-waiting-room').classList.remove('d-none');
+		
+		document.getElementById('remoteGameID').innerHTML = gameId;
 
 		// Initialize and start the game here
 		Pong = Object.assign({}, Game);
@@ -70,6 +73,10 @@ function startGame(GAME_ID, _username = "") {
 				}
 				Pong.serveBall(text);
 			}, 3000);  // 5000 milliseconds = 5 seconds
+		} else if (gameState.type === "game_full") {
+			document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
+			document.querySelector('.remote-waiting-room').classList.add('d-none');
+			game_container.classList.remove('d-none');
 		}
 	};
 	
