@@ -1,0 +1,46 @@
+services:
+  # livechat_db:
+  #   image: postgres:13
+  #   environment:
+  #     POSTGRES_DB: livechat_db
+  #     POSTGRES_USER: livechat_user
+  #     POSTGRES_PASSWORD: livechat_pass
+  #   ports:
+  #     - "5432:5432"
+
+
+  users:
+    build:
+      context: users
+      dockerfile: docker/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./users/srcs:/app
+    ports:
+      - "8000:8000"
+
+  user_game_stats:
+    build:
+      context: user_game_stats
+      dockerfile: docker/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8081
+    volumes:
+      - ./users/srcs:/app
+    ports:
+      - "8081:8081"
+
+  livechat:
+    build:
+      context: livechat
+      dockerfile: docker/Dockerfile
+    command: python manage.py runserver 0.0.0.0:8080
+    volumes:
+      - ./livechat/srcs:/app
+    ports:
+      - "8080:8080"
+
+
+    # depends_on:
+    #   - livechat_db
+    # environment:
+    #   - DATABASE_URL=postgres://livechat_user:livechat_pass@db:5432/livechat_db
