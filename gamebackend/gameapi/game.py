@@ -44,8 +44,6 @@ class Game():
 		elif len(self.players) == 1:
 			self.players[username] = {"channel_name": channel_name, "side": "right"}
 			return "right"
-		else:
-			raise Exception("Game is already full")
 
 	def get_player_side(self, username):
 		return self.players[username]["side"]
@@ -63,6 +61,41 @@ class Game():
 
 	def all_players_ready(self):
 		return len(self.ready_players) == 2
+
+	def disconnect_game_state(self, loser):
+		self.game_over = True
+		loser_side = self.players[loser]["side"]
+		if (loser_side == "left"):
+			winner_side = "right"
+		else:
+			winner_side = "left"
+
+		if winner_side == "left":
+			self.left_score = 5
+			return {
+				"ball_x": 700,
+				"ball_y": 500,
+				"ball_move_x": 'LEFT',
+				"ball_move_y": 'DOWN',
+				"left_y": 500,
+				"right_y": 500,
+				"left_score": self.left_score,
+				"right_score": self.right_score,
+				"game_over": True
+			}
+		else:
+			self.right_score = 5
+			return {
+				"ball_x": 700,
+				"ball_y": 500,
+				"ball_move_x": 'LEFT',
+				"ball_move_y": 'DOWN',
+				"left_y": 500,
+				"right_y": 500,
+				"left_score": self.left_score,
+				"right_score": self.right_score,
+				"game_over": True
+			}
 
 	def get_game_state(self):
 		return {

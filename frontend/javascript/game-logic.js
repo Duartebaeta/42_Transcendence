@@ -6,7 +6,7 @@ import { startTournament } from "./tournament.js";
 let TournamentSocket;
 let RemoteSocket;
 let BACKEND_IP = "10.19.249.137"
-let PORT = "8000"
+let PORT = "9090"
 
 document.addEventListener('DOMContentLoaded', function () {
 	console.log(BACKEND_IP);
@@ -102,10 +102,23 @@ function handleWebSocketMessage(data) {
 	} else if (data.type === 'game_joined') {
 		// Handle successful game joining
 		console.log("Game joined:", data);
+		//Change group
+		const message = {
+			type: 'change_group',
+			game_id: data.gameID,
+			group_name: 'game_manager_' + data.gameID
+		};
+		RemoteSocket.send(JSON.stringify(message));
 		startGame(data.gameID);
 	} else if (data.type === 'game_created') {
 		// Handle successful game creation
 		console.log("Game created:", data);
+		const message = {
+			type: 'change_group',
+			game_id: data.gameID,
+			group_name: 'game_manager_' + data.gameID
+		};
+		RemoteSocket.send(JSON.stringify(message));
 		startGame(data.gameID);
 	}
 }

@@ -77,6 +77,14 @@ function startGame(GAME_ID, _username = "") {
 			document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
 			document.querySelector('.remote-waiting-room').classList.add('d-none');
 			game_container.classList.remove('d-none');
+		} else if (gameState.type === "player_disconnected") {
+			Pong.backendUpdate(gameState.game_state);
+			Pong.over = true;
+			socket.send(JSON.stringify({
+				type: "end_disconnect",
+				player: Pong.side
+			}));
+			Pong.endGameMenu("Opponent disconnected");
 		}
 	};
 	
