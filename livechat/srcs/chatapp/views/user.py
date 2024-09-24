@@ -29,15 +29,15 @@ class User(View):
 		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
-		user = UserModel.objects.get(user_id)
+		user = UserModel.objects.filter(id=user_id).first()
 		chatrooms = ChatRoom.objects.filter(Q(user1=user) | Q(user2=user))
 		contacts = []
 		for chat in chatrooms:
 			if user == chat.user1:
-				contact = chat.user2.username
+				contact = chat.user2
 				avatar = chat.user2.avatar
 			else:
-				contact = chat.user1.username
+				contact = chat.user1
 				avatar = chat.user1.avatar
 
 			last_message = chat.messages.filter(user=contact).order_by('-date').first()
@@ -48,7 +48,7 @@ class User(View):
 			else:
 				friend = False
 			result = {
-				'contact': contact,
+				'name': contact.username,
 				'last_message': last_message,
 				'friend': friend,
 				'avatar': avatar
@@ -86,16 +86,20 @@ class User(View):
 		user.avatar = avatar
 		try:
 			user.save()
+			other_users = UserModel.objects.exclude(id=user_id)
+			for other in other_users:
+				chatroom = ChatRoom.objects.create(user1=user, user2=other)
+				chatroom.save()
 		except Exception as e:
 			return JsonResponse(status=400, data={'errors': [str(e)]})
 		return JsonResponse(status=201, data={'message': 'user created'})
-	
+
 	@csrf_exempt
 	def patch(self, request):
 		json_request, err = load_json_request(request)
 		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})
-		
+
 		user_id = json_request.get('user_id')
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No such user id was given (what the hell)']})
@@ -110,7 +114,7 @@ class User(View):
 			user.username = new_username
 		if new_avatar is not None:
 			user.avatar = new_avatar
-		
+
 		try:
 			user.save(update_fields=['username', 'avatar'])
 		except Exception as e:
