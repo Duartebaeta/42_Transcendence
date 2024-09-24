@@ -98,9 +98,26 @@
 					</div>
 				</div>
 
+				<!-- Remote Game Waiting Room -->
+				<div class="text-center d-none remote-waiting-room">
+					<h1 class="text-light mb-5">Waiting For Players...</h1>
+					<div class="row">
+						<div class="col-6">
+							<p class="remote_participant_name text-light">Waiting for player...</p>
+						</div>
+						<div class="col-6">
+							<p class="remote_participant_name text-light">Waiting for player...</p>
+						</div>
+						<h5 class="mt-5 d-flex justify-content-center text-light">
+							<p class="text-light" >Game Id: </p>
+							<p id="remoteGameID" class="text-light"></p>
+						</h5>
+					</div>
+				</div>
+
 				<!-- Tournament Waiting Room -->
 				<div class="text-center d-none waiting-room">
-					<h1 class="text-light mb-5">Waiting For Players (4/6)</h1>
+					<h1 class="text-light mb-5">Waiting For Players...</h1>
 					<div class="row">
 						<div class="col-6">
 							<p class="participant_name text-light">Waiting for player...</p>
@@ -118,8 +135,8 @@
 				</div>
 
 				<!-- Tournament Brackets -->
-				<div class="container text-center d-none">
-					<div class="row">
+				<div class="container text-center d-none tournament-brackets">
+					<div class="row justify-content-center">
 						<div class="col-3 text-light">
 							<h3>Round 1</h3>
 						</div>
@@ -131,43 +148,45 @@
 						</div>
 					</div>
 					<!-- First Round -->
-					<div class="row">
+					<div class="row justify-content-center">
 						<div class="col-3 bracket-column justify-content-center">
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">...</div>
-								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light round-1-participant">...</div>
+								<div class="border p-3 text-light round-1-participant">...</div>
 							</div>
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">...</div>
-								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light round-1-participant">...</div>
+								<div class="border p-3 text-light round-1-participant">...</div>
 							</div>
 						</div>
 			
 						<!-- Finals -->
 						<div class="col-3 bracket-column justify-content-center">
 							<div class="py-5 px-4">
-								<div class="border p-3 text-light">...</div>
-								<div class="border p-3 text-light">...</div>
+								<div class="border p-3 text-light round-2-participant">...</div>
+								<div class="border p-3 text-light round-2-participant">...</div>
 							</div>
 						</div>
 			
-						<!-- Final Round -->
+						<!-- Winner -->
 						<div class="col-3 bracket-column justify-content-center">
-							<div class="border px-3 py-4 text-light">...</div>
+							<div class="border px-3 py-4 text-light tournament-winner">...</div>
 						</div>
 					</div>
+					<div id="tournament-text-box" class="d-none">
+						<h4 id="tournament-text" class="text-light"></h4>
+						<button id="tournament-home-button" class="btn bg-gradient btn-block mb-2 home-button" style="background-color: rgb(238, 130, 238)">Main Menu</button>
+					</div>
 				</div>
-
 				<div class="game d-none">
 					<canvas></canvas>
-					<p>Control the left player by using up and down arrow keys</p>
 				</div>
 			</main>
 		</div>
 	</div>
 
 	<!-- Login Modal -->
-	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="login-modalo" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">

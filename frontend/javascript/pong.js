@@ -7,6 +7,7 @@ let username;
 let socket;
 let isSocketConnected = false;
 var Pong;
+let serving = false;
 
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
@@ -28,17 +29,19 @@ function startGame(GAME_ID, _username = "") {
 	if (username == "")
 		username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
 
-	console.log(username)
-
 	gameId = GAME_ID;
 	const game_container = document.querySelector('.game');
 	const game_menu = document.querySelector('.game-menu');
 
 	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
 	socket.onopen = function(e) {
+		console.log("[open] Connection established");
 		isSocketConnected = true;
-		game_container.classList.remove('d-none');
 		game_menu.classList.add('d-none');
+		document.querySelectorAll('.remote_participant_name')[0].innerHTML = username;
+		document.querySelector('.remote-waiting-room').classList.remove('d-none');
+		
+		document.getElementById('remoteGameID').innerHTML = gameId;
 
 		// Initialize and start the game here
 		Pong = Object.assign({}, Game);
@@ -56,9 +59,24 @@ function startGame(GAME_ID, _username = "") {
 		} else if (gameState.type === "direction_change") {
 			SockIn.direction_change(gameState);
 		} else if (gameState.type === "game_over") {
-			console.log("Game over. Winner:", gameState.winner);
 			Pong.backendUpdate(gameState.game_state);
 			SockIn.gameEnd(Pong, gameState.winner);
+		} else if (gameState.type === "serve_ball") {
+			Pong.serveBall("Game is starting...");
+			setTimeout(function() {
+				serving = true;
+				let text;
+				if (Pong.side == "left") {
+					text = "Press any key to serve";
+				} else {
+					text = "Waiting for opponent to serve";
+				}
+				Pong.serveBall(text);
+			}, 3000);  // 5000 milliseconds = 5 seconds
+		} else if (gameState.type === "game_full") {
+			document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
+			document.querySelector('.remote-waiting-room').classList.add('d-none');
+			game_container.classList.remove('d-none');
 		}
 	};
 	
@@ -68,7 +86,6 @@ function startGame(GAME_ID, _username = "") {
 		} else {
 			console.log('[close] Connection died');
 		}
-		document.getElementById("status").textContent = "Disconnected";
 		isSocketConnected = false; // Mark the socket as disconnected
 	};
 	
@@ -112,9 +129,14 @@ const SockIn = {
 		game.running = true;
 		window.requestAnimationFrame(Pong.loop.bind(Pong));
 	},
-	gameEnd: function (game, text) {
+	gameEnd: function (game, winner_side) {
 		game.over = true;
-		console.log(text);
+		let text;
+		if (game.side == winner_side) {
+			text = "You win!";
+		} else {
+			text = "You lose!";
+		}
 		Pong.endGameMenu(text);
 	},
 	direction_change: function(gameState) {
@@ -138,8 +160,17 @@ const SockOut = {
 	gameStart: function () {
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
-				type: 'ready',
-				player: username  // Change to player username in future
+				type: 'serve_ball'
+			}));
+		} else {
+			console.log("WebSocket is not connected.");
+		}
+	},
+	readyUp: function () {
+		if (isSocketConnected) {
+			socket.send(JSON.stringify({
+				type: "ready",
+				player: username
 			}));
 		} else {
 			console.log("WebSocket is not connected.");
@@ -194,32 +225,62 @@ var Game = {
 
 		Pong.menu();
 		Pong.listen();
-	
-		SockOut.gameStart();
+		
+		// if socket is open send ready message
+		SockOut.readyUp();
 	},
 
-	endGameMenu: function (text) {
-		console.log("Called");
+	serveBall: function (text) {
+		// Draw all the Pong objects in their current state
+		Pong.draw();
+
 		// Change the canvas font size and color
-		Pong.context.font = "45px Courier New";
-		Pong.context.fillStyle = this.color;
+		this.context.font = "40px Courier New";
+		this.context.fillStyle = this.color;
 
 		// Draw the rectangle behind the 'Press any key to begin' text.
-		Pong.context.fillRect(
-			Pong.canvas.width / 2 - 350,
-			Pong.canvas.height / 2 - 48,
+		this.context.fillRect(
+			this.canvas.width / 2 - 350,
+			this.canvas.height / 2 - 48,
 			700,
 			100
 		);
 
 		// Change the canvas color;
-		Pong.context.fillStyle = "#ffffff";
+		this.context.fillStyle = "#ffffff";
 
-		// Draw the end game menu text ('Game Over' and 'Winner')
-		Pong.context.fillText(
+		// Draw the 'press any key to begin' text
+		this.context.fillText(
 			text,
-			Pong.canvas.width / 2,
-			Pong.canvas.height / 2 + 15
+			this.canvas.width / 2,
+			this.canvas.height / 2 + 15
+		);
+	},
+
+	endGameMenu: function (text) {
+		// Draw all the Pong objects in their current state
+		Pong.draw();
+
+		// Change the canvas font size and color
+		this.context.font = "40px Courier New";
+		this.context.fillStyle = this.color;
+
+		// Draw the rectangle behind the 'Press any key to begin' text.
+		this.context.fillRect(
+			this.canvas.width / 2 - 350,
+			this.canvas.height / 2 - 48,
+			700,
+			100
+		);
+
+		// Change the canvas color;
+		this.context.fillStyle = "#ffffff";
+
+		// Draw the 'press any key to begin' text
+		this.context.fillText(
+			text,
+			this.canvas.width / 2,
+			this.canvas.height / 2 + 15
 		);
 	},
 
@@ -292,7 +353,9 @@ var Game = {
 			Pong.ai.score = gameState.left_score;
 		}
 		
-		Pong.draw();
+		if (!Pong.over) {
+			Pong.draw();
+		}
 	},
 	
 	// Draw the objects to the canvas element
@@ -390,8 +453,10 @@ var Game = {
 	},
 	
 	loop: function () {
-		Pong.update();
-		Pong.draw();
+		if (!Pong.over && serving == false) {
+			Pong.update();
+			Pong.draw();
+		}
 	
 		// If the game is not over, draw the next frame.
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
@@ -414,6 +479,12 @@ var Game = {
 					SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
 				}
 			}
+
+			if (serving == true && Pong.running == false && Pong.side == "left") {
+				SockOut.gameStart();
+				serving = false;
+			}
+
 		});
 	
 		// Stop the player from moving when there are no keys being pressed.

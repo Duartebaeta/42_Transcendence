@@ -32,6 +32,17 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
+		if (len(list(self.game.get_players())) == 2):
+			self.game.closed = True
+			await self.channel_layer.group_send(
+				self.game_group_name,
+				{
+					'type': 'game_full',
+					'game_id': self.game_id,
+					'participants': list(self.game.get_players())
+				}
+			)
+
 		await self.accept()
 		print(f"Player {self.username} connected to game {self.game_id}")
 
@@ -50,21 +61,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
-		if len(game.get_players()) == 0:
-			del GameManager.games[self.game_id]
-
 		print(f"Player {self.username} disconnected from game {self.game_id}")
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
 		message_type = text_data_json.get('type')
 
-		if message_type == 'ready':
-			player = text_data_json.get('player')
-			self.game.player_ready(player)
-			print(f"Player {player} is ready in game {self.game_id}")
-			print(f"Players ready: {len(self.game.ready_players)}")
-
+		if message_type == 'serve_ball':
 			if self.game.all_players_ready():
 				print(f"Both players are ready in game {self.game_id}. Starting the game...")
 				await self.channel_layer.group_send(
@@ -73,6 +76,20 @@ class GameConsumer(AsyncWebsocketConsumer):
 						'type': 'start_game',
 					}
 				)
+
+		if message_type == 'ready':
+			player = text_data_json.get('player')
+			self.game.player_ready(player)
+			print(f"Player {player} is ready in game {self.game_id}")
+			print(f"Players ready: {len(self.game.ready_players)}")
+			if self.game.all_players_ready():
+				await self.channel_layer.group_send(
+					self.game_group_name,
+					{
+						'type': 'serve_ball',
+					}
+				)
+
 
 		elif message_type == 'move':
 			player = text_data_json.get('player')
@@ -103,6 +120,19 @@ class GameConsumer(AsyncWebsocketConsumer):
 			'type': 'start_game',
 		}))
 		await self.schedule_update()
+
+	async def game_full(self, event):
+		await self.send(text_data=json.dumps({
+			'type': 'game_full',
+			'game_id': event['game_id'],
+			'participants': event['participants']
+		}))
+
+	async def serve_ball(self, event):
+		print(f"Ball served in game {self.game_id}")
+		await self.send(text_data=json.dumps({
+			'type': 'serve_ball',
+		}))
 
 	async def game_over(self, event):
 		winner = event['winner']
@@ -185,6 +215,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			)
 			finalStats = self.game.get_final_stats()
 			manager_group_name = 'game_manager_' + self.game_id
+			print(f"Sending final stats {finalStats} to {manager_group_name}")
 			await self.channel_layer.group_send(
 				manager_group_name,  # Send to the GameManager group
 				{
@@ -207,6 +238,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			)
 			finalStats = self.game.get_final_stats()
 			manager_group_name = 'game_manager_' + self.game_id
+			print(f"Sending final stats {finalStats} to {manager_group_name}")
 			await self.channel_layer.group_send(
 				manager_group_name,  # Send to the GameManager group
 				{
@@ -287,7 +319,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 			# Create a new tournament with a unique ID
 			tournament_id = self.generate_tournament_id()
 			TournamentConsumer.tournaments[tournament_id] = {
-				'participants': []
+				'participants': [],
+				'closed': False
 			}
 			await self.send(text_data=json.dumps({'type': 'tournament_created', 'displayName': data.get('displayName'), 'tournamentID': tournament_id}))
 			print(f"Tournament created with ID: {tournament_id}, {TournamentConsumer.tournaments}")
@@ -344,6 +377,7 @@ class GameManager(AsyncWebsocketConsumer):
 			else:
 				await self.send(text_data=json.dumps({'type': 'game_error', 'error': 'Game not found'}))
 		elif message_type == 'change_group':
+			print("Changing group...")
 			new_group = data.get('group_name')
 			await self.change_group(new_group)
 
@@ -371,28 +405,45 @@ class GameManager(AsyncWebsocketConsumer):
 		return game_id in cls.games
 
 	async def create_games(self, event):
-		# Receive a message from TournamentConsumer for game creation
 		print("Creating games...")
-		if event['type'] == 'create_games':
+
+		if event['t_function'] == 'tournament_round_1':
+			# Create two games for the first round
 			game_id_1 = self.create_game()
 			game_id_2 = self.create_game()
+
+			# Notify the tournament group about the created games
 			await self.channel_layer.group_send(
 				event['tournament_group'],
 				{
-					'type': 'tournament_games_created',
+					'type': 'tournament_round_1',
 					'gameID_1': game_id_1,
 					'gameID_2': game_id_2
 				}
 			)
+
+		elif event['t_function'] == 'tournament_final':
+			# Create a single game for the final round
+			game_id = self.create_game()
+
+			# Notify the tournament group about the final game
+			await self.channel_layer.group_send(
+				event['tournament_group'],
+				{
+					'type': 'tournament_final',
+					'gameID': game_id
+				}
+			)
+
 	async def end_game(self, event):
 		game_id = event['game_stats']['game_id']  # Extract game ID before printing or using it
 		
-		if game_id not in GameManager.games:
-			return  # Exit if the game doesn't exist
-		
 		print(f"Ending game {game_id}")
-
-		await GameManager.game_over(game_id)  # Await game_over method
+		
+		if game_id in GameManager.games:
+			await GameManager.game_over(game_id)  # Await game_over method
+		else:
+			return
 
 		# Send message to the game manager group
 		await self.channel_layer.group_send(
@@ -412,7 +463,6 @@ class GameManager(AsyncWebsocketConsumer):
 		}))
 
 	async def change_group(self, new_group):
-		print(f"Changing group to {new_group}")
 		self.game_group_name = new_group
 		
 		# Add channel to the group

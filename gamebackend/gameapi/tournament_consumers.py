@@ -2,7 +2,10 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .consumers import TournamentConsumer
 import json
+import random
 from .consumers import GameManager
+import uuid
+from .game import Game
 
 # Tournament Consumer Class
 class SpecificTournamentConsumer(AsyncWebsocketConsumer):
@@ -10,6 +13,10 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		self.tournament_id = self.scope['url_route']['kwargs']['tournament_id']
 		self.display_name = self.scope['url_route']['kwargs']['display_name']
 		self.group_name = f'tournament_{self.tournament_id}'
+
+		if TournamentConsumer.tournaments[self.tournament_id]['closed'] == True:
+			await self.close()
+			return
 
 		# Add to the tournament group
 		await self.channel_layer.group_add(
@@ -24,8 +31,13 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 			TournamentConsumer.tournaments[self.tournament_id] = {'participants': []}
 		TournamentConsumer.tournaments[self.tournament_id]['participants'].append(self.display_name)
 
-		if len(TournamentConsumer.tournaments[self.tournament_id]['participants']) == 4:
-			await self.matchmaking()
+		self.my_tournament = TournamentConsumer.tournaments[self.tournament_id]
+		self.my_tournament['current_round'] = 1
+
+		if len(self.my_tournament['participants']) == 4:
+			print(f"Starting tournament {self.tournament_id}")
+			self.my_tournament['closed'] = True
+			await self.round_1()
 
 	async def disconnect(self, close_code):
 		if self.tournament_id in TournamentConsumer.tournaments:
@@ -53,19 +65,110 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 				}
 			)
 		elif data['type'] == 'get_participants':
-			participants = TournamentConsumer.tournaments[self.tournament_id]['participants']
+			participants = self.my_tournament['participants']
 			await self.send(text_data=json.dumps({
 				'type': 'get_participants',
 				'participants': participants
 			}))
 
-	async def matchmaking(self):
-		# Send a message to GameManager to create games
+		elif data['type'] == 'game_over':
+			data = data['data']
+			print(f"Game over: {data}")
+			if self.display_name == data['winner']:
+				await self.channel_layer.group_send(
+					self.group_name,
+					{
+						'type': 'tournament_message',
+						'message': {
+							'type': 'update_brackets',
+							'gameID': data['gameID'],
+							'winner': data['winner'],
+							'loser': data['loser'],
+							'round': self.my_tournament['current_round'],
+							'participants': self.my_tournament['participants']
+						}
+					}
+				)
+				if self.my_tournament['current_round'] == 2:
+					print(f"Winner of tournament {self.tournament_id}: {data['winner']}")
+					self.my_tournament['winner'] = data['winner']
+					await self.channel_layer.group_send(
+						self.group_name,
+						{
+							'type': 'tournament_message',
+							'message': {
+								'type': 'tournament_winner',
+								'winner': data['winner'],
+								'participants': self.my_tournament['participants']
+							}
+						}
+					)
+				else:
+					curr_round = self.my_tournament['rounds'][f'round_{self.my_tournament['current_round']}']
+					curr_round['winners'].append(data['winner'])
+					if len(curr_round['winners']) == 2:
+						self.my_tournament['current_round'] += 1
+						if self.my_tournament['current_round'] == 2:
+							await self.round_2(curr_round['winners'])
+
+
+	async def round_1(self):
+		# Shuffle participants before creating matchings
+		participants = self.my_tournament['participants']
+		random.shuffle(participants)
+
+		game_id_1 = str(uuid.uuid4())[:8]
+		game_id_2 = str(uuid.uuid4())[:8]
+		GameManager.games[game_id_1] = Game(game_id_1)  # Store a Game instance
+		GameManager.games[game_id_2] = Game(game_id_2)  # Store a Game instance
+
+		# Assign the shuffled participants to matchings
+		self.my_tournament['rounds'] = {
+			'round_1': {
+				'matching_1': [participants[0], participants[1]],
+				'matching_2': [participants[2], participants[3]],
+				'gameID_1': game_id_1,
+				'gameID_2': game_id_2,
+				'participants': participants,
+				'winners': []
+			}
+		}
 		await self.channel_layer.group_send(
-			'game_manager',  # Send to the GameManager group
+			self.group_name,
 			{
-				'type': 'create_games',
-				'tournament_group': self.group_name
+				'type': 'tournament_message',
+				'message': {
+					'type': 'tournament_full',
+					'matching_1': [participants[0], participants[1]],
+					'matching_2': [participants[2], participants[3]],
+					'participants': participants,
+					'gameID_1': game_id_1,
+					'gameID_2': game_id_2
+				}
+			}
+		)
+
+	async def round_2(self, winners):
+		gameID = str(uuid.uuid4())[:8]
+		GameManager.games[gameID] = Game(gameID)
+
+		print(f"Round 2: {winners}")
+	
+		self.my_tournament['rounds']['round_2'] = {
+			'matching': [winners[0], winners[1]],
+			'gameID': gameID,
+			'winner': []
+		}
+		await self.channel_layer.group_send(
+			self.group_name,
+			{
+				'type': 'tournament_message',
+				'message': {
+					'type': 'tournament_final',
+					'matching': [winners[0], winners[1]],
+					'participants': self.my_tournament['participants'],
+					'gameID': gameID
+				}
 			}
 		)
 
@@ -73,12 +176,12 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		message = event['message']
 		await self.send(text_data=json.dumps(message))
 
-	async def tournament_games_created(self, event):
-		# Receive the created game IDs from GameManager and send to players
+	async def tournament_final(self, event):
+
+		self.my_tournament['rounds']['round_2'][gameID] = event['gameID']
+
 		await self.send(text_data=json.dumps({
-			'type': 'tournament_full',
-			'matching_1': [TournamentConsumer.tournaments[self.tournament_id]['participants'][0], TournamentConsumer.tournaments[self.tournament_id]['participants'][1]],
-			'matching_2': [TournamentConsumer.tournaments[self.tournament_id]['participants'][2], TournamentConsumer.tournaments[self.tournament_id]['participants'][3]],
-			'gameID_1': event['gameID_1'],
-			'gameID_2': event['gameID_2']
-		}))
+			'type': 'tournament_final',
+			'matching': self.my_tournament['rounds']['round_2']['matching'],
+			'gameID': event['gameID'],
+	}))

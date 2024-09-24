@@ -7,7 +7,7 @@ const DIRECTION = {
 	RIGHT: 4
 };
 
-const BASE_SPEED = 0.015;
+const BASE_SPEED = 0.004;
 
 const rounds = [7];
 const colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
