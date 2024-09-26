@@ -4,6 +4,7 @@ import { startGame } from "./pong.js";
 let TournamentSocket;
 let GameManagerSocket
 let tournamentRunning = false;
+let tournamentOver = false;
 let socketMessageQueue = [];
 
 function startTournament(displayName, tournamentID) {
@@ -125,13 +126,16 @@ function cancelTournament() {
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let tournament_text_box = document.querySelector('#tournament-text-box');
 	let game_menu = document.querySelector('.game-menu');
+	let game_window = document.querySelector('.game');
 	document.querySelector('#tournament-text').innerHTML = 'Tournament has been cancelled';
 	home_button.addEventListener('click', function () {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
 		game_menu.classList.remove('d-none');
+		resetTournamentBrackets();
 	});
 	document.querySelector('.waiting-room').classList.add('d-none');
+	game_window.classList.add('d-none');
 	tournamentBrackets.classList.remove('d-none');
 	document.querySelector('#tournament-text-box').classList.remove('d-none');
 	home_button.classList.remove('d-none');
@@ -174,6 +178,7 @@ function endTournament(displayName, winner = null) {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
 		game_menu.classList.remove('d-none');
+		resetTournamentBrackets();
 	});
 }
 
@@ -291,6 +296,27 @@ function startFinalRound(data, displayName) {
 		console.log('Player lost');
 		endTournament(displayName);
 	}
+}
+
+function resetTournamentBrackets() {
+	// Get all round 1 participants
+	let round1Participants = document.querySelectorAll('.round-1-participant');
+	round1Participants.forEach(participant => {
+		participant.innerHTML = '...';  // Reset the content
+		participant.classList.remove('green-highlight', 'red-highlight');  // Remove any added highlight classes
+	});
+
+	// Get all round 2 participants
+	let round2Participants = document.querySelectorAll('.round-2-participant');
+	round2Participants.forEach(participant => {
+		participant.innerHTML = '...';  // Reset the content
+		participant.classList.remove('green-highlight', 'red-highlight');  // Remove any added highlight classes
+	});
+
+	// Get the tournament winner element and reset it
+	let winnerElement = document.querySelector('.tournament-winner');
+	winnerElement.innerHTML = '...';  // Reset the winner content
+	winnerElement.classList.remove('green-highlight', 'red-highlight');  // Remove any highlight classes
 }
 
 export { startTournament };

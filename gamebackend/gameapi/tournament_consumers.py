@@ -33,6 +33,7 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 
 		self.my_tournament = TournamentConsumer.tournaments[self.tournament_id]
 		self.my_tournament['current_round'] = 1
+		self.my_tournament['losers'] = []
 
 		if len(self.my_tournament['participants']) == 4:
 			print(f"Starting tournament {self.tournament_id}")
@@ -43,18 +44,17 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 		if self.tournament_id in TournamentConsumer.tournaments:
 			participants = TournamentConsumer.tournaments[self.tournament_id]['participants']
 			if TournamentConsumer.tournaments[self.tournament_id]['closed'] == True:
-				print(f"Player {self.display_name} has left, tournament canceled...")
-				print(f"{TournamentConsumer.tournaments[self.tournament_id]['closed']}")
-				await self.channel_layer.group_send(
-					self.group_name,
-					{
-						'type': 'tournament_message',
-						'message': {
-							'type': 'end_tournament',
-							'message': f"Player {self.display_name} has left, tournament canceled..."
+				if self.display_name not in self.my_tournament['losers']:
+					await self.channel_layer.group_send(
+						self.group_name,
+						{
+							'type': 'tournament_message',
+							'message': {
+								'type': 'end_tournament',
+								'message': f"Player {self.display_name} has left, tournament canceled..."
+							}
 						}
-					}
-				)
+					)
 			if self.display_name in participants:
 				participants.remove(self.display_name)
 
@@ -88,6 +88,7 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 			data = data['data']
 			print(f"Game over: {data}")
 			if self.display_name == data['winner']:
+				self.my_tournament['losers'].append(data['loser'])
 				await self.channel_layer.group_send(
 					self.group_name,
 					{
