@@ -8,7 +8,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
-from django.db.models import Model
 from user.models import User
 
 from user_management.jwt_manager import RefreshJWTManager, UserAccessJWTManager

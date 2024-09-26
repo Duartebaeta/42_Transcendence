@@ -47,4 +47,5 @@ class Activate(View):
 				response.raise_for_status()
 			return True
 		except Exception:
+			print(response.json())
 			return False
