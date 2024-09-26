@@ -39,8 +39,9 @@ class Match(View):
 			if user is None:
 				return JsonResponse(status=400, data={'errors': ["There's no such user with that username"]})
 		else:
-			user = User.objects.filter(id=user_id).exists()
+			user = User.objects.filter(id=user_id).first()
 
+		print(user.id)
 		last_matches = MatchModel.objects.filter(player=user).order_by("-time")[:10]
 		last_matches_info = []
 		for match in last_matches:
