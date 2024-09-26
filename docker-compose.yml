@@ -11,8 +11,7 @@ services:
 
   users:
     build:
-      context: users
-      dockerfile: docker/Dockerfile
+      dockerfile: users/docker/Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./users/srcs:/app
@@ -21,18 +20,16 @@ services:
 
   user_game_stats:
     build:
-      context: user_game_stats
-      dockerfile: docker/Dockerfile
+      dockerfile: user_game_stats/docker/Dockerfile
     command: python manage.py runserver 0.0.0.0:8081
     volumes:
-      - ./users/srcs:/app
+      - ./user_game_stats/srcs:/app
     ports:
       - "8081:8081"
 
   livechat:
     build:
-      context: livechat
-      dockerfile: docker/Dockerfile
+      dockerfile: livechat/docker/Dockerfile
     command: python manage.py runserver 0.0.0.0:8080
     volumes:
       - ./livechat/srcs:/app

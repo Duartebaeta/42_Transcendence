@@ -1,14 +1,16 @@
-FROM python:3.9
+FROM python:3.10
 
 WORKDIR /app
 
-COPY docker/requirements.txt /app/
+COPY livechat/docker/requirements.txt /app/
 
 RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY /srcs/ /app/
+COPY livechat/srcs/ /app/
+
+COPY shared /app/shared/
 
 EXPOSE 9000
 

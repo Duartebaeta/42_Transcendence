@@ -1,19 +1,20 @@
 SERVICES ?= frontend gamebackend livechat user_game_stats users
 
 setup:
-	@python env/generator.py
+	# @python env/generator.py
 	@for service in $(SERVICES); do \
 		cp -r shared $$service/srcs; \
 	done
 
 up:
-	docker-compose up -d
+	docker compose build --no-cache
+	docker compose up
 
 down:
-	docker-compose down
+	docker compose down
 
 test-%:
-	docker-compose run $* sh
+	docker compose run $* sh
 
 clear-containers:
 	docker rm -vf $$(docker ps -aq)
