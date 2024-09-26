@@ -74,7 +74,7 @@ class User(View):
 		else:
 			user = UserModel.objects.filter(id=user_id).first()
 
-		last_matches_points = self.get_last_five_matches(user.id)
+		last_matches_points = self.get_last_five_matches(user)
 		data = {
 			'username': user.username,
 			'avatar': user.avatar,
@@ -107,7 +107,6 @@ class User(View):
 			user.username = new_username
 		if new_avatar is not None:
 			user.avatar = new_avatar
-		
 		try:
 			user.save(update_fields=['username', 'avatar'])
 		except Exception as e:
@@ -131,14 +130,13 @@ class User(View):
 
 
 	@staticmethod
-	def get_last_five_matches(user_id):
-		last_matches = Match.objects.filter(id=user_id).order_by("-time")[:5]
+	def get_last_five_matches(user):
+		last_matches = Match.objects.filter(player=user).order_by("-time")[:5]
 		last_matches_points = []
 
 		for match in last_matches:
 			last_matches_points.append(match.player_score)
-		
+
 		if len(last_matches_points) == 1:
 			last_matches_points.append(0)
-
-		return last_matches_points[::-1]
+		return last_matches_points

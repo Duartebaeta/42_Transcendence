@@ -30,17 +30,17 @@ class Match(View):
 			json_request, err = load_json_request(request)
 			if err is not None:
 				return JsonResponse(status=400, data={'errors': [err]})
-			
+
 			username = json_request.get('username')
 			if username is None or username == '':
 				return JsonResponse(status=400, data={'errors': ['No username was given']})
-			
+
 			user = User.objects.filter(username=username).first()
 			if user is None:
 				return JsonResponse(status=400, data={'errors': ["There's no such user with that username"]})
 		else:
 			user = User.objects.filter(id=user_id).exists()
-		
+
 		last_matches = MatchModel.objects.filter(player=user).order_by("-time")[:10]
 		last_matches_info = []
 		for match in last_matches:
