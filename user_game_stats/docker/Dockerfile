@@ -12,6 +12,6 @@ COPY user_game_stats/srcs/ /app/
 
 COPY shared /app/shared/
 
-EXPOSE 8081
+EXPOSE 8080
 
-CMD ["python", "manage.py", "runserver", "127.0.0.1:8081"]
+CMD ["python", "manage.py", "runserver", "127.0.0.1:8080"]
