@@ -3,7 +3,7 @@ import { startGame } from "./pong.js";
 
 let TournamentSocket;
 let GameManagerSocket
-let currentRound = 1;
+let tournamentRunning = false;
 let socketMessageQueue = [];
 
 function startTournament(displayName, tournamentID) {
@@ -25,11 +25,13 @@ function startTournament(displayName, tournamentID) {
 
 	TournamentSocket.onmessage = function (event) {
 		const data = JSON.parse(event.data);
+		console.log('Received message:', data);
 		// Handle incoming messages related to the tournament
 		if (data.type === 'get_participants') {
 			populateWaitingRoom(data);
 		} else if (data.type === 'tournament_full') {
 			console.log('Tournament is full:', data);
+			tournamentRunning = true;
 			tournamentData = data;
 			populateBrackets(data);
 			showBrackets();
@@ -46,11 +48,16 @@ function startTournament(displayName, tournamentID) {
 			, 5000);
 		} else if (data.type === 'tournament_winner') {
 			console.log('Tournament winner:', data);
+			tournamentRunning = false;
 			endTournament(displayName, data.winner);
 		} else if (data.type === 'update_brackets') {
 			console.log('Updating brackets:', data);
 			tournamentData = data;
 			updateBrackets(tournamentData);
+		} else if (data.type === 'end_tournament') {
+			tournamentRunning = false;
+			console.log('Ending tournament:', data);
+			cancelTournament();
 		}
 	};
 
@@ -110,6 +117,26 @@ function populateWaitingRoom(data) {
 	});
 }
 
+function cancelTournament() {
+	console.log('Cancelling tournament');
+	TournamentSocket.close();
+	GameManagerSocket.close();
+	let home_button = document.querySelector('#tournament-home-button');
+	let tournamentBrackets = document.querySelector('.tournament-brackets');
+	let tournament_text_box = document.querySelector('#tournament-text-box');
+	let game_menu = document.querySelector('.game-menu');
+	document.querySelector('#tournament-text').innerHTML = 'Tournament has been cancelled';
+	home_button.addEventListener('click', function () {
+		tournamentBrackets.classList.add('d-none');
+		tournament_text_box.classList.add('d-none');
+		game_menu.classList.remove('d-none');
+	});
+	document.querySelector('.waiting-room').classList.add('d-none');
+	tournamentBrackets.classList.remove('d-none');
+	document.querySelector('#tournament-text-box').classList.remove('d-none');
+	home_button.classList.remove('d-none');
+}
+
 function endTournament(displayName, winner = null) {
 	console.log('Ending tournament');
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
@@ -160,6 +187,8 @@ function populateBrackets(data) {
 }
 
 function showBrackets() {
+	if (!tournamentRunning)
+		return;
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let waitingRoom = document.querySelector('.waiting-room');
 	let game_window = document.querySelector('.game');
@@ -170,6 +199,8 @@ function showBrackets() {
 }
 
 function updateBrackets(data) {
+	if (!tournamentRunning)
+		return;
 	console.log('Showing brackets:', data);
 	let players = document.querySelectorAll('.round-1-participant');
 	let final_players = document.querySelectorAll('.round-2-participant');
@@ -202,6 +233,8 @@ function updateBrackets(data) {
 }
 
 function startRound(data, displayName) {
+	if (!tournamentRunning)
+		return;
 	console.log('Starting round:', data);
 	let final_players = document.querySelectorAll('.round-2-participant');
 
@@ -217,11 +250,7 @@ function startRound(data, displayName) {
 			game_id: data['gameID_1'],
 			group_name: 'game_manager_' + data['gameID_1']
 		});
-
-		
-		// Send the message via the function that handles the socket state
 		sendSocketMessage(message);
-		
 		startGame(data['gameID_1'], displayName);
 
 	} else if (data['matching_2'].includes(displayName)) {
@@ -231,11 +260,7 @@ function startRound(data, displayName) {
 			game_id: data['gameID_2'],
 			group_name: 'game_manager_' + data['gameID_2']
 		});
-		
-
-		// Send the message via the function that handles the socket state
 		sendSocketMessage(message);
-		
 		startGame(data['gameID_2'], displayName);
 
 	} else {
@@ -246,6 +271,8 @@ function startRound(data, displayName) {
 }
 
 function startFinalRound(data, displayName) {
+	if (!tournamentRunning)
+		return;
 	console.log('Starting final round:', data);
 
 	document.querySelector('.tournament-brackets').classList.add('d-none');
@@ -257,10 +284,7 @@ function startFinalRound(data, displayName) {
 			game_id: data['gameID'],
 			group_name: 'game_manager_' + data['gameID']
 		});
-		
-		// Send the message via the function that handles the socket state
 		sendSocketMessage(message);
-
 		startGame(data['gameID'], displayName);
 	} else {
 		// Display message that the player has lost

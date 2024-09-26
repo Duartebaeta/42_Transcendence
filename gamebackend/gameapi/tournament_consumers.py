@@ -42,6 +42,19 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, close_code):
 		if self.tournament_id in TournamentConsumer.tournaments:
 			participants = TournamentConsumer.tournaments[self.tournament_id]['participants']
+			if TournamentConsumer.tournaments[self.tournament_id]['closed'] == True:
+				print(f"Player {self.display_name} has left, tournament canceled...")
+				print(f"{TournamentConsumer.tournaments[self.tournament_id]['closed']}")
+				await self.channel_layer.group_send(
+					self.group_name,
+					{
+						'type': 'tournament_message',
+						'message': {
+							'type': 'end_tournament',
+							'message': f"Player {self.display_name} has left, tournament canceled..."
+						}
+					}
+				)
 			if self.display_name in participants:
 				participants.remove(self.display_name)
 
