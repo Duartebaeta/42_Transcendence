@@ -14,4 +14,8 @@ COPY shared /app/shared/
 
 EXPOSE 9000
 
+RUN python manage.py makemigrations chatapp
+
+RUN python manage.py migrate
+
 CMD ["python", "manage.py", "runserver", "127.0.0.1:9000"]
