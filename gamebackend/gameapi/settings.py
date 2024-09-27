@@ -15,12 +15,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 ]
 
@@ -44,9 +44,7 @@ SECRET_KEY = '#+$z8^c6c+xcqig8n-icloskc$12sx#+6$zeci*=wepyi-rek4'
 
 ALLOWED_HOSTS = ['http://172.20.10.3:5500', '172.20.10.3:5500', '172.20.10.3', '*']
 
-CORS_ALLOWED_ORIGINS = [
-	'http://172.20.10.3:5500',
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
