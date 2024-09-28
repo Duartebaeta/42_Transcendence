@@ -91,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			authenticatedRequest(request.url, request)
 				.then(response => response.json())
 				.then(data => {
+					const roomName = data.name;
 					let info = '';
 
 					// Check If Chat With Contact Has Previous Messages
@@ -133,6 +134,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 					// Scroll To Bottom Of Chat Window
 					chatWindow.scrollTop = chatWindow.scrollHeight;
+
+					const sendBtn = document.getElementById('sendMessagesBtn');
+
+					sendBtn.addEventListener('click', function() {
+						sendMessage(roomName);
+					})
 				})
 				.catch(error => {
 					console.error("Error fetching data:", error);
@@ -141,60 +148,27 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 })
 
-// Establish WebSocket connection
-document.addEventListener('DOMContentLoaded', function() {
-	let socket;
-	let activeContactId = null; // Need To Check This Functionality
-	const chatRoomName = 'chat-room-name'; // Replace Chat Room Name
+//Send message
+function sendMessage(room_name) {
+	const message = document.getElementById('messageTextArea');
 
-	// Create WebSocket
-	socket = new WebSocket('ws://' + window.location.host + '/ws/' + chatRoomName + '/');
-
-	// Send Data When Connection Is Established
-	socket.onopen = function() {
-		const sendBtn = document.getElementById('sendMessagesBtn');
-
-		sendBtn.addEventListener('click', function() {
-			const message = document.getElementById('messageTextArea').value;
-
-			const payload = {
-				contactId: activeContactId,
-				message: message
-			};
-
-			socket.send(JSON.stringify(payload));
-		});
+	var request = {
+		method: 'POST', // HTTP method
+		url: 'http://localhost:9000/rooms/message/',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			message: message.value,
+			room_name: room_name
+		})
 	};
 
-	// Receive Data From WebSocket
-	socket.onmessage = function(event) {
-		try {
-			const data = JSON.parse(event.data);
-
-			if (data.contactId === activeContactId) {
-				const message = data.message;
-				let messageHtml = '';
-
-				if (data.fromOtherUser) {
-					messageHtml = `<div class="text-dark p-2 rounded me-auto text-start mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">${message}</div>`;
-				}
-				else {
-					messageHtml = `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message}</div>`;
-				}
-
-				document.getElementById('chat-messages').innerHTML += messageHtml;
-				//chatWindow.scrollTop = chatWindow.scrollHeight;
-			}
-		}
-		catch (error) {
-			console.error("Error parsing JSON data:", error);
-		}
-	};
-
-	socket.onclose = function() {
-		console.log("Connection Closed");
-	};
-})
+	authenticatedRequest(request.url, request)
+	.catch(error => {
+		console.error("Error fetching data:", error);
+	})
+}
 
 // Show friends only button
 document.addEventListener('DOMContentLoaded', function() {

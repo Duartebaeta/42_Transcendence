@@ -57,6 +57,6 @@ class ChatRoomView(View):
 					user2=user2,
 					name=f'{user1.id}-{user2.id}'
 			)
-			return JsonResponse(status=201, data={'message': 'Chatroom created'})
+			return JsonResponse(status=201, data={'message': 'Chatroom created', 'name': chatroom.name})
 		messages = ChatMessage.objects.filter(room=chatroom)[0:30]
-		return JsonResponse(status=200, data={"messages": ChatMessageSerializer(messages, many=True).data}, safe=False)
+		return JsonResponse(status=200, data={"messages": ChatMessageSerializer(messages, many=True).data, 'name': chatroom.name}, safe=False)
