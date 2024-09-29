@@ -88,7 +88,9 @@ class User(View):
 			user.save()
 			other_users = UserModel.objects.exclude(id=user_id)
 			for other in other_users:
-				chatroom = ChatRoom.objects.create(user1=user, user2=other)
+				user1 = UserModel.objects.filter(id=min(user_id, other.id)).first()
+				user2 = UserModel.objects.filter(id=max(user_id, other.id)).first()
+				chatroom = ChatRoom.objects.create(user1=user, user2=other, name=f'{user1.id}-{user2.id}')
 				chatroom.save()
 		except Exception as e:
 			return JsonResponse(status=400, data={'errors': [str(e)]})

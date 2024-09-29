@@ -48,14 +48,18 @@ class ChatRoomView(View):
 		if user1 is None:
 			return JsonResponse(status=400, data={'errors': ['No such user with that id']})
 		user2 = User.objects.filter(id=max(user_id, otherUser.id)).first()
-
+		if user2 is None:
+			return JsonResponse(status=400, data={'errors': ['No such user with that id']})
+		if user1 == user2:
+			return JsonResponse(status=400, data={'errors': ['Can not chat with yourself']})
+		roomName = f'{user1.id}-{user2.id}'
 		try:
-			chatroom = ChatRoom.objects.get(user1=user1, user2=user2)
+			chatroom = ChatRoom.objects.get(name=roomName)
 		except ChatRoom.DoesNotExist:
 			chatroom, _ = ChatRoom.objects.get_or_create(
 			    user1=user1,
 					user2=user2,
-					name=f'{user1.id}-{user2.id}'
+					name=roomName
 			)
 			return JsonResponse(status=201, data={'message': 'Chatroom created', 'name': chatroom.name})
 		messages = ChatMessage.objects.filter(room=chatroom)[0:30]

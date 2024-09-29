@@ -1,4 +1,12 @@
 SERVICES ?= frontend gamebackend livechat user_game_stats users
+DJANGO_SERVICES ?= livechat user_game_stats users
+
+flush:
+	for service in $(DJANGO_SERVICES); do \
+		cd $$service/srcs && \
+		echo "yes" | python manage.py flush && \
+		cd -; \
+	done
 
 setup:
 	# @python env/generator.py
