@@ -91,11 +91,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			authenticatedRequest(request.url, request)
 				.then(response => response.json())
 				.then(data => {
+					console.log(data);
 					const roomName = data.name;
 					let info = '';
 
 					// Check If Chat With Contact Has Previous Messages
-					if (!data.messages) {
+					if (!data.messages[0]) {
 						info += `<div class="text-center text-light pt-3">
 									<h5>No messages with this person yet!</h3>
 								</div>`;
@@ -106,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						// Create HTML Chat Logs Content
 						chat.forEach(message => {
 							if (!message.fromOtherUser)
-								info += `<div class="text-light bg-secondary p-2 	rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
+								info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
 							else
 								info += `<div class="text-dark p-2 rounded me-auto text-start mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
 						});
@@ -135,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					// Scroll To Bottom Of Chat Window
 					chatWindow.scrollTop = chatWindow.scrollHeight;
 
+					// Send message
 					const sendBtn = document.getElementById('sendMessagesBtn');
 
 					sendBtn.addEventListener('click', function() {
