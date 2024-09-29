@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Fetch And Display Messages With Selected Contact
 document.addEventListener('DOMContentLoaded', function() {
 	const chatWindow = document.getElementById('chat-messages');
+	let chatSocket;
 
 	document.getElementById('contacts').addEventListener('click', function(event) {
 		const contactArea = event.target.closest('.contactArea');
@@ -76,100 +77,89 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (contactArea) {
 			const contactId = contactArea.getAttribute('data-contact-id');
 
+			// Close previous WebSocket connection if any
+			if (chatSocket) {
+				chatSocket.close();
+			}
+
+			// Fetch room details
 			var request = {
-				method: 'POST', // HTTP method
+				method: 'POST', 
 				url: 'http://localhost:9000/rooms/chatroom/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					user: contactId
-				})
+				body: JSON.stringify({ user: contactId })
 			};
 
-			// Send The Request Using Fetch API
+			// Send the request to get the chat room
 			authenticatedRequest(request.url, request)
 				.then(response => response.json())
 				.then(data => {
-					console.log(data);
 					const roomName = data.name;
 					let info = '';
 
-					// Check If Chat With Contact Has Previous Messages
-					if (!data.messages[0]) {
-						info += `<div class="text-center text-light pt-3">
-									<h5>No messages with this person yet!</h3>
-								</div>`;
-					}
-					else {
-						const chat = data.messages;
+					// Display previous messages if any
+					const chat = data.messages;
+					chat.forEach(message => {
+						info += renderMessage(message.message, message.fromOtherUser);
+					});
 
-						// Create HTML Chat Logs Content
-						chat.forEach(message => {
-							if (!message.fromOtherUser)
-								info += `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
-							else
-								info += `<div class="text-dark p-2 rounded me-auto text-start mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">${message.message}</div>`;
-						});
-					}
-
-					// Update HTML Content
+					// Update the chat window with previous messages
 					document.getElementById('selectedContactName').innerHTML = contactId;
 					document.getElementById('chat-messages').innerHTML = info;
-					// Dropmenu Settings Button
-					document.getElementById('chatDropdownMenu').innerHTML = `<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-																				<i class="bi bi-three-dots-vertical h4 text-light"></i>
-																			</button>
-																			<!-- Dropdown Menu -->
-																			<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-																				<!-- Menu Options -->
-																				<li><a class="dropdown-item" data-value="Block">Block</a></li>
-																				<li><a class="dropdown-item" data-value="Invite To Play">Invite To Play</a></li>
-																				<li><a class="dropdown-item" data-value="Profile">Profile</a></li>
-																			</ul>
-																			<select class="custom-select" id="hiddenSelect">
-																				<option value="Block">Block</option>
-																				<option value="Invite To Play">Invite To Play</option>
-																				<option value="Profile">Profile</option>
-																			</select>`
 
-					// Scroll To Bottom Of Chat Window
+					// Scroll to the bottom of the chat
 					chatWindow.scrollTop = chatWindow.scrollHeight;
 
-					// Send message
-					const sendBtn = document.getElementById('sendMessagesBtn');
+					// Establish WebSocket connection for the current room
+					chatSocket = new WebSocket(
+						'ws://localhost:9000'  + '/ws/' + roomName + '/'
+					);
 
-					sendBtn.addEventListener('click', function() {
-						sendMessage(roomName);
-					})
+					// Handle incoming messages from WebSocket
+					chatSocket.onmessage = function(e) {
+						const data = JSON.parse(e.data);
+						if (data.message) {
+							let messageHTML = renderMessage(data.message, !data.fromOtherUser);
+							document.getElementById('chat-messages').innerHTML += messageHTML;
+
+							// Scroll to bottom after new message
+							chatWindow.scrollTop = chatWindow.scrollHeight;
+						}
+					};
+
+					chatSocket.onclose = function(e) {
+						console.log('WebSocket connection closed');
+					};
+
+					// Send message via WebSocket when send button is clicked
+					document.getElementById('sendMessagesBtn').addEventListener('click', function() {
+						const messageInput = document.getElementById('messageTextArea');
+						const message = messageInput.value;
+
+						if (message.trim()) {
+							chatSocket.send(JSON.stringify({
+								'message': message,
+								'username': contactId,  // Replace with actual user info if needed
+								'room': roomName
+							}));
+							messageInput.value = ""; // Clear input field
+						}
+					});
 				})
 				.catch(error => {
 					console.error("Error fetching data:", error);
 				});
 		}
 	});
-})
+});
 
-//Send message
-function sendMessage(room_name) {
-	const message = document.getElementById('messageTextArea');
-
-	var request = {
-		method: 'POST', // HTTP method
-		url: 'http://localhost:9000/rooms/message/',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			message: message.value,
-			room_name: room_name
-		})
-	};
-
-	authenticatedRequest(request.url, request)
-	.catch(error => {
-		console.error("Error fetching data:", error);
-	})
+// Helper function to render chat messages
+function renderMessage(message, fromOtherUser) {
+	return fromOtherUser
+		? `<div class="text-dark p-2 rounded me-auto text-start mb-2 px-3" style="background-color: orange; max-width: 70%; word-wrap: break-word;">${message}</div>`
+		: `<div class="text-light bg-secondary p-2 rounded ms-auto text-start mb-2 px-3" style="max-width: 70%; word-wrap: break-word;">${message}</div>`;
 }
 
 // Show friends only button
