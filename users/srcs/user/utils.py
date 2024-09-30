@@ -13,6 +13,7 @@ from user.models import User
 
 def send_verification_email(request, user):
 	connection = get_connection()
+	connection.open()
 	from_email = settings.DEFAULT_FROM_EMAIL
 	current_site = get_current_site(request)
 	mail_subject = 'Activate Your 42-Transcendence Account'
