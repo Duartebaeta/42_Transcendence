@@ -28,7 +28,7 @@ def send_verification_email(request, user):
 		email = EmailMessage(mail_subject, message, from_email, to=[to_email], connection=connection)
 		email.send(fail_silently=False)
 	except Exception as e:
-		print(f"Error sending verification email: {e}")
+		raise e
 	finally:
 		connection.close()
 
