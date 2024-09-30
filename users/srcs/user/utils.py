@@ -24,7 +24,7 @@ def send_verification_email(request, user):
 		'token': default_token_generator.make_token(user),
 		})
 	to_email = user.email
-	email = EmailMessage(mail_subject, message, from_email, to=[to_email])
+	email = EmailMessage(mail_subject, message, from_email, to=[to_email], connection=connection)
 	email.send(fail_silently=False)
 	connection.close()
 
