@@ -12,21 +12,25 @@ from django.conf import settings
 from user.models import User
 
 def send_verification_email(request, user):
-	connection = get_connection()
-	connection.open()
-	from_email = settings.DEFAULT_FROM_EMAIL
-	current_site = get_current_site(request)
-	mail_subject = 'Activate Your 42-Transcendence Account'
-	message = render_to_string('accounts/emails/account_verification_email.html', {
-		'user': user,
-		'domain': current_site.domain,
-		'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-		'token': default_token_generator.make_token(user),
-		})
-	to_email = user.email
-	email = EmailMessage(mail_subject, message, from_email, to=[to_email], connection=connection)
-	email.send(fail_silently=False)
-	connection.close()
+	try:
+		connection = get_connection()
+		connection.open()
+		from_email = settings.DEFAULT_FROM_EMAIL
+		current_site = get_current_site(request)
+		mail_subject = 'Activate Your 42-Transcendence Account'
+		message = render_to_string('accounts/emails/account_verification_email.html', {
+			'user': user,
+			'domain': current_site.domain,
+			'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+			'token': default_token_generator.make_token(user),
+			})
+		to_email = user.email
+		email = EmailMessage(mail_subject, message, from_email, to=[to_email], connection=connection)
+		email.send(fail_silently=False)
+	except Exception as e:
+		print(f"Error sending verification email: {e}")
+	finally:
+		connection.close()
 
 def is_valid_username(username):
 	if username is None or username == '':
