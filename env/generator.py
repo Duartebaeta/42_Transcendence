@@ -27,8 +27,8 @@ def write_env_variable(key, value, file):
 
 
 generate_rsa_keys()
-os.rename('public_key.pem', 'shared/public_key.pem')
-os.rename('private_key.pem', 'shared/private_key.pem')
+# os.rename('public_key.pem', 'shared/public_key.pem')
+# os.rename('private_key.pem', 'shared/private_key.pem')
 
 # Shared
 write_env_variable('DEGUB', os.getenv('DEBUG'), SHARED_ENV)
