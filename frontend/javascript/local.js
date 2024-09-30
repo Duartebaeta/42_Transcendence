@@ -135,7 +135,10 @@ const Game = {
 		if (this.player.score === rounds[this.round]) {
 			if (!rounds[this.round + 1]) {
 				this.over = true;
-				setTimeout(function () { Pong.endGameMenu('Left Wins!'); }, 1000);
+				setTimeout(function () {
+					Pong.endGameMenu('Left Wins!');
+					endGame();
+				}, 1000);
 			} else {
 				this.color = this._generateRoundColor();
 				this.player.score = this.ai.score = 0;
@@ -146,7 +149,10 @@ const Game = {
 			}
 		} else if (this.ai.score === rounds[this.round]) {
 			this.over = true;
-			setTimeout(function () { Pong.endGameMenu('Right Wins!'); }, 1000);
+			setTimeout(function () {
+				Pong.endGameMenu('Right Wins!');
+				endGame();
+			}, 1000);
 		}
 	},
 
@@ -197,8 +203,6 @@ const Game = {
 				window.requestAnimationFrame(Pong.loop);
 			}
 
-			console.log(key.keyCode);
-
 			if (key.keyCode === 38) Pong.player.move = DIRECTION.UP;
 			if (key.keyCode === 87) Pong.ai.move = DIRECTION.UP;
 			if (key.keyCode === 40) Pong.player.move = DIRECTION.DOWN;
@@ -236,6 +240,15 @@ function startLocal() {
 	document.querySelector('.game').classList.add('d-block');
 	document.querySelector('.game-menu').classList.add('d-none');
 	Pong.initialize();
+}
+
+function endGame() {
+	document.querySelector('#canvas-home-button').addEventListener('click', function () {
+		document.querySelector('.game').classList.add('d-none');
+		document.querySelector('#canvas-home-button').classList.add('d-none');
+		document.querySelector('.game-menu').classList.remove('d-none');
+	});
+	document.querySelector('#canvas-home-button').classList.remove('d-none');
 }
 
 export { startLocal };
