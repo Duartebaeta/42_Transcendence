@@ -9,14 +9,9 @@ let BACKEND_IP = "10.19.249.137"
 let PORT = "9090"
 
 document.addEventListener('DOMContentLoaded', function () {
-	document.getElementById('aiModeBtn').addEventListener('click', () => {
-		document.getElementById('aiModeBtn').classList.remove('bg-warning');
-		startSinglePlayer();
-	});
-	document.getElementById('localModeBtn').addEventListener('click', () => {
-		document.getElementById('localModeBtn').classList.remove('bg-warning');	
-		startLocal();
-	});
+
+	document.getElementById('aiModeBtn').addEventListener('click', startSinglePlayer);
+	document.getElementById('localModeBtn').addEventListener('click', startLocal);
 	document.getElementById('remotePlayerInfo').addEventListener('submit', function(event){
 		event.preventDefault();
 

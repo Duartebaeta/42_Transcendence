@@ -141,7 +141,10 @@ const Game = {
 		if (this.player.score === rounds[this.round]) {
 			if (!rounds[this.round + 1]) {
 				this.over = true;
-				setTimeout(function () { Pong.endGameMenu('Winner!'); }, 1000);
+				setTimeout(function () {
+					Pong.endGameMenu('Winner!');
+					endGame();
+				}, 1000);
 			} else {
 				this.color = this._generateRoundColor();
 				this.player.score = this.ai.score = 0;
@@ -149,7 +152,10 @@ const Game = {
 			}
 		} else if (this.ai.score === rounds[this.round]) {
 			this.over = true;
-			setTimeout(function () { Pong.endGameMenu('Game Over!'); }, 1000);
+			setTimeout(function () {
+				Pong.endGameMenu('Game Over!');
+				endGame();
+			}, 1000);
 		}
 	},
 
@@ -232,6 +238,15 @@ function startSinglePlayer() {
 	document.querySelector('.game').classList.add('d-block');
 	document.querySelector('.game-menu').classList.add('d-none');
 	Pong.initialize();
+}
+
+function endGame() {
+	document.querySelector('#canvas-home-button').addEventListener('click', function () {
+		document.querySelector('.game').classList.add('d-none');
+		document.querySelector('#canvas-home-button').classList.add('d-none');
+		document.querySelector('.game-menu').classList.remove('d-none');
+	});
+	document.querySelector('#canvas-home-button').classList.remove('d-none');
 }
 
 export { startSinglePlayer };

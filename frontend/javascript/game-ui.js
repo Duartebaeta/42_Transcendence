@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	// vs AI Mode
     aiModeBtn.addEventListener('click', function() {
 		// Add Coloring To The Pressed Button
-		aiModeBtn.classList.add('bg-warning');
-		localModeBtn.classList.remove('bg-warning');
 		remoteModeBtn.classList.remove('bg-warning');
 		tournamentModeBtn.classList.remove('bg-warning');
 		
@@ -32,8 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Local vs Mode
 	localModeBtn.addEventListener('click', function() {
 		// Add Coloring To The Pressed Button
-		aiModeBtn.classList.remove('bg-warning');
-		localModeBtn.classList.add('bg-warning');
 		remoteModeBtn.classList.remove('bg-warning');
 		tournamentModeBtn.classList.remove('bg-warning');
 
