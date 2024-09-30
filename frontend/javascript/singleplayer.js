@@ -7,7 +7,7 @@ const DIRECTION = {
 	RIGHT: 4
 };
 
-const BASE_SPEED = 0.004;
+const BASE_SPEED = 0.006;
 
 const rounds = [7];
 const colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
@@ -35,7 +35,7 @@ const Ai = {
 			y: (this.canvas.height / 2) - 35,
 			score: 0,
 			move: DIRECTION.IDLE,
-			speed: this.canvas.height * BASE_SPEED
+			speed: this.canvas.height * (BASE_SPEED - 0.002)
 		};
 	}
 };
@@ -112,12 +112,12 @@ const Game = {
 			else if (this.ball.moveX === DIRECTION.RIGHT) this.ball.x += this.ball.speed;
 
 			if (this.ai.y > this.ball.y - (this.ai.height / 2)) {
-				if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y -= this.ai.speed / 1.5;
-				else this.ai.y -= this.ai.speed / 4;
+				if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y -= this.ai.speed;
+				else this.ai.y -= this.ai.speed;
 			}
 			if (this.ai.y < this.ball.y - (this.ai.height / 2)) {
-				if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y += this.ai.speed / 1.5;
-				else this.ai.y += this.ai.speed / 4;
+				if (this.ball.moveX === DIRECTION.RIGHT) this.ai.y += this.ai.speed;
+				else this.ai.y += this.ai.speed;
 			}
 
 			if (this.ai.y >= this.canvas.height - this.ai.height) this.ai.y = this.canvas.height - this.ai.height;
@@ -145,9 +145,6 @@ const Game = {
 			} else {
 				this.color = this._generateRoundColor();
 				this.player.score = this.ai.score = 0;
-				// this.player.speed += 0.5;
-				// this.ai.speed += 1;
-				// this.ball.speed += 1;
 				this.round += 1;
 			}
 		} else if (this.ai.score === rounds[this.round]) {

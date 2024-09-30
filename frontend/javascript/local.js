@@ -204,7 +204,10 @@ const Game = {
 			if (key.keyCode === 40) Pong.player.move = DIRECTION.DOWN;
 			if (key.keyCode === 83) Pong.ai.move = DIRECTION.DOWN;
 		});
-		document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; Pong.ai.move = DIRECTION.IDLE;});
+		document.addEventListener('keyup', function (key) {
+			if (key.keyCode === 38 || key.keyCode === 40) Pong.player.move = DIRECTION.IDLE;
+			if (key.keyCode === 87 || key.keyCode === 83) Pong.ai.move = DIRECTION.IDLE;
+		});
 	},
 	
 	_resetTurn: function(victor, loser) {
