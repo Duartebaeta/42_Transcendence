@@ -18,4 +18,4 @@ RUN python manage.py makemigrations chatapp
 
 RUN python manage.py migrate
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:9000"]
+CMD ["python", "manage.py", "runserver", "9000"]
