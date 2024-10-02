@@ -36,7 +36,8 @@ docker-migrate:
 		docker compose exec $$service python manage.py makemigrations; \
 		docker compose exec $$service python manage.py migrate; \
 	done
-	docker compose exec user_game_stats python manage.py migrate user_stats
+	docker compose exec user-game-stats python manage.py makemigrations user_stats
+	docker compose exec user-game-stats python manage.py migrate user_stats
 
 docker-createsuperuser-%:
 	docker compose exec $* python manage.py createsuperuser
@@ -46,5 +47,6 @@ clear-containers:
 
 create-new-db-files:
 	for service in $(DJANGO_SERVICES); do \
+		rm -rf $$service/srcs/db.sqlite3; \
 		touch $$service/srcs/db.sqlite3; \
 	done

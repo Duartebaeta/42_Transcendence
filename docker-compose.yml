@@ -8,13 +8,15 @@ services:
       - "8000:8000"
     networks:
       - app-network
+    env_file:
+      - .env
     command: python manage.py runserver 0.0.0.0:8000
 
   user-game-stats:
     build:
-      dockerfile: user_game_stats/docker/Dockerfile
+      dockerfile: user-game-stats/docker/Dockerfile
     volumes:
-      - ./user_game_stats/srcs/db.sqlite3:/app/db.sqlite3
+      - ./user-game-stats/srcs/db.sqlite3:/app/db.sqlite3
     ports:
       - "8080:8080"
     networks:
