@@ -14,3 +14,4 @@ server.js
 users/srcs/shared/
 user_game_stats/srcs/shared/
 livechat/srcs/shared/
+shared/ssl/*
