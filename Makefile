@@ -10,10 +10,13 @@ flush:
 
 setup:
 	@docker build -t python-env .
-	@docker run --rm -v $$(pwd)/shared:/app/shared python-env
-	@for service in $(SERVICES); do \
+	@docker run --name python-env python-env
+	@docker cp python-env:/app/users/srcs/.env $$(pwd)/users/srcs/.env
+	@docker cp python-env:/app/shared $$(pwd)
+	@for service in $(DJANGO_SERVICES); do \
 		cp -r shared $$service/srcs; \
 	done
+	@docker rm python-env
 	@echo "Setup completed"
 
 up:
