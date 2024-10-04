@@ -51,6 +51,8 @@ async function authenticatedRequest(url, options = {}) {
         'Authorization': `Bearer ${accessToken}`
     };
 
+    console.log(options)
+
     let response = await fetch(url, options);
 
     // If the access token has expired, refresh it and retry the request

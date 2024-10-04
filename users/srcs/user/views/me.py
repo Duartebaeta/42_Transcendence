@@ -20,9 +20,6 @@ class Me(View):
 		success, user_id, errors = UserAccessJWTManager.authenticate(access_token)
 		if not success:
 			return JsonResponse(status=401, data={'errors': errors})
-		json_request, err = load_json_request(request)
-		if err is not None:
-			return JsonResponse(status=400, data={'errors': [err]})
 		try:
 			user = User.objects.get(id=user_id)
 		except User.DoesNotExist:

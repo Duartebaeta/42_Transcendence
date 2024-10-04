@@ -112,8 +112,8 @@ class Game():
 	def get_final_stats(self):
 		return {
 			"game_id": self.game_id,
-			"player": list(self.players.keys())[0],
-			"opponent": list(self.players.keys())[1],
+			"player": int(list(self.players.keys())[0]),
+			"opponent": int(list(self.players.keys())[1]),
 			"player_score": self.left_score,
 			"opponent_score": self.right_score,
 			"won": self.left_score > self.right_score
