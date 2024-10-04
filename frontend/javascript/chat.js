@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			.then(response => response.json())
 			.then(data => {
 				const contacts = data.contacts;
+				const friends = data.friends;
 
 				// Create HTML Content For Contacts
 				let info = '';
@@ -56,8 +57,18 @@ document.addEventListener('DOMContentLoaded', function () {
 							</div>`;
 				});
 
+				let friendsList = '';
+				friends += `<div class="contactArea d-flex align-items-start align-items-center ps-4 friend" data-contact-id="${contact.name}">
+								<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
+								<div class="ms-3" style="width: 210px;">
+									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
+									<p class="text-light mb-0 text-truncate">${contact.last_message}</p>
+								</div>
+							</div>`;
+
 				// Update HTML Content
 				document.getElementById('chatContacts').innerHTML = info;
+				document.getElementById('friendsContacts').innerHTML = info;
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error);
@@ -177,9 +188,18 @@ document.addEventListener('DOMContentLoaded', function () {
 	const btn = document.getElementById('friendsOnlyBtn');
 
 	btn.addEventListener('click', function () {
-		if (btn.style.backgroundColor == 'rgba(220, 220, 220, 0.3)') // TODO: add code to toggle friends only
+		const contacts = document.getElementById('chatContacts');
+		const friends = document.getElementById('friendsContacts');
+
+		if (btn.style.backgroundColor == 'rgba(220, 220, 220, 0.3)') {
 			btn.style.backgroundColor = 'rgba(238, 130, 238, 1)';
-		else
+			contacts.classList.add('d-none');
+			friends.classList.remove('d-none');
+		}
+		else {
 			btn.style.backgroundColor = 'rgba(220, 220, 220, 0.3)';
+			contacts.classList.remove('d-none');
+			friends.classList.add('d-none');
+		}
 	});
 });
