@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			.then(response => response.json())
 			.then(data => {
 				const contacts = data.contacts;
-				console.log(data.contacts);
 
 				// Create HTML Content For Contacts
 				let info = '';
@@ -102,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					// Display previous messages if any
 					const chat = data.messages;
 					chat.forEach(message => {
-						info += renderMessage(message.message, message.fromOtherUser);
+						info += renderMessage(message.message, (message.user != contactId));
 					});
 
 					// Update the chat window with previous messages
@@ -120,8 +119,9 @@ document.addEventListener('DOMContentLoaded', function () {
 					// Handle incoming messages from WebSocket
 					chatSocket.onmessage = function (e) {
 						const data = JSON.parse(e.data);
+						console.log( data)
 						if (data.message) {
-							let messageHTML = renderMessage(data.message, !data.fromOtherUser);
+							let messageHTML = renderMessage(data.message, (data.username != contactId));
 							document.getElementById('chat-messages').innerHTML += messageHTML;
 
 							// Scroll to bottom after new message
@@ -143,10 +143,6 @@ document.addEventListener('DOMContentLoaded', function () {
 						chatSocket.onclose = function (e) {
 							throw (console.log('WebSocket connection closed 1'));
 						};
-
-						console.log(message)
-						console.log(contactId)
-						console.log(roomName)
 
 						if (message.trim()) {
 							chatSocket.send(JSON.stringify({
