@@ -209,6 +209,17 @@ const SockOut = {
 	}
 };
 
+function endGame() {
+	document.querySelector('#canvas-home-button').addEventListener('click', function () {
+		document.querySelector('.game').classList.add('d-none');
+		document.querySelector('#canvas-home-button').classList.add('d-none');
+		document.querySelector('.game-menu').classList.remove('d-none');
+		document.querySelector('#remoteModeBtn').classList.remove('bg-warning');
+		document.querySelector('#remotePlayerInfo').classList.add('d-none');
+	});
+	document.querySelector('#canvas-home-button').classList.remove('d-none');
+}
+
 var Game = {
 	initialize: function () {
 		this.canvas = document.querySelector("canvas");
@@ -290,6 +301,7 @@ var Game = {
 			this.canvas.width / 2,
 			this.canvas.height / 2 + 15
 		);
+		endGame();
 	},
 
 	menu: function () {
@@ -317,32 +329,6 @@ var Game = {
 			this.canvas.width / 2,
 			this.canvas.height / 2 + 15
 		);
-	},
-
-	// Update all objects (move the player, ai, ball, increment the score, etc.)
-	update: function () {
-		if (!this.over) {
-			// Move player if they player.move value was updated by a keyboard event
-			if (this.player.move === DIRECTION.UP) {
-				this.player.y -= this.player.speed;
-			} else if (this.player.move === DIRECTION.DOWN) {
-				this.player.y += this.player.speed;
-			}
-			if (this.ai.move === DIRECTION.UP) {
-				this.ai.y -= this.player.speed;
-			} else if (this.ai.move === DIRECTION.DOWN) {
-				this.ai.y += this.player.speed;
-			}
-
-			// If the player collides with the bound limits, update the x and y coords.
-			if (this.player.y <= 0) this.player.y = 0;
-			else if (this.player.y >= this.canvas.height - this.player.height)
-				this.player.y = this.canvas.height - this.player.height;
-			// Same for the AI
-			if (this.ai.y <= 0) this.ai.y = 0;
-			else if (this.ai.y >= this.canvas.height - this.ai.height) 
-				this.ai.y = this.canvas.height - this.ai.height;
-		}
 	},
 	backendUpdate: function(gameState) {
 		Pong.ball.x = gameState.ball_x;
@@ -462,7 +448,6 @@ var Game = {
 	
 	loop: function () {
 		if (!Pong.over && serving == false) {
-			Pong.update();
 			Pong.draw();
 		}
 	
@@ -471,22 +456,13 @@ var Game = {
 	},
 	
 	listen: function () {
-		document.addEventListener("keydown", function (key) {
+		let keyState = {};
+	
+		document.addEventListener("keydown", function (event) {
 			// Handle up arrow and w key events
-			if (key.keyCode === 38 || key.keyCode === 87) {
-				if (Pong.player.move !== DIRECTION.UP) { // Prevent multiple triggers
-					Pong.player.move = DIRECTION.UP;
-					SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
-				}
-			}
-		
-			// Handle down arrow and s key events
-			if (key.keyCode === 40 || key.keyCode === 83) {
-				if (Pong.player.move !== DIRECTION.DOWN) { // Prevent multiple triggers
-					Pong.player.move = DIRECTION.DOWN;
-					SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
-				}
-			}
+	
+			keyState[event.code] = true;
+			Pong.updateMovement(keyState);
 
 			if (serving == true && Pong.running == false && Pong.side == "left") {
 				SockOut.gameStart();
@@ -495,11 +471,25 @@ var Game = {
 
 		});
 	
-		// Stop the player from moving when there are no keys being pressed.
-		document.addEventListener("keyup", function (key) {
+		document.addEventListener('keyup', function (event) {	
+			keyState[event.code] = false;
+			Pong.updateMovement(keyState);
+		});
+	},
+
+	// Add this helper function to your Pong object
+	updateMovement: function (keyState) {
+		// Priority given to UP movement, then DOWN, otherwise IDLE
+		if ((keyState["KeyW"] || keyState["ArrowUp"])) {
+			Pong.player.move = DIRECTION.UP;
+			SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
+		} else if ((keyState["KeyS"] || keyState["ArrowDown"])) {
+			Pong.player.move = DIRECTION.DOWN;
+			SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
+		} else {
 			Pong.player.move = DIRECTION.IDLE;
 			SockOut.toggleMove(DIRECTION.IDLE, Pong.player.y);
-		});
+		}
 	},
 	
 	// Wait for a delay to have passed after each turn.

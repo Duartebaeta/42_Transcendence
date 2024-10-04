@@ -191,7 +191,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if self.game.game_over:
 			return
 		loop = asyncio.get_event_loop()
-		loop.call_later(0.01, lambda: asyncio.create_task(self.game_update()))
+		loop.call_later(1 / 60, lambda: asyncio.create_task(self.game_update()))
 
 	async def game_update(self, event=None):
 		if self.game.game_over:
@@ -215,7 +215,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if ball_y <= 0:
 			ball_move_y = 'DOWN'
 		# Collision with bottom wall
-		elif ball_y >= 980:  # Assuming the canvas height is 1000
+		elif ball_y >= 980:
 			ball_move_y = 'UP'
 
 		# Collision with left paddle

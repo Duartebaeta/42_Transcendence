@@ -127,7 +127,7 @@ function cancelTournament() {
 	let tournament_text_box = document.querySelector('#tournament-text-box');
 	let game_menu = document.querySelector('.game-menu');
 	let game_window = document.querySelector('.game');
-	document.querySelector('#tournament-text').innerHTML = 'Tournament has been cancelled';
+	document.querySelector('#tournament-text').innerHTML = 'Tournament has ended';
 	home_button.addEventListener('click', function () {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
