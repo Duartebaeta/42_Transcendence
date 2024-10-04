@@ -32,6 +32,7 @@ class User(View):
 		user = UserModel.objects.filter(id=user_id).first()
 		chatrooms = ChatRoom.objects.filter(Q(user1=user) | Q(user2=user))
 		contacts = []
+		friends = []
 		for chat in chatrooms:
 			if user == chat.user1:
 				contact = chat.user2
@@ -53,9 +54,11 @@ class User(View):
 				'friend': friend,
 				'avatar': avatar
 			}
+			if friend:
+				friends.append(result)
 			contacts.append(result)
 
-		return JsonResponse(status=200, data={'contacts': contacts})
+		return JsonResponse(status=200, data={'contacts': contacts, 'friends': friends})
 
 	@csrf_exempt
 	def post(self, request):
