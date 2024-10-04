@@ -1,0 +1,21 @@
+services:
+  user_management:
+    # volumes:
+      # - sqllite_db: ./app/
+      # - user_logs: /logs
+    build:
+      context: .
+    expose:
+     - 8000
+    restart: always
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - user_management
+    restart: always
+
+# volumes:
+  # sqllite_db:
