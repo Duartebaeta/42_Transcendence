@@ -9,24 +9,24 @@ flush:
 	done
 
 create-ssl-certificate:
-	if [ ! -e shared/ssl/private.key ] && [ ! -e shared/ssl/certificate.crt ];then \
+	@if [ ! -e shared/ssl/private.key ] && [ ! -e shared/ssl/certificate.crt ];then \
 		mkdir shared/ssl ;\
 		openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout shared/ssl/private.key -out shared/ssl/certificate.crt -subj /C=PT/ST=LIS/L=Lisbon/O=42/CN=localhost ;\
 	fi
 
+clear: clear-shared
+	@for SERVICE in $(DJANGO_SERVICES); do \
+		rm $$SERVICE/srcs/.env;\
+	done
+
 clear-shared:
-	rm -rf users/srcs/shared
-	rm -rf user_game_stats/srcs/shared
-	rm -rf livechat/srcs/shared
-	rm -rf gamebackend/srcs/shared
+	@for SERVICE in $(DJANGO_SERVICES); do \
+		rm -rf $$SERVICE/srcs/shared; \
+	done
 
 setup: create-ssl-certificate
 	@docker build -t python-env .
 	@docker run --name python-env python-env
-	# @docker cp python-env:/app/users/srcs/.env $$(pwd)/users/srcs/.env
-	# @docker cp python-env:/app/user_game_stats/srcs/.env $$(pwd)/user_game_stats/srcs/.env
-	# @docker cp python-env:/app/livechat/srcs/.env $$(pwd)/livechat/srcs/.env
-	# @docker cp python-env:/app/gamebackend/srcs/.env $$(pwd)/gamebackend/srcs/.env
 	@docker cp python-env:/app/shared $$(pwd)
 	@for service in $(DJANGO_SERVICES); do \
 		docker cp python-env:/app/$$service/srcs/.env $$(pwd)/$$service/srcs/.env; \
