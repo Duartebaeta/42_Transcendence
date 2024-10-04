@@ -61,6 +61,16 @@ class ChatRoomView(View):
 					user2=user2,
 					name=roomName
 			)
-			return JsonResponse(status=201, data={'message': 'Chatroom created', 'name': chatroom.name})
-		messages = ChatMessage.objects.filter(room=chatroom)[0:30]
-		return JsonResponse(status=200, data={"messages": ChatMessageSerializer(messages, many=True).data, 'name': chatroom.name}, safe=False)
+			return JsonResponse(status=200, data={"messages": ChatMessageSerializer(messages, many=True).data, 'name': chatroom.name}, safe=False)
+		messages = ChatMessage.objects.filter(room=chatroom).order_by('date')[0:30]
+		messages_array = []
+
+		for message in messages:
+			result = {
+				'user': message.user.username,
+				'message': message.message,
+				'date': message.date
+			}
+			messages_array.append(result)
+
+		return JsonResponse(status=200, data={"messages": messages_array, 'name': chatroom.name}, safe=False)
