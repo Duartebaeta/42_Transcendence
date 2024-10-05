@@ -219,9 +219,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     dropdownMenu.addEventListener('click', function() {
         const selectedValue = event.target.getAttribute('data-value');
+		const username = document.getElementById('selectedContactName').innerText;
 
         if (selectedValue === 'Profile') {
-			const username = document.getElementById('selectedContactName').innerText;
 
 			let request = {
 				method: 'POST',
@@ -265,7 +265,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		chatModal.hide();
 		playerStatsModal.show();
-		console.log('profile btn');
         }
+		else if (selectedValue === 'Block') {
+			let request = {
+				method: 'POST',
+				url: 'http://127.0.0.1:9000/rooms/block/',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					username: username
+				})
+			};
+
+			authenticatedRequest(request.url, request)
+			.catch(error => {
+				console.error("Error blocking user:", error);
+			});
+		}
     });
 });

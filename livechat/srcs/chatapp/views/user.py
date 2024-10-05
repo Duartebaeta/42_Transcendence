@@ -58,6 +58,7 @@ class User(View):
 					'name': contact.username,
 					'last_message': last_message,
 					'friend': friend,
+
 				}
 				if friend:
 					friends.append(result)

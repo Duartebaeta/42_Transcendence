@@ -32,7 +32,7 @@ class BlockUser(View):
 		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})
 
-		blocked_username = json_request.get('user')
+		blocked_username = json_request.get('username')
 		if blocked_username is None or blocked_username == '':
 			return JsonResponse(status=400, data={'errors': ['No username given to block a user(How do i know who you wanna block dumb dumb)']})
 		blocking_user = User.objects.filter(id=user_id).first()
