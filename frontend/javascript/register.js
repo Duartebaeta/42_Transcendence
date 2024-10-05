@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				myModal.hide();
 				myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
 				myModal.show()
-			} else {
+			}
+			else {
 				// If response status is not OK, show error message
 				let data = await response.json();
 				let firstErrorMessage = data.errors[0];
