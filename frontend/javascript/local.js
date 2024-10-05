@@ -142,9 +142,6 @@ const Game = {
 			} else {
 				this.color = this._generateRoundColor();
 				this.player.score = this.ai.score = 0;
-				// this.player.speed += 0.5;
-				// this.ai.speed += 1;
-				// this.ball.speed += 1;
 				this.round += 1;
 			}
 		} else if (this.ai.score === rounds[this.round]) {
@@ -196,22 +193,57 @@ const Game = {
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
 	},
 
+	// listen: function () {
+	// 	document.addEventListener('keydown', function (key) {
+	// 		if (Pong.running === false) {
+	// 			Pong.running = true;
+	// 			window.requestAnimationFrame(Pong.loop);
+	// 		}
+
+	// 		if (key.keyCode === 38) Pong.player.move = DIRECTION.UP;
+	// 		if (key.keyCode === 87) Pong.ai.move = DIRECTION.UP;
+	// 		if (key.keyCode === 40) Pong.player.move = DIRECTION.DOWN;
+	// 		if (key.keyCode === 83) Pong.ai.move = DIRECTION.DOWN;
+	// 	});
+	// 	document.addEventListener('keyup', function (key) {
+	// 		if (key.keyCode === 38 || key.keyCode === 40) Pong.player.move = DIRECTION.IDLE;
+	// 		if (key.keyCode === 87 || key.keyCode === 83) Pong.ai.move = DIRECTION.IDLE;
+	// 	});
+	// },
+
 	listen: function () {
-		document.addEventListener('keydown', function (key) {
+		let keyState = {};
+	
+		document.addEventListener("keydown", function (event) {
 			if (Pong.running === false) {
 				Pong.running = true;
 				window.requestAnimationFrame(Pong.loop);
 			}
 
-			if (key.keyCode === 38) Pong.player.move = DIRECTION.UP;
-			if (key.keyCode === 87) Pong.ai.move = DIRECTION.UP;
-			if (key.keyCode === 40) Pong.player.move = DIRECTION.DOWN;
-			if (key.keyCode === 83) Pong.ai.move = DIRECTION.DOWN;
+			// Handle up arrow and w key events
+			keyState[event.code] = true;
+			Pong.updateMovement(keyState);
 		});
-		document.addEventListener('keyup', function (key) {
-			if (key.keyCode === 38 || key.keyCode === 40) Pong.player.move = DIRECTION.IDLE;
-			if (key.keyCode === 87 || key.keyCode === 83) Pong.ai.move = DIRECTION.IDLE;
+	
+		document.addEventListener('keyup', function (event) {	
+			keyState[event.code] = false;
+			Pong.updateMovement(keyState);
 		});
+	},
+
+	updateMovement: function (keyState) {
+		console.log(keyState)
+		if (keyState["KeyW"]) {
+			Pong.player.move = DIRECTION.UP;
+		} else if (keyState["ArrowUp"]) {
+			Pong.ai.move = DIRECTION.UP
+		} else if (keyState["KeyS"]) {
+			Pong.player.move = DIRECTION.DOWN;
+		} else if (keyState["ArrowDown"]) {
+			Pong.ai.move = DIRECTION.DOWN
+		} else {
+			Pong.player.move = DIRECTION.IDLE;
+		}
 	},
 	
 	_resetTurn: function(victor, loser) {

@@ -1,4 +1,3 @@
-import { startSinglePlayer } from "./singleplayer.js";
 import { startGame } from "./pong.js";
 import { startLocal } from "./local.js";
 import { startTournament } from "./tournament.js";
@@ -10,7 +9,6 @@ let PORT = "9090"
 
 document.addEventListener('DOMContentLoaded', function () {
 
-	document.getElementById('aiModeBtn').addEventListener('click', startSinglePlayer);
 	document.getElementById('localModeBtn').addEventListener('click', startLocal);
 	document.getElementById('remotePlayerInfo').addEventListener('submit', function(event){
 		event.preventDefault();

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-	const aiModeBtn = document.getElementById('aiModeBtn');
 	const localModeBtn = document.getElementById('localModeBtn');
 	const remoteModeBtn = document.getElementById('remoteModeBtn');
 	const tournamentModeBtn = document.getElementById('tournamentModeBtn');
@@ -10,22 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	const joinBtn = document.getElementById('joinRemoteBtn');
 	const createTournamentBtn = document.getElementById('createTournamentBtn');
 	const joinTournamentBtn = document.getElementById('joinTournamentBtn');
-	
-
-	// vs AI Mode
-    aiModeBtn.addEventListener('click', function() {
-		// Add Coloring To The Pressed Button
-		remoteModeBtn.classList.remove('bg-warning');
-		tournamentModeBtn.classList.remove('bg-warning');
-		
-		// Display Selected Mode Options
-		gameHiddenDiv.classList.add('d-none');
-		createTournamentBtn.classList.add('d-none');
-		joinTournamentBtn.classList.add('d-none');
-
-		createBtn.classList.remove('d-none');
-		joinBtn.classList.add('d-none');
-    });
 
 	// Local vs Mode
 	localModeBtn.addEventListener('click', function() {
@@ -45,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Remote vs Mode
 	remoteModeBtn.addEventListener('click', function() {
 		// Add Coloring To The Pressed Button
-		aiModeBtn.classList.remove('bg-warning');
 		localModeBtn.classList.remove('bg-warning');
 		remoteModeBtn.classList.add('bg-warning');
 		tournamentModeBtn.classList.remove('bg-warning');
@@ -63,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Tournament Mode
 	tournamentModeBtn.addEventListener('click', function() {
 		// Add Coloring To The Pressed Button
-		aiModeBtn.classList.remove('bg-warning');
 		localModeBtn.classList.remove('bg-warning');
 		remoteModeBtn.classList.remove('bg-warning');
 		tournamentModeBtn.classList.add('bg-warning');
