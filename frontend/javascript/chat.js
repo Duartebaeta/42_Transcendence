@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	chatModal.addEventListener('hidden.bs.modal', function () {
 		let chatLogs = document.getElementById('chat-messages');
+		const dropdownBtn = document.getElementById('chatDropdownMenu');
 
 		chatLogs.innerHTML = "";
 		document.getElementById('selectedContactName').innerHTML = "";
+		dropdownBtn.classList.add('d-none');
 	});
 })
 
@@ -86,6 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (contactArea) {
 			const contactId = contactArea.getAttribute('data-contact-id');
+
+			const dropdownBtn = document.getElementById('dropdownMenuButton');
+
+			chatDropdownMenu.classList.remove('d-none');
 
 			// Close previous WebSocket connection if any
 			if (chatSocket) {
@@ -215,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedValue = event.target.getAttribute('data-value');
 
         if (selectedValue === 'Profile') {
-			const username = document.getElementById('selectedContactName').value;
+			const username = document.getElementById('selectedContactName').innerText;
 
 			let request = {
 				method: 'POST',
@@ -256,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			.catch(error => {
 				console.error("Error fetching data:", error);
 			});
-			
+
 		chatModal.hide();
 		playerStatsModal.show();
 		console.log('profile btn');
