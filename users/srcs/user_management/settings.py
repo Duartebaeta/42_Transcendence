@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('USER_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # User, email and password verification rules
 USERNAME_MIN_LENGTH = 3

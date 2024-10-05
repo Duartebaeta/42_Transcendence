@@ -7,7 +7,7 @@ const DIRECTION = {
 	RIGHT: 4
 };
 
-const BASE_SPEED = 0.006;
+const BASE_SPEED = 0.01;
 
 const rounds = [7];
 const colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
@@ -200,17 +200,49 @@ const Game = {
 	},
 
 	listen: function () {
-		document.addEventListener('keydown', function (key) {
+		let keyState = {};
+	  
+		document.addEventListener('keydown', function (event) {
+			event.preventDefault();  // Prevent any default browser action
+	
 			if (Pong.running === false) {
 				Pong.running = true;
 				window.requestAnimationFrame(Pong.loop);
 			}
-
-			if (key.keyCode === 38 || key.keyCode === 87) Pong.player.move = DIRECTION.UP;
-			if (key.keyCode === 40 || key.keyCode === 83) Pong.player.move = DIRECTION.DOWN;
+	
+			console.log(`KeyboardEvent: key=${event.key} | code=${event.code}`);
+	
+			// Update keyState to track the pressed key
+			keyState[event.code] = true;
+	
+			// Update direction based on the current key pressed
+			Pong.updateMovement(keyState); // Use a helper function for better separation of logic
 		});
-		document.addEventListener('keyup', function (key) { Pong.player.move = DIRECTION.IDLE; });
+	
+		// Handle keyup event
+		document.addEventListener('keyup', function (event) {
+			event.preventDefault();  // Prevent any default browser action
+	
+			// Update keyState to track the released key
+			keyState[event.code] = false;
+	
+			// Update direction based on the current key state
+			Pong.updateMovement(keyState);
+		});
 	},
+	
+	// Add this helper function to your Pong object
+	updateMovement: function (keyState) {
+		// Priority given to UP movement, then DOWN, otherwise IDLE
+		if (keyState["KeyW"] || keyState["ArrowUp"]) {
+			Pong.player.move = DIRECTION.UP;
+		} else if (keyState["KeyS"] || keyState["ArrowDown"]) {
+			Pong.player.move = DIRECTION.DOWN;
+		} else {
+			Pong.player.move = DIRECTION.IDLE;
+		}
+	},
+	
 	
 	_resetTurn: function(victor, loser) {
 		this.ball = Ball.new.call(this, this.ball.speed);

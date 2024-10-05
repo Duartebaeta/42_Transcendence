@@ -15,9 +15,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 		self.game_id = self.scope['url_route']['kwargs']['game_id']
 		query_string = self.scope['query_string'].decode()
 		query_params = parse_qs(query_string)
-		self.username = self.scope['url_route']['kwargs']['username']
+		self.userID = self.scope['url_route']['kwargs']['userID']
 
-		if not self.username:
+		if not self.userID:
 			await self.close()
 			return
 
@@ -33,7 +33,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.close()
 			return
 
-		self.side = self.game.add_player(self.username, self.channel_name)
+		self.side = self.game.add_player(self.userID, self.channel_name)
 		self.game_group_name = f'game_{self.game_id}'
 
 		await self.channel_layer.group_add(
@@ -53,7 +53,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			)
 
 		await self.accept()
-		print(f"Player {self.username} connected to game {self.game_id}")
+		print(f"Player {self.userID} connected to game {self.game_id}")
 
 		# Send the player their assigned side
 		await self.send(text_data=json.dumps({
@@ -67,7 +67,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			self.channel_name
 		)
 
-		print(f"Player {self.username} disconnected from game {self.game_id}")
+		print(f"Player {self.userID} disconnected from game {self.game_id}")
 
 		if hasattr(self, 'game'):
 			if self.game.game_over == False:
@@ -75,10 +75,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 					self.game_group_name,
 					{
 						'type': 'player_disconnected',
-						'game_state': self.game.disconnect_game_state(self.username)
+						'game_state': self.game.disconnect_game_state(self.userID)
 					}
 				)
-		print(f"Player {self.username} disconnected from game {self.game_id}")
+		print(f"Player {self.userID} disconnected from game {self.game_id}")
 
 	async def receive(self, text_data):
 		text_data_json = json.loads(text_data)
@@ -140,7 +140,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 				{
 					'type': 'end_game',
 					"game_stats": finalStats,
-					"winner": text_data_json.get('player')
+					"winner": text_data_json.get('player'),
+					"userID": self.userID
 				}
 			)
 
@@ -191,7 +192,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if self.game.game_over:
 			return
 		loop = asyncio.get_event_loop()
-		loop.call_later(0.01, lambda: asyncio.create_task(self.game_update()))
+		loop.call_later(1 / 60, lambda: asyncio.create_task(self.game_update()))
 
 	async def game_update(self, event=None):
 		if self.game.game_over:
@@ -215,7 +216,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if ball_y <= 0:
 			ball_move_y = 'DOWN'
 		# Collision with bottom wall
-		elif ball_y >= 980:  # Assuming the canvas height is 1000
+		elif ball_y >= 980:
 			ball_move_y = 'UP'
 
 		# Collision with left paddle
@@ -257,7 +258,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 				{
 					'type': 'end_game',
 					"game_stats": finalStats,
-					"winner": 'left'
+					"winner": 'left',
+					"userID": self.userID
 				}
 			)
 		elif self.game.right_score == 5:
@@ -280,7 +282,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 				{
 					'type': 'end_game',
 					"game_stats": finalStats,
-					"winner": 'right'
+					"winner": 'right',
+					"userID": self.userID
 				}
 			)
 
@@ -404,6 +407,7 @@ class GameManager(AsyncWebsocketConsumer):
 		message_type = data.get('type')
 
 		if message_type == 'create_game':
+			print("at Create Game")
 			game_id = self.create_game()
 			await self.send(text_data=json.dumps({'type': 'game_created', 'gameID': game_id}))
 		elif message_type == 'join_game':
@@ -438,6 +442,7 @@ class GameManager(AsyncWebsocketConsumer):
 
 	@classmethod
 	async def check_game_exists(cls, game_id):
+		print(f'Checking game id {game_id}')
 		return game_id in cls.games
 
 	async def create_games(self, event):
@@ -480,6 +485,8 @@ class GameManager(AsyncWebsocketConsumer):
 			await GameManager.game_over(game_id)
 		else:
 			return
+		#From here down only one player
+
 
 		#Get current time, date, hours minutes and seconds
 		now = datetime.datetime.now()
@@ -489,13 +496,15 @@ class GameManager(AsyncWebsocketConsumer):
 		event['game_stats']['date'] = current_date
 		print(f"Game ended at {current_time} on {current_date}")
 
+		print(f"Game Stats: {event['game_stats']}")
+
 		#Post method to send the game data as a json to the API on localhost:8080/user-stats/match/
 		url = "http://localhost:8080/user-stats/match/"
 		headers = {
 			'Content-Type': 'application/json'
 		}
-		#response = requests.post(url, headers=headers, json=event['game_stats'])
-		#print(response.text)
+		response = requests.post(url, headers=headers, json=event['game_stats'])
+		print(response.text)
 
 		# Send message to the game manager group
 		await self.channel_layer.group_send(

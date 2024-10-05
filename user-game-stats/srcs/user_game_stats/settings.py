@@ -31,8 +31,7 @@ DEBUG = True
 
 USERNAME_MAX_LENGTH = 20
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', 'user-game-stats', '127.0.0.1', '0.0.0.0']
 
 # Application definition
 

@@ -4,99 +4,111 @@ import { startGame } from "./pong.js";
 let TournamentSocket;
 let GameManagerSocket
 let tournamentRunning = false;
-let tournamentOver = false;
 let socketMessageQueue = [];
 
 function startTournament(displayName, tournamentID) {
-	console.log('Starting tournament:', tournamentID, 'as', displayName);
-	// Connect to WebSocket for the tournament
-	TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/${tournamentID}/${displayName}/`);
-	GameManagerSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
-
-	let tournamentData;
-
-	TournamentSocket.onopen = function () {
-		console.log('Connected to tournament:', tournamentID);
-		document.querySelector('.game-menu').classList.add('d-none');
-		document.querySelector('.waiting-room').classList.remove('d-none');
-		
-		document.querySelector('#tournamentGameId').textContent = tournamentID;
-		TournamentSocket.send(JSON.stringify({ type: 'get_participants' }));
-	};
-
-	TournamentSocket.onmessage = function (event) {
-		const data = JSON.parse(event.data);
-		console.log('Received message:', data);
-		// Handle incoming messages related to the tournament
-		if (data.type === 'get_participants') {
-			populateWaitingRoom(data);
-		} else if (data.type === 'tournament_full') {
-			console.log('Tournament is full:', data);
-			tournamentRunning = true;
-			tournamentData = data;
-			populateBrackets(data);
-			showBrackets();
-			setTimeout(function() {
-				startRound(tournamentData, displayName);
-			}
-			, 5000);
-		} else if (data.type === 'tournament_final') {
-			console.log('Final round:', data);
-			tournamentData = data;
-			setTimeout(function() {
-				startFinalRound(tournamentData, displayName);
-			}
-			, 5000);
-		} else if (data.type === 'tournament_winner') {
-			console.log('Tournament winner:', data);
-			tournamentRunning = false;
-			endTournament(displayName, data.winner);
-		} else if (data.type === 'update_brackets') {
-			console.log('Updating brackets:', data);
-			tournamentData = data;
-			updateBrackets(tournamentData);
-		} else if (data.type === 'end_tournament') {
-			tournamentRunning = false;
-			console.log('Ending tournament:', data);
-			cancelTournament();
+	var request = {
+		method: 'GET', // HTTP method
+		url: 'http://localhost:8000/user/me/',
+		headers: {
+			'Content-Type': 'application/json',
 		}
 	};
 
-	TournamentSocket.onclose = function () {
-		console.log('Disconnected from tournament:', tournamentID);
-	};
+	authenticatedRequest(request.url, request)
+	.then((response) => response.json())
+	.then((json) => {
+		// Connect to WebSocket for the tournament
+		TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/${tournamentID}/${displayName}/`);
+		GameManagerSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
 
-	TournamentSocket.onerror = function (error) {
-		console.error('WebSocket error:', error);
-	};
+		let tournamentData;
 
-	GameManagerSocket.onmessage = function (event) {
-		console.log('Received message:', event.data)
-		const data = JSON.parse(event.data);
-		if (data.type === 'game_ended') {
-			console.log('Game over received in tournament end:', data);
-			let processed_data = {
-				'gameID': data.gameState.game_id,
-				'participants': [data.gameState.player, data.gameState.opponent],
-				'winner': data.gameState.won ? data.gameState.player : data.gameState.opponent,
-				'loser': data.gameState.won ? data.gameState.opponent : data.gameState.player
-			};
-			TournamentSocket.send(JSON.stringify({ type: 'game_over', data: processed_data }));
-			showBrackets();
+		TournamentSocket.onopen = function () {
+			console.log('Connected to tournament:', tournamentID);
+			document.querySelector('.game-menu').classList.add('d-none');
+			document.querySelector('.waiting-room').classList.remove('d-none');
 			
-		}
-		else {
-			console.log('Game over received in tournament end:', data);
-		}
-	}
-	GameManagerSocket.onopen = function () {
-		console.log('Connected to GameManager');
-	
-		// Process any messages that were queued while the socket was still connecting
-		socketMessageQueue.forEach(msg => GameManagerSocket.send(msg));
-		socketMessageQueue = [];  // Clear the queue after sending
-	};
+			document.querySelector('#tournamentGameId').textContent = tournamentID;
+			TournamentSocket.send(JSON.stringify({ type: 'get_participants' }));
+		};
 
+		TournamentSocket.onmessage = function (event) {
+			const data = JSON.parse(event.data);
+			console.log('Received message:', data);
+			// Handle incoming messages related to the tournament
+			if (data.type === 'get_participants') {
+				populateWaitingRoom(data);
+			} else if (data.type === 'tournament_full') {
+				console.log('Tournament is full:', data);
+				tournamentRunning = true;
+				tournamentData = data;
+				populateBrackets(data);
+				showBrackets();
+				setTimeout(function() {
+					startRound(tournamentData, displayName);
+				}
+				, 5000);
+			} else if (data.type === 'tournament_final') {
+				console.log('Final round:', data);
+				tournamentData = data;
+				setTimeout(function() {
+					startFinalRound(tournamentData, displayName);
+				}
+				, 5000);
+			} else if (data.type === 'tournament_winner') {
+				console.log('Tournament winner:', data);
+				tournamentRunning = false;
+				endTournament(displayName, data.winner, json.id);
+			} else if (data.type === 'update_brackets') {
+				console.log('Updating brackets:', data);
+				tournamentData = data;
+				updateBrackets(tournamentData);
+			} else if (data.type === 'end_tournament') {
+				tournamentRunning = false;
+				console.log('Ending tournament:', data);
+				cancelTournament();
+			}
+		};
+
+		TournamentSocket.onclose = function () {
+			console.log('Disconnected from tournament:', tournamentID);
+		};
+
+		TournamentSocket.onerror = function (error) {
+			console.error('WebSocket error:', error);
+		};
+
+		GameManagerSocket.onmessage = function (event) {
+			console.log('Received message:', event.data)
+			const data = JSON.parse(event.data);
+			if (data.type === 'game_ended') {
+				console.log('Game over received in tournament end:', data);
+				let processed_data = {
+					'gameID': data.gameState.game_id,
+					'participants': [data.gameState.player, data.gameState.opponent],
+					'winner': data.gameState.won ? data.gameState.player : data.gameState.opponent,
+					'loser': data.gameState.won ? data.gameState.opponent : data.gameState.player
+				};
+				TournamentSocket.send(JSON.stringify({ type: 'game_over', data: processed_data }));
+				showBrackets();
+				
+			}
+			else {
+				console.log('Game over received in tournament end:', data);
+			}
+		}
+		GameManagerSocket.onopen = function () {
+			console.log('Connected to GameManager');
+		
+			// Process any messages that were queued while the socket was still connecting
+			socketMessageQueue.forEach(msg => GameManagerSocket.send(msg));
+			socketMessageQueue = [];  // Clear the queue after sending
+		};
+	})
+	.catch(error => {
+		console.error("Error fetching data:", error);
+	});
 }
 
 // Function to handle the WebSocket send logic
@@ -127,7 +139,7 @@ function cancelTournament() {
 	let tournament_text_box = document.querySelector('#tournament-text-box');
 	let game_menu = document.querySelector('.game-menu');
 	let game_window = document.querySelector('.game');
-	document.querySelector('#tournament-text').innerHTML = 'Tournament has been cancelled';
+	document.querySelector('#tournament-text').innerHTML = 'Tournament has ended';
 	home_button.addEventListener('click', function () {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
@@ -141,7 +153,7 @@ function cancelTournament() {
 	home_button.classList.remove('d-none');
 }
 
-function endTournament(displayName, winner = null) {
+function endTournament(displayName, winner = null, user_id = null) {
 	console.log('Ending tournament');
 	let tournamentBrackets = document.querySelector('.tournament-brackets');
 	let game_window = document.querySelector('.game');
@@ -150,13 +162,27 @@ function endTournament(displayName, winner = null) {
 	let final_players = document.querySelectorAll('.round-2-participant');
 	let game_menu = document.querySelector('.game-menu');
 
-	if (winner != null) {
+	if (winner != null && user_id != null) {
 		final_players.forEach(function (player) {
 			if (player.innerHTML == winner) {
 				player.classList.add('green-highlight');
 			} else {
 				player.classList.add('red-highlight');
 			}
+		});
+		var request = {
+			method: 'POST', // HTTP method
+			url: 'http://localhost:8080/user-stats/tournament/',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				user_id: user_id
+			})
+		};
+		authenticatedRequest(request.url, request)
+		.catch(error => {
+			console.error("Error fetching data:", error);
 		});
 	}
 

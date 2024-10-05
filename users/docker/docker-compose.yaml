@@ -1,21 +1,44 @@
 services:
   user_management:
     # volumes:
-      # - sqllite_db: ./app/
-      # - user_logs: /logs
+    # - sqllite_db: ./app/
+    # - user_logs: /logs
     build:
       context: .
     expose:
-     - 8000
+      - 8000
     restart: always
+
+  # nginx:
+  #   build: ./nginx
+  #   ports:
+  #     - "8000:80"
+  #   depends_on:
+  #     - user_management
+  #   restart: always
+
+  # volumes:
+  # sqllite_db:
 
   nginx:
-    build: ./nginx
+    # networks:
+    #   - transcendence
+    #   - user_management
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    expose:
+      - "443"
     ports:
-      - "8000:80"
+      - "6002:443"
+    # volumes:
+    #   - ssl_certs:/etc/nginx/ssl
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -kf https://localhost/health/" ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+    restart: on-failure
     depends_on:
-      - user_management
-    restart: always
-
-# volumes:
-  # sqllite_db:
+      user_management:
+        condition: service_healthy

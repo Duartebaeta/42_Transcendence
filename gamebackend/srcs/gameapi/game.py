@@ -112,11 +112,27 @@ class Game():
 	def get_final_stats(self):
 		return {
 			"game_id": self.game_id,
-			"player": list(self.players.keys())[0],
-			"opponent": list(self.players.keys())[1],
+			"player": int(list(self.players.keys())[0]),
+			"opponent": int(list(self.players.keys())[1]),
 			"player_score": self.left_score,
 			"opponent_score": self.right_score,
 			"won": self.left_score > self.right_score
+		}
+
+	def get_cli_state(self):
+		if self.closed == false:
+			return {
+				"status": "Game hasn't started yet"
+			}
+		return {
+			"player": int(list(self.players.keys())[0]),
+			"opponent": int(list(self.players.keys())[1]),
+			"player_score": self.left_score,
+			"opponent_score": self.right_score,
+			"ball_x": self.ball_x,
+			"ball_y": self.ball_y,
+			"ball_move_x": self.ball_move_x,
+			"ball_move_y": self.ball_move_y
 		}
 
 	def get_ball_state(self):

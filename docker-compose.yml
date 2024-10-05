@@ -1,19 +1,30 @@
 services:
   users:
+    # extends:
+    #   file: users/docker/docker-compose.yaml
+    #   service: user_management
     build:
       dockerfile: users/docker/Dockerfile
     volumes:
       - ./users/srcs/db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
+    networks:
+      - app-network
+    env_file:
+      - .env
+    command: python manage.py runserver 0.0.0.0:8000
 
-  user_game_stats:
+  user-game-stats:
     build:
-      dockerfile: user_game_stats/docker/Dockerfile
+      dockerfile: user-game-stats/docker/Dockerfile
     volumes:
-      - ./user_game_stats/srcs/db.sqlite3:/app/db.sqlite3
+      - ./user-game-stats/srcs/db.sqlite3:/app/db.sqlite3
     ports:
       - "8080:8080"
+    networks:
+      - app-network
+    command: python manage.py runserver 0.0.0.0:8080
 
   livechat:
     build:
@@ -22,3 +33,10 @@ services:
       - ./livechat/srcs/db.sqlite3:/app/db.sqlite3
     ports:
       - "9000:9000"
+    networks:
+      - app-network
+    command: python manage.py runserver 0.0.0.0:9000
+
+networks:
+  app-network:
+    driver: bridge

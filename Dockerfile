@@ -1,7 +1,5 @@
 FROM python:3.10
 
-RUN mkdir /output
-
 WORKDIR /app
 
 COPY env/ env/
@@ -24,6 +22,6 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-RUN python env/generator.py
+RUN pip install -r env/requirements.txt
 
-CMD ["mv", "-t", "shared", "public_key.pem", "private_key.pem"]
+CMD ["python", "env/generator.py"]

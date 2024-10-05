@@ -5,7 +5,7 @@ import { startTournament } from "./tournament.js";
 
 let TournamentSocket;
 let RemoteSocket;
-let BACKEND_IP = "10.19.249.137"
+let BACKEND_IP = "localhost"
 let PORT = "9090"
 
 document.addEventListener('DOMContentLoaded', function () {

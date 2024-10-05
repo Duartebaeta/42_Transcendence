@@ -4,6 +4,7 @@ import { BACKEND_IP, PORT } from "./game-logic.js";
 
 let gameId = "";
 let username;
+let userID;
 let socket;
 let isSocketConnected = false;
 var Pong;
@@ -23,83 +24,101 @@ var DIRECTION = {
 };
 
 function startGame(GAME_ID, _username = "") {
-	const generateRandomString = length => 
-		Array.from({ length }, () => 'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]).join('');
-	username = _username
-	if (username == "")
-		username = generateRandomString(10); // Generate a random username for the player, temporary solution to avoid duplicate names while not connected to db yet
+	
+	username = _username;
 
-	gameId = GAME_ID;
-	const game_container = document.querySelector('.game');
-	const game_menu = document.querySelector('.game-menu');
+	var request = {
+		method: 'GET', // HTTP method
+		url: 'http://localhost:8000/user/me/',
+		headers: {
+			'Content-Type': 'application/json',
+		}
+	};
 
-	socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${username}/`);
-	socket.onopen = function(e) {
-		console.log("[open] Connection established");
-		isSocketConnected = true;
-		game_menu.classList.add('d-none');
-		document.querySelectorAll('.remote_participant_name')[0].innerHTML = username;
-		document.querySelector('.remote-waiting-room').classList.remove('d-none');
+	authenticatedRequest(request.url, request)
+	.then((response) => response.json())
+	.then((data) => {
+		userID = data.id;
+		username = data.username;
+
+		console.log(userID);
+		console.log(username);
+	
+		gameId = GAME_ID;
+		const game_container = document.querySelector('.game');
+		const game_menu = document.querySelector('.game-menu');
+	
+		socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${userID}/`);
+		socket.onopen = function(e) {
+			console.log("[open] Connection established");
+			isSocketConnected = true;
+			game_menu.classList.add('d-none');
+			document.querySelectorAll('.remote_participant_name')[0].innerHTML = username;
+			document.querySelector('.remote-waiting-room').classList.remove('d-none');
+			
+			document.getElementById('remoteGameID').innerHTML = gameId;
+	
+			// Initialize and start the game here
+			Pong = Object.assign({}, Game);
+		};
 		
-		document.getElementById('remoteGameID').innerHTML = gameId;
-
-		// Initialize and start the game here
-		Pong = Object.assign({}, Game);
-	};
-	
-	socket.onmessage = function(event) {
-		const gameState = JSON.parse(event.data);
-		if (gameState.type === "start_game") {
-			SockIn.gameStart(Pong);
-		} else if (gameState.type === "update") {
-			Pong.backendUpdate(gameState);
-		} else if (gameState.type === "assign_side") {
-			Pong.side = gameState.side;
-			Pong.initialize();
-		} else if (gameState.type === "direction_change") {
-			SockIn.direction_change(gameState);
-		} else if (gameState.type === "game_over") {
-			Pong.backendUpdate(gameState.game_state);
-			SockIn.gameEnd(Pong, gameState.winner);
-		} else if (gameState.type === "serve_ball") {
-			Pong.serveBall("Game is starting...");
-			setTimeout(function() {
-				serving = true;
-				let text;
-				if (Pong.side == "left") {
-					text = "Press any key to serve";
-				} else {
-					text = "Waiting for opponent to serve";
-				}
-				Pong.serveBall(text);
-			}, 3000);  // 5000 milliseconds = 5 seconds
-		} else if (gameState.type === "game_full") {
-			document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
-			document.querySelector('.remote-waiting-room').classList.add('d-none');
-			game_container.classList.remove('d-none');
-		} else if (gameState.type === "player_disconnected") {
-			Pong.backendUpdate(gameState.game_state);
-			Pong.over = true;
-			socket.send(JSON.stringify({
-				type: "end_disconnect",
-				player: Pong.side
-			}));
-			Pong.endGameMenu("Opponent disconnected");
-		}
-	};
-	
-	socket.onclose = function(event) {
-		if (event.wasClean) {
-			console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-		} else {
-			console.log('[close] Connection died');
-		}
-		isSocketConnected = false; // Mark the socket as disconnected
-	};
-	
-	socket.onerror = function(error) {
-		console.log(`[error] ${error.message}`);
-	};
+		socket.onmessage = function(event) {
+			const gameState = JSON.parse(event.data);
+			if (gameState.type === "start_game") {
+				SockIn.gameStart(Pong);
+			} else if (gameState.type === "update") {
+				Pong.backendUpdate(gameState);
+			} else if (gameState.type === "assign_side") {
+				Pong.side = gameState.side;
+				Pong.initialize();
+			} else if (gameState.type === "direction_change") {
+				SockIn.direction_change(gameState);
+			} else if (gameState.type === "game_over") {
+				Pong.backendUpdate(gameState.game_state);
+				SockIn.gameEnd(Pong, gameState.winner);
+			} else if (gameState.type === "serve_ball") {
+				Pong.serveBall("Game is starting...");
+				setTimeout(function() {
+					serving = true;
+					let text;
+					if (Pong.side == "left") {
+						text = "Press any key to serve";
+					} else {
+						text = "Waiting for opponent to serve";
+					}
+					Pong.serveBall(text);
+				}, 3000);  // 5000 milliseconds = 5 seconds
+			} else if (gameState.type === "game_full") {
+				document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
+				document.querySelector('.remote-waiting-room').classList.add('d-none');
+				game_container.classList.remove('d-none');
+			} else if (gameState.type === "player_disconnected") {
+				Pong.backendUpdate(gameState.game_state);
+				Pong.over = true;
+				socket.send(JSON.stringify({
+					type: "end_disconnect",
+					player: Pong.side
+				}));
+				Pong.endGameMenu("Opponent disconnected");
+			}
+		};
+		
+		socket.onclose = function(event) {
+			if (event.wasClean) {
+				console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+			} else {
+				console.log('[close] Connection died');
+			}
+			isSocketConnected = false; // Mark the socket as disconnected
+		};
+		
+		socket.onerror = function(error) {
+			console.log(`[error] ${error.message}`);
+		};
+	})
+	.catch(error => {
+		console.error("Error fetching data:", error);
+	});
 }
 
 // The ball object (The cube that bounces back and forth)
@@ -178,7 +197,7 @@ const SockOut = {
 		if (isSocketConnected) {
 			socket.send(JSON.stringify({
 				type: "ready",
-				player: username
+				player: userID
 			}));
 		} else {
 			console.log("WebSocket is not connected.");
@@ -208,6 +227,17 @@ const SockOut = {
 		}
 	}
 };
+
+function endGame() {
+	document.querySelector('#canvas-home-button').addEventListener('click', function () {
+		document.querySelector('.game').classList.add('d-none');
+		document.querySelector('#canvas-home-button').classList.add('d-none');
+		document.querySelector('.game-menu').classList.remove('d-none');
+		document.querySelector('#remoteModeBtn').classList.remove('bg-warning');
+		document.querySelector('#remotePlayerInfo').classList.add('d-none');
+	});
+	document.querySelector('#canvas-home-button').classList.remove('d-none');
+}
 
 var Game = {
 	initialize: function () {
@@ -290,6 +320,7 @@ var Game = {
 			this.canvas.width / 2,
 			this.canvas.height / 2 + 15
 		);
+		endGame();
 	},
 
 	menu: function () {
@@ -317,32 +348,6 @@ var Game = {
 			this.canvas.width / 2,
 			this.canvas.height / 2 + 15
 		);
-	},
-
-	// Update all objects (move the player, ai, ball, increment the score, etc.)
-	update: function () {
-		if (!this.over) {
-			// Move player if they player.move value was updated by a keyboard event
-			if (this.player.move === DIRECTION.UP) {
-				this.player.y -= this.player.speed;
-			} else if (this.player.move === DIRECTION.DOWN) {
-				this.player.y += this.player.speed;
-			}
-			if (this.ai.move === DIRECTION.UP) {
-				this.ai.y -= this.player.speed;
-			} else if (this.ai.move === DIRECTION.DOWN) {
-				this.ai.y += this.player.speed;
-			}
-
-			// If the player collides with the bound limits, update the x and y coords.
-			if (this.player.y <= 0) this.player.y = 0;
-			else if (this.player.y >= this.canvas.height - this.player.height)
-				this.player.y = this.canvas.height - this.player.height;
-			// Same for the AI
-			if (this.ai.y <= 0) this.ai.y = 0;
-			else if (this.ai.y >= this.canvas.height - this.ai.height) 
-				this.ai.y = this.canvas.height - this.ai.height;
-		}
 	},
 	backendUpdate: function(gameState) {
 		Pong.ball.x = gameState.ball_x;
@@ -462,7 +467,6 @@ var Game = {
 	
 	loop: function () {
 		if (!Pong.over && serving == false) {
-			Pong.update();
 			Pong.draw();
 		}
 	
@@ -471,22 +475,13 @@ var Game = {
 	},
 	
 	listen: function () {
-		document.addEventListener("keydown", function (key) {
+		let keyState = {};
+	
+		document.addEventListener("keydown", function (event) {
 			// Handle up arrow and w key events
-			if (key.keyCode === 38 || key.keyCode === 87) {
-				if (Pong.player.move !== DIRECTION.UP) { // Prevent multiple triggers
-					Pong.player.move = DIRECTION.UP;
-					SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
-				}
-			}
-		
-			// Handle down arrow and s key events
-			if (key.keyCode === 40 || key.keyCode === 83) {
-				if (Pong.player.move !== DIRECTION.DOWN) { // Prevent multiple triggers
-					Pong.player.move = DIRECTION.DOWN;
-					SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
-				}
-			}
+	
+			keyState[event.code] = true;
+			Pong.updateMovement(keyState);
 
 			if (serving == true && Pong.running == false && Pong.side == "left") {
 				SockOut.gameStart();
@@ -495,11 +490,25 @@ var Game = {
 
 		});
 	
-		// Stop the player from moving when there are no keys being pressed.
-		document.addEventListener("keyup", function (key) {
+		document.addEventListener('keyup', function (event) {	
+			keyState[event.code] = false;
+			Pong.updateMovement(keyState);
+		});
+	},
+
+	// Add this helper function to your Pong object
+	updateMovement: function (keyState) {
+		// Priority given to UP movement, then DOWN, otherwise IDLE
+		if ((keyState["KeyW"] || keyState["ArrowUp"])) {
+			Pong.player.move = DIRECTION.UP;
+			SockOut.toggleMove(DIRECTION.UP, Pong.player.y);
+		} else if ((keyState["KeyS"] || keyState["ArrowDown"])) {
+			Pong.player.move = DIRECTION.DOWN;
+			SockOut.toggleMove(DIRECTION.DOWN, Pong.player.y);
+		} else {
 			Pong.player.move = DIRECTION.IDLE;
 			SockOut.toggleMove(DIRECTION.IDLE, Pong.player.y);
-		});
+		}
 	},
 	
 	// Wait for a delay to have passed after each turn.
@@ -514,4 +523,5 @@ var Game = {
 		return newColor;
 	}
 };
+
 export { startGame };

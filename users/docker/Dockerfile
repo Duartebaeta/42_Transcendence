@@ -14,8 +14,5 @@ COPY shared /app/shared/
 
 EXPOSE 8000
 
-RUN python manage.py makemigrations user
-
-RUN python manage.py migrate
-
-CMD ["gunicorn", "user_management-wsgi:application", "--bind", "0.0.0.0:8000"]
+# CMD ["gunicorn", "user_management.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -32,8 +32,8 @@ class Activate(View):
 
 	@staticmethod
 	def create_user_db(user_id, username, avatar):
-		urls = ["http://127.0.0.1:8080/user-stats/user/",
-				"http://127.0.0.1:9000/rooms/user/"
+		urls = ["http://user-game-stats:8080/user-stats/user/",
+				"http://livechat:9000/rooms/user/"
 				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {
@@ -46,6 +46,6 @@ class Activate(View):
 				response = requests.post(url, json=payload, headers=headers) # Sends the post request to User_Stats api
 				response.raise_for_status()
 			return True
-		except Exception:
-			print(response.json())
+		except requests.exceptions.RequestException as e:
+			print(f"Request failed: {e}")
 			return False

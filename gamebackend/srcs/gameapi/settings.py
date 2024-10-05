@@ -17,6 +17,7 @@ INSTALLED_APPS = [
 	'corsheaders',
 	'channels',  # Add channels here
 	'gameapi',   # Your app
+	'cli_api',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +48,9 @@ CHANNEL_LAYERS = {
 # URL configuration
 ROOT_URLCONF = 'gameapi.urls'
 
-ALLOWED_HOSTS = ['http://172.20.10.3:5500', '172.20.10.3:5500', '172.20.10.3', '*']
+SECRET_KEY = '#+$z8^c6c+xcqig8n-icloskc$12sx#+6$zeci*=wepyi-rek4'
+
+ALLOWED_HOSTS = ['*']
 
 CORS_ALLOW_ALL_ORIGINS = True
 

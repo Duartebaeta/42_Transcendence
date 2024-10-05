@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="style.css">
 
 	<!-- JavaScript Files -->
-	<script src="javascript/chat.js" defer></script>
+	<script type="module" src="javascript/chat.js" defer></script>
 	<script src="javascript/login.js" defer></script>
 	<script src="javascript/player-stats.js" defer></script>
 	<script src="javascript/register.js" defer></script>
@@ -334,7 +334,8 @@
 								<!-- Example Contacts -->
 								<div class="p-2">
 									<!-- First Contact -->
-									<div id="chatContacts"></div>
+									<div id="chatContacts" class=""></div>
+									<div id="friendsContacts" class="d-none"></div>
 								</div>
 							</div>
 						</div>
@@ -348,7 +349,23 @@
 									<!-- TODO: make status display change if the player is online or offline -->
 									<h4 id="onlineStatus" class="text-light mb-1 ms-3">(Online)</h4>
 								</div>
-								<div id="chatDropdownMenu" class="dropdown ms-auto"></div>
+								<!-- Dropdown Menu -->
+								<div id="chatDropdownMenu" class="dropdown ms-auto d-none">
+									<button class="btn dropdown-toggle align-items-end" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="bi bi-three-dots-vertical h4 text-light"></i>
+									</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										<li><a class="dropdown-item" data-value="Block">Block</a></li>
+										<li><a class="dropdown-item" data-value="Invite">Invite To Play</a></li>
+										<li><a class="dropdown-item" data-value="Profile">Profile</a></li>
+										<li><a class="dropdown-item" data-value="Friend">Add/Remove Friend</a></li>
+									</ul>
+									<select class="custom-select" id="hiddenSelect">
+										<option value="Block">Block</option>
+										<option value="Invite To Play">Invite To Play</option>
+										<option id="chatProfileBtn" value="Profile">Profile</option>
+									</select>
+								</div>
 							</div>	
 							<!-- Messages Display -->
 							<div class="flex-grow-1 overflow-auto d-flex flex-column" id="chat-messages" style="height: 500px;">
