@@ -8,11 +8,7 @@ from django.views import View
 
 from shared.util import load_json_request
 
-from django.core.serializers import serialize
-
 from chatapp.models import User, ChatRoom, ChatMessage
-
-from chatapp.serializers import ChatMessageSerializer
 
 from shared.jwt_manager import AccessJWTManager
 
