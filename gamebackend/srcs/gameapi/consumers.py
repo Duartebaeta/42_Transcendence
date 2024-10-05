@@ -441,6 +441,7 @@ class GameManager(AsyncWebsocketConsumer):
 
 	@classmethod
 	async def check_game_exists(cls, game_id):
+		print(f'Checking game id {game_id}')
 		return game_id in cls.games
 
 	async def create_games(self, event):
