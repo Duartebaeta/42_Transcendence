@@ -46,31 +46,33 @@ document.addEventListener('DOMContentLoaded', function () {
 			const contacts = data.contacts;
 			const friends = data.friends;
 			
-			console.log(data)
-				// Create HTML Content For Contacts
-				let info = '';
-				contacts.forEach(contact => {
-					info += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${contact.name}">
-								<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
-								<div class="ms-3" style="width: 210px;">
-									<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
-									<p class="text-light mb-0 text-truncate">${contact.last_message}</p>
-								</div>
-							</div>`;
-				});
+			// Create HTML Content For Contacts
+			let info = '';
+			let friendsInfo = "";
+			contacts.forEach(contact => {
+				info += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${contact.name}">
+							<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
+							<div class="ms-3" style="width: 210px;">
+								<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
+								<p class="text-light mb-0 text-truncate">${contact.last_message}</p>
+							</div>
+						</div>`;
+			});
 
-				// let friendsList = '';
-				// friends += `<div class="contactArea d-flex align-items-start align-items-center ps-4 friend" data-contact-id="${contact.name}">
-				// 				<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
-				// 				<div class="ms-3" style="width: 210px;">
-				// 					<h4 class="text-light mb-1 text-truncate">${contact.name}</h4>
-				// 					<p class="text-light mb-0 text-truncate">${contact.last_message}</p>
-				// 				</div>
-				// 			</div>`;
+			let friendsList = '';
+			friends.forEach(friend => {
+				friendsInfo += `<div class="contactArea d-flex align-items-start align-items-center ps-4" data-contact-id="${friend.name}">
+							<i class="bi bi-person-square text-light" style="font-size: 55px;"></i> <!-- Profile Picture -->
+							<div class="ms-3" style="width: 210px;">
+								<h4 class="text-light mb-1 text-truncate">${friend.name}</h4>
+								<p class="text-light mb-0 text-truncate">${friend.last_message}</p>
+							</div>
+						</div>`;
+			});
 
-				// Update HTML Content
-				document.getElementById('chatContacts').innerHTML = info;
-				document.getElementById('friendsContacts').innerHTML = info;
+			// Update HTML Content
+			document.getElementById('chatContacts').innerHTML = info;
+			document.getElementById('friendsContacts').innerHTML = friendsInfo;
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error);
@@ -281,6 +283,39 @@ document.addEventListener('DOMContentLoaded', function () {
 			authenticatedRequest(request.url, request)
 			.catch(error => {
 				console.error("Error blocking user:", error);
+			});
+		}
+		else if (selectedValue === 'Friend') {
+			let request = {
+				method: 'POST',
+				url: 'http://127.0.0.1:9000/rooms/friend/',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					user: username
+				})
+			};
+
+			authenticatedRequest(request.url, request)
+			.then(response => {
+				if (response.status == 409) {
+					request = {
+						method: 'DELETE',
+						url: 'http://127.0.0.1:9000/rooms/friend/',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							user: username
+						})
+					};
+
+					return authenticatedRequest(request.url, request);
+				}
+			})
+			.catch(error => {
+				console.error("Error adding user as friend:", error);
 			});
 		}
     });

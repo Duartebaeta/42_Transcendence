@@ -47,7 +47,7 @@ class FriendView(View):
 		try:
 			friend, new = Friend.objects.get_or_create(user1=user1, user2=user2)
 			if not new:
-				return JsonResponse(status=400, data={'errors': ['Already friends']})
+				return JsonResponse(status=409, data={'errors': ['Already friends']})
 			friend.save()
 			return JsonResponse(status=201, data={'message': 'Friendship created'})
 		except Exception as e:
