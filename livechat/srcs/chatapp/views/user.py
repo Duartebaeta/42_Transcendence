@@ -36,10 +36,8 @@ class User(View):
 		for chat in chatrooms:
 			if user == chat.user1:
 				contact = chat.user2
-				avatar = chat.user2.avatar
 			else:
 				contact = chat.user1
-				avatar = chat.user1.avatar
 
 			last_message_sent = chat.messages.filter(user=contact).order_by('-date').first()
 			if last_message_sent is None:
@@ -56,7 +54,6 @@ class User(View):
 					'name': contact.username,
 					'last_message': last_message,
 					'friend': friend,
-					'avatar': avatar
 				}
 				if friend:
 					friends.append(result)
