@@ -35,12 +35,5 @@ class ChatMessage(models.Model):
 	message = models.TextField()
 	date = models.DateTimeField(auto_now=True)
 
-	# def to_json(self):
-	# 	return {
-	# 		'user': self.user.username,
-	# 		'message': self.message,
-	# 		'date': self.date
-	# 	}
-
 	class Meta:
 		ordering = ('date',)
