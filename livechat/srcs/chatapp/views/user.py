@@ -87,6 +87,14 @@ class User(View):
 		if UserModel.objects.filter(username=username).exists():
 			return JsonResponse(status=400, data={'errors': ['Already exist a user with the same username']})
 
+		# Create a GameManager user when creating the first user
+		if user_id == 1:
+			game_manager = UserModel.objects.create(id=999, username='GameManager')
+			try:
+				game_manager.save()
+			except Exception as e:
+				return JsonResponse(status=400, data={'errors': [str(e)]})
+		
 		user = UserModel.objects.create(id=user_id)
 		user.username = username
 		try:
