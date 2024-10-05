@@ -8,7 +8,6 @@ from shared import settings as shared_settings
 class User(models.Model):
 	id = models.IntegerField(primary_key=True)
 	username = models.CharField(unique=True, max_length=shared_settings.USERNAME_MAX_LENGTH)
-	avatar = models.TextField(null=True)
 
 class BlockedUser(models.Model):
 	blocker = models.ForeignKey(User, related_name='blocking', on_delete=models.CASCADE)
@@ -34,13 +33,6 @@ class ChatMessage(models.Model):
 	room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages')
 	message = models.TextField()
 	date = models.DateTimeField(auto_now=True)
-
-	# def to_json(self):
-	# 	return {
-	# 		'user': self.user.username,
-	# 		'message': self.message,
-	# 		'date': self.date
-	# 	}
 
 	class Meta:
 		ordering = ('date',)
