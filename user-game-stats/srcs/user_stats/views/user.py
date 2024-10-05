@@ -1,6 +1,7 @@
 import json
 
 from shared.util import load_json_request
+from user_stats.utils import get_user_stats
 
 from django.http import JsonResponse
 
@@ -59,31 +60,7 @@ class User(View):
 		if not UserModel.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
-		if request.body:
-			json_request, err = load_json_request(request)
-			if err is not None:
-				return JsonResponse(status=400, data={'errors': [err]})
-
-			username = json_request.get('username')
-			if username is None or username == '':
-				return JsonResponse(status=400, data={'errors': ['No username was given (no stats for you naugthy)']})
-
-			user = UserModel.objects.filter(username=username).first()
-			if user is None:
-				return JsonResponse(status=400, data={'errors': ['No such user with that username(How did you even do that)']})
-		else:
-			user = UserModel.objects.filter(id=user_id).first()
-
-		last_matches_points = self.get_last_five_matches(user)
-		data = {
-			'username': user.username,
-			'avatar': user.avatar,
-			'gamesPlayed': user.wins + user.losses,
-			'wins': user.wins,
-			'losses': user.losses,
-			'tournamentWins': user.tournament_wins,
-			'points': last_matches_points
-		}
+		data = get_user_stats(user_id)
 		return JsonResponse(status=200, data=data)
 
 	#Might not use because post of match updates users either way
