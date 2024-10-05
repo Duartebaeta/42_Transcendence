@@ -51,15 +51,16 @@ class User(View):
 				friend = True
 			else:
 				friend = False
-			result = {
-				'name': contact.username,
-				'last_message': last_message,
-				'friend': friend,
-				'avatar': avatar
-			}
-			if friend:
-				friends.append(result)
-			contacts.append(result)
+			if not user.blocking.filter(blocked=contact).exists() or not contact.blocking.filter(blocked=user).exists():
+				result = {
+					'name': contact.username,
+					'last_message': last_message,
+					'friend': friend,
+					'avatar': avatar
+				}
+				if friend:
+					friends.append(result)
+				contacts.append(result)
 
 		return JsonResponse(status=200, data={'contacts': contacts, 'friends': friends})
 
