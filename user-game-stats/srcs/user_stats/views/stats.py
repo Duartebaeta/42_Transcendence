@@ -26,7 +26,7 @@ class Stats(View):
 		user_id = decoded_token.get('user_id')
 		if user_id is None or user_id == '':
 			return JsonResponse(status=400, data={'errors': ['No user id in the given token']})
-		if not UserModel.objects.filter(id=user_id).exists():
+		if not User.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
 
 		json_request, err = load_json_request(request)

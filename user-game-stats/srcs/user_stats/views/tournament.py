@@ -14,7 +14,7 @@ from user_stats.models import User
 class Tournament(View):
 	@csrf_exempt
 	def post(self, request):
-		json_request = load_json_request(request)
+		json_request, err = load_json_request(request)
 		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})
 

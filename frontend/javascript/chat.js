@@ -4,10 +4,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	chatModal.addEventListener('hidden.bs.modal', function () {
 		let chatLogs = document.getElementById('chat-messages');
+		const dropdownBtn = document.getElementById('chatDropdownMenu');
 
 		chatLogs.innerHTML = "";
 		document.getElementById('selectedContactName').innerHTML = "";
-		document.getElementById('chatDropdownMenu').innerHTML = "";
+		dropdownBtn.classList.add('d-none');
 	});
 })
 
@@ -87,6 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		if (contactArea) {
 			const contactId = contactArea.getAttribute('data-contact-id');
+
+			const dropdownBtn = document.getElementById('dropdownMenuButton');
+
+			chatDropdownMenu.classList.remove('d-none');
 
 			// Close previous WebSocket connection if any
 			if (chatSocket) {
@@ -203,4 +208,64 @@ document.addEventListener('DOMContentLoaded', function () {
 			friends.classList.add('d-none');
 		}
 	});
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdownMenu = document.getElementById('chatDropdownMenu');
+    
+    // Initialize modals once
+    const playerStatsModal = new bootstrap.Modal(document.getElementById('stats-modal'));
+    const chatModal = new bootstrap.Modal(document.getElementById('chat-modal'));
+
+    dropdownMenu.addEventListener('click', function() {
+        const selectedValue = event.target.getAttribute('data-value');
+
+        if (selectedValue === 'Profile') {
+			const username = document.getElementById('selectedContactName').innerText;
+
+			let request = {
+				method: 'POST',
+				url: 'http://127.0.0.1:8080/user-stats/stats/',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					username: username
+				})
+			};
+
+			authenticatedRequest(request.url, request)
+			.then(response => response.json())
+			.then(data => {
+				// Parse JSON data
+				const username = data.username;
+				const gamesPlayed = data.gamesPlayed;
+				const wins = data.wins;
+				const losses = data.losses;
+				const tournamentWins = data.tournamentWins;	
+				const points = data.points;
+				const avatar = data.avatar;
+
+				// Update HTML content
+				document.getElementById('playerStatsUsername').innerText = username;
+				document.getElementById('gamesPlayed').innerText = gamesPlayed;
+				document.getElementById('wins').innerText = wins;
+				document.getElementById('losses').innerText = losses;
+				document.getElementById('tournamentWins').innerText = tournamentWins;
+				document.getElementById('playerStatsAvatar').src = avatar;
+				// Draw points graph
+				if (!points)
+					drawGraph([0, 0, 0, 0, 0, 0, 0]);
+				else
+					drawGraph(points);
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			});
+
+		chatModal.hide();
+		playerStatsModal.show();
+		console.log('profile btn');
+        }
+    });
 });
