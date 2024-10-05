@@ -55,6 +55,43 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Hide Login Modal
 			var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
 			myModal.hide();
+
+
+			var request = {
+				method: 'GET', // HTTP method
+				url: 'http://localhost:8000/user/me/',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			};
+
+			authenticatedRequest(request.url, request)
+			.then(response => response.json())
+			.then(data => {
+				let id = data.id;
+				let username = data.username;
+
+				let url = 'ws://localhost:9000/ws/' + id +'/' + username + '/';
+				let online_checker = new WebSocket(url);
+				online_checker.onopen = function() {
+
+				}
+
+				online_checker.onclose = function() {
+
+				}
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			});
+
+			let RemoteSocket = new WebSocket(`ws://localhost:9090/ws/GameManager/`);
+			RemoteSocket.onopen = function() {
+				console.log("Connected to login checker")
+			}
+			RemoteSocket.onclose = function() {
+				console.log("Disconnected from login checker")
+			}
 		})
 		.catch(function(error) {
 			console.error('There was a problem with the fetch operation:', error);
