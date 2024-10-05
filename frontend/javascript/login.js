@@ -34,8 +34,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		.then(function(response) {
 			if (response.ok) {
 				return response.json(); // Parse the JSON here and return the promise
-			} else {
-				throw new Error('Network response was not ok');
+			}
+			else {
+				return response.json().then(function(errorData) {
+					let errorMessage = errorData.errors[0]; // Adjust this based on your API's response structure
+					console.log(errorMessage);
+					document.getElementById('loginErrorMessage').innerText = errorMessage;
+					document.getElementById('loginErrorMessage').style.display = 'block';
+					throw new Error(errorMessage); // Throw an error to catch in the next .catch()
+				});
 			}
 		})
 		.then(function(data) {
