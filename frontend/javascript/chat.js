@@ -1,4 +1,4 @@
-// import { startGame } from "./pong.js";
+import { startGame } from "./pong.js";
 
 // Clear Chat Window After Leaving Chat Modal
 document.addEventListener('DOMContentLoaded', function () {
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		}
 		else if (selectedValue === 'Invite') {
-			gameManagerSocket = new WebSocket('ws://localhost:9090/ws/GameManager/');
+			let gameManagerSocket = new WebSocket('ws://localhost:9090/ws/GameManager/');
 			let gameId
 
 			const request = {
@@ -333,36 +333,38 @@ document.addEventListener('DOMContentLoaded', function () {
 				gameManagerSocket.send(JSON.stringify(request));
 			};
 
-			gameManagerSocket.onmessage = function (data) {
-				if (data.type == 'game_created')
+			gameManagerSocket.onmessage = function (event) {
+				const data = JSON.parse(event.data);
+				if (data.type == 'game_created') {
 					gameId = data.gameID;
 
-				const message = {
-					type: 'change_group',
-					game_id: data.gameID,
-					group_name: 'game_manager_' + data.gameID
-				};
-				RemoteSocket.send(JSON.stringify(message));
+					const message = {
+						type: 'change_group',
+						game_id: data.gameID,
+						group_name: 'game_manager_' + data.gameID
+					};
+					gameManagerSocket.send(JSON.stringify(message));
 
-				let request = {
-					method: 'POST',
-					url: 'http://localhost:9000/rooms/invite/',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						username: username,
-						game_id: gameId
+					let request = {
+						method: 'POST',
+						url: 'http://localhost:9000/rooms/invite/',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							username: username,
+							game_id: gameId
+						})
+					};
+
+					authenticatedRequest(request.url, request)
+					.catch(error => {
+						console.error("Error inviting to a game:", error);
 					})
-				};
 
-				authenticatedRequest(request.url, request)
-				.catch(error => {
-					console.error("Error inviting to a game:", error);
-				})
-
-				chatModal.hide();
-				startGame(data.gameID);
+					chatModal.hide();
+					startGame(data.gameID);
+				}
 			}	
 		}
     });

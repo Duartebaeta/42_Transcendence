@@ -407,6 +407,7 @@ class GameManager(AsyncWebsocketConsumer):
 		message_type = data.get('type')
 
 		if message_type == 'create_game':
+			print("at Create Game")
 			game_id = self.create_game()
 			await self.send(text_data=json.dumps({'type': 'game_created', 'gameID': game_id}))
 		elif message_type == 'join_game':
