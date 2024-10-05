@@ -49,7 +49,11 @@ class User(View):
 				friend = True
 			else:
 				friend = False
-			if not user.blocking.filter(blocked=contact).exists() or not contact.blocking.filter(blocked=user).exists():
+			if user.blocking.filter(blocked=contact).exists() or contact.blocking.filter(blocked=user).exists():
+				blocked = True
+			else:
+				blocked = False
+			if not blocked:
 				result = {
 					'name': contact.username,
 					'last_message': last_message,

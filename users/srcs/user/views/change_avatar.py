@@ -45,7 +45,6 @@ class ChangeAvatar(View):
 	@staticmethod
 	def update_avatar(user_id, new_avatar):
 		urls = ["http://127.0.0.1:8080/user-stats/user/",
-				# "http://127.0.0.1:9000/rooms/user"
 				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {
