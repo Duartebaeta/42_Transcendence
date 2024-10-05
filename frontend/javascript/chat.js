@@ -1,3 +1,5 @@
+// import { startGame } from "./pong.js";
+
 // Clear Chat Window After Leaving Chat Modal
 document.addEventListener('DOMContentLoaded', function () {
 	const chatModal = document.getElementById('chat-modal');
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		authenticatedRequest(request.url, request)
 		.then(response => response.json())
 		.then(data => {
+			console.log(data)
 			const contacts = data.contacts;
 			const friends = data.friends;
 			
@@ -265,8 +268,8 @@ document.addEventListener('DOMContentLoaded', function () {
 				console.error("Error fetching data:", error);
 			});
 
-		chatModal.hide();
-		playerStatsModal.show();
+			chatModal.hide();
+			playerStatsModal.show();
         }
 		else if (selectedValue === 'Block') {
 			let request = {
@@ -317,6 +320,50 @@ document.addEventListener('DOMContentLoaded', function () {
 			.catch(error => {
 				console.error("Error adding user as friend:", error);
 			});
+		}
+		else if (selectedValue === 'Invite') {
+			gameManagerSocket = new WebSocket('ws://localhost:9090/ws/GameManager/');
+			let gameId
+
+			const request = {
+				type: 'create_game',
+			};
+			gameManagerSocket.onopen = function () {
+				console.log('Connected to GameManager');
+				gameManagerSocket.send(JSON.stringify(request));
+			};
+
+			gameManagerSocket.onmessage = function (data) {
+				if (data.type == 'game_created')
+					gameId = data.gameID;
+
+				const message = {
+					type: 'change_group',
+					game_id: data.gameID,
+					group_name: 'game_manager_' + data.gameID
+				};
+				RemoteSocket.send(JSON.stringify(message));
+
+				let request = {
+					method: 'POST',
+					url: 'http://localhost:9000/rooms/invite/',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						username: username,
+						game_id: gameId
+					})
+				};
+
+				authenticatedRequest(request.url, request)
+				.catch(error => {
+					console.error("Error inviting to a game:", error);
+				})
+
+				chatModal.hide();
+				startGame(data.gameID);
+			}	
 		}
     });
 });
