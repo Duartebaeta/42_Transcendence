@@ -5,8 +5,10 @@ from chatapp.views.block import BlockUser
 from chatapp.views.friend import FriendView
 from chatapp.views.chatroom import ChatRoomView
 from chatapp.views.message import MessageView
+from chatapp.views.invite import Invite
 
 urlpatterns = [
+	path('invite/', Invite.as_view(), name='invite'),
     path('user/', User.as_view(), name='user'),
     path('chatroom/', ChatRoomView.as_view(), name='chatroom'),
     path('message/', MessageView.as_view(), name='message'),
