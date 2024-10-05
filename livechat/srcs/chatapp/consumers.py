@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from asgiref.sync import sync_to_async
-from .models import ChatRoom, ChatMessage,User
+from .models import ChatRoom, ChatMessage, User
 
 class ChatConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
@@ -60,3 +60,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		room = ChatRoom.objects.get(name=room)
 
 		ChatMessage.objects.create(user=user, room=room, message=message)
+
+
+class LoginChecker(AsyncWebsocketConsumer):
+	async def connect(self):
+		self.user_id = self.scope['url_route']['kwargs']['user_id']
+		self.username = self.scope['url_route']['kwargs']['username']
+
+		user = User.objects.filter(id=user_id).first()
+		if user is None:
+			await self.close()
+		user.is_online = True
+
+		await self.accept()
+
+	async def disconnect(self):
+		user = User.objects.filter(id=user_id).first()
+		if user is None:
+			return
+		user.is_online = False
