@@ -1,3 +1,6 @@
+let chatSocket;
+let isChatting = false;
+
 // Clear Chat Window After Leaving Chat Modal
 document.addEventListener('DOMContentLoaded', function () {
 	const chatModal = document.getElementById('chat-modal');
@@ -9,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		chatLogs.innerHTML = "";
 		document.getElementById('selectedContactName').innerHTML = "";
 		dropdownBtn.classList.add('d-none');
+		isChatting = false;
 	});
 })
 
@@ -83,12 +87,12 @@ document.addEventListener('DOMContentLoaded', function () {
 // Fetch And Display Messages With Selected Contact
 document.addEventListener('DOMContentLoaded', function () {
 	const chatWindow = document.getElementById('chat-messages');
-	let chatSocket;
 
 	document.getElementById('contacts').addEventListener('click', function (event) {
 		const contactArea = event.target.closest('.contactArea');
 
 		if (contactArea) {
+			isChatting = true;
 			const contactId = contactArea.getAttribute('data-contact-id');
 
 			const dropdownBtn = document.getElementById('dropdownMenuButton');
@@ -320,3 +324,23 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
     });
 });
+
+function getClosedUsers(username) {
+	if (isChatting == true) {
+		const contactName = document.getElementById('selectedContactName').innerText;
+
+		if (contactName === username){
+			document.getElementById('onlineStatus').innerText = '(Offline)';
+		}
+	}
+}
+
+function getOnlineUsers(username) {
+	if (isChatting == true) {
+		const contactName = document.getElementById('selectedContactName').innerText;
+
+		if (contactName === username){
+			document.getElementById('onlineStatus').innerText = '(Online)';
+		}
+	}
+}

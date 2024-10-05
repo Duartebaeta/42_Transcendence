@@ -74,24 +74,16 @@ document.addEventListener('DOMContentLoaded', function() {
 				let url = 'ws://localhost:9000/ws/' + id +'/' + username + '/';
 				let online_checker = new WebSocket(url);
 				online_checker.onopen = function() {
-
+					getOnlineUsers(username);
 				}
 
 				online_checker.onclose = function() {
-
+					getClosedUsers(username);
 				}
 			})
 			.catch(error => {
 				console.error("Error fetching data:", error);
 			});
-
-			let RemoteSocket = new WebSocket(`ws://localhost:9090/ws/GameManager/`);
-			RemoteSocket.onopen = function() {
-				console.log("Connected to login checker")
-			}
-			RemoteSocket.onclose = function() {
-				console.log("Disconnected from login checker")
-			}
 		})
 		.catch(function(error) {
 			console.error('There was a problem with the fetch operation:', error);
