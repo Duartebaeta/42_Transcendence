@@ -8,7 +8,6 @@ from shared import settings as shared_settings
 class User(models.Model):
 	id = models.IntegerField(primary_key=True)
 	username = models.CharField(unique=True, max_length=shared_settings.USERNAME_MAX_LENGTH)
-	avatar = models.TextField(null=True)
 
 class BlockedUser(models.Model):
 	blocker = models.ForeignKey(User, related_name='blocking', on_delete=models.CASCADE)
