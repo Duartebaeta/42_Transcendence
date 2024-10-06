@@ -192,7 +192,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if self.game.game_over:
 			return
 		loop = asyncio.get_event_loop()
-		loop.call_later(1 / 60, lambda: asyncio.create_task(self.game_update()))
+		loop.call_later(1 / 120, lambda: asyncio.create_task(self.game_update()))
 
 	async def game_update(self, event=None):
 		if self.game.game_over:
