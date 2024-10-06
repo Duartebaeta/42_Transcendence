@@ -1,6 +1,7 @@
 import json
 
 from django.http import JsonResponse
+from shared.util import load_json_request
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -26,8 +27,11 @@ class Invite(View):
 			return JsonResponse(status=400, data={'errors': ['No user id in the give token']})
 		if not User.objects.filter(id=user_id).exists():
 			return JsonResponse(status=400, data={'errors': ['There is no user with such id(who are you scammer?)']})
-
 		user = User.objects.get(id=user_id)
+
+		json_request, err = load_json_request(request)
+		if err is not None:
+			return JsonResponse(status=400, data={'errors': [err]})
 		other_username = json_request.get('username')
 		if other_username is None or other_username == '':
 			return JsonResponse(status=400, data={'errors': ['No username was given']})

@@ -13,7 +13,7 @@ let serving = false;
 var colors = ["#00ff9f", "#bd00ff", "#00b8ff", "#001eff", "#d600ff"];
 let color_increment = 0;
 
-const BASE_SPEED = 0.01;
+const BASE_SPEED = 0.05;
 
 var DIRECTION = {
 	IDLE: "IDLE",
@@ -87,7 +87,7 @@ function startGame(GAME_ID, _username = "") {
 						text = "Waiting for opponent to serve";
 					}
 					Pong.serveBall(text);
-				}, 3000);  // 5000 milliseconds = 5 seconds
+				}, 3000);
 			} else if (gameState.type === "game_full") {
 				document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
 				document.querySelector('.remote-waiting-room').classList.add('d-none');

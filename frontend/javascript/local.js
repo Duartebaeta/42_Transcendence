@@ -9,7 +9,6 @@ const DIRECTION = {
 
 const BASE_SPEED = 0.01;
 
-const rounds = [7];
 const colors = ['#1abc9c', '#2ecc71', '#3498db', '#8c52ff', '#9b59b6'];
 
 const Ball = {
@@ -70,11 +69,6 @@ const Game = {
 		Pong.context.fillRect(Pong.canvas.width / 2 - 350, Pong.canvas.height / 2 - 48, 700, 100);
 		Pong.context.fillStyle = '#ffffff';
 		Pong.context.fillText(text, Pong.canvas.width / 2, Pong.canvas.height / 2 + 15);
-
-		setTimeout(function () {
-			Pong = Object.assign({}, Game);
-			Pong.initialize();
-		}, 3000);
 	},
 
 	menu: function () {
@@ -132,22 +126,13 @@ const Game = {
 			}
 		}
 
-		if (this.player.score === rounds[this.round]) {
-			if (!rounds[this.round + 1]) {
-				this.over = true;
-				setTimeout(function () {
-					Pong.endGameMenu('Left Wins!');
-					endGame();
-				}, 1000);
-			} else {
-				this.color = this._generateRoundColor();
-				this.player.score = this.ai.score = 0;
-				// this.player.speed += 0.5;
-				// this.ai.speed += 1;
-				// this.ball.speed += 1;
-				this.round += 1;
-			}
-		} else if (this.ai.score === rounds[this.round]) {
+		if (this.player.score === 5) {
+			this.over = true;
+			setTimeout(function () {
+				Pong.endGameMenu('Left Wins!');
+				endGame();
+			}, 1000);
+		} else if (this.ai.score === 5) {
 			this.over = true;
 			setTimeout(function () {
 				Pong.endGameMenu('Right Wins!');
@@ -186,7 +171,6 @@ const Game = {
 		this.context.font = '30px Courier New';
 		this.context.fillText('Round ' + (Pong.round + 1), (this.canvas.width / 2), 35);
 		this.context.font = '40px Courier';
-		this.context.fillText(rounds[Pong.round] ? rounds[Pong.round] : rounds[Pong.round - 1], (this.canvas.width / 2), 100);
 	},
 
 	loop: function () {
@@ -196,22 +180,43 @@ const Game = {
 		if (!Pong.over) requestAnimationFrame(Pong.loop);
 	},
 
+
+
 	listen: function () {
-		document.addEventListener('keydown', function (key) {
+		let keyState = {};
+	
+		document.addEventListener("keydown", function (event) {
 			if (Pong.running === false) {
 				Pong.running = true;
 				window.requestAnimationFrame(Pong.loop);
 			}
 
-			if (key.keyCode === 38) Pong.player.move = DIRECTION.UP;
-			if (key.keyCode === 87) Pong.ai.move = DIRECTION.UP;
-			if (key.keyCode === 40) Pong.player.move = DIRECTION.DOWN;
-			if (key.keyCode === 83) Pong.ai.move = DIRECTION.DOWN;
+			// Handle up arrow and w key events
+			keyState[event.code] = true;
+			Pong.updateMovement(keyState);
 		});
-		document.addEventListener('keyup', function (key) {
-			if (key.keyCode === 38 || key.keyCode === 40) Pong.player.move = DIRECTION.IDLE;
-			if (key.keyCode === 87 || key.keyCode === 83) Pong.ai.move = DIRECTION.IDLE;
+	
+		document.addEventListener('keyup', function (event) {	
+			keyState[event.code] = false;
+			Pong.updateMovement(keyState);
 		});
+	},
+
+	updateMovement: function (keyState) {
+		console.log(keyState)
+		if (keyState["KeyW"]) {
+			Pong.player.move = DIRECTION.UP;
+		} if (keyState["ArrowUp"]) {
+			Pong.ai.move = DIRECTION.UP
+		} if (keyState["KeyS"]) {
+			Pong.player.move = DIRECTION.DOWN;
+		} if (keyState["ArrowDown"]) {
+			Pong.ai.move = DIRECTION.DOWN
+		} if (!keyState["KeyW"] && !keyState["KeyS"]) {
+			Pong.player.move = DIRECTION.IDLE;
+		} if (!keyState["ArrowUp"] && !keyState["ArrowDown"]) {
+			Pong.ai.move = DIRECTION.IDLE
+		}
 	},
 	
 	_resetTurn: function(victor, loser) {
@@ -233,12 +238,13 @@ const Game = {
 	}
 };
 
-let Pong = Object.assign({}, Game);
+let Pong;
 
 function startLocal() {
 	document.querySelector('.game').classList.remove('d-none');
 	document.querySelector('.game').classList.add('d-block');
 	document.querySelector('.game-menu').classList.add('d-none');
+	Pong = Object.assign({}, Game);
 	Pong.initialize();
 }
 

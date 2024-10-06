@@ -192,7 +192,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 		if self.game.game_over:
 			return
 		loop = asyncio.get_event_loop()
-		loop.call_later(1 / 60, lambda: asyncio.create_task(self.game_update()))
+		loop.call_later(1 / 120, lambda: asyncio.create_task(self.game_update()))
 
 	async def game_update(self, event=None):
 		if self.game.game_over:
@@ -407,6 +407,7 @@ class GameManager(AsyncWebsocketConsumer):
 		message_type = data.get('type')
 
 		if message_type == 'create_game':
+			print("at Create Game")
 			game_id = self.create_game()
 			await self.send(text_data=json.dumps({'type': 'game_created', 'gameID': game_id}))
 		elif message_type == 'join_game':

@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="style.css">
 
 	<!-- JavaScript Files -->
-	<script src="javascript/chat.js" defer></script>
+	<script type="module" src="javascript/chat.js" defer></script>
 	<script src="javascript/login.js" defer></script>
 	<script src="javascript/player-stats.js" defer></script>
 	<script src="javascript/register.js" defer></script>
@@ -61,8 +61,6 @@
 					<h5 class="text-light mb-3">Select Game Mode</h5>
 					<!-- Select Game Mode Panel -->
 					<div class="text-center">
-						<!-- vs AI Mode -->
-						<button id="aiModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">vs AI</button>
 						<!-- Local Multyplayer -->
 						<button id="localModeBtn" type="button" class="btn bg-gradient btn-block mb-2" style="background-color: rgb(238, 130, 238)">Local vs</button>
 						<!-- Remote Multiplayer -->
@@ -356,7 +354,7 @@
 									</button>
 									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 										<li><a class="dropdown-item" data-value="Block">Block</a></li>
-										<li><a class="dropdown-item" data-value="Invite To Play">Invite To Play</a></li>
+										<li><a class="dropdown-item" data-value="Invite">Invite To Play</a></li>
 										<li><a class="dropdown-item" data-value="Profile">Profile</a></li>
 										<li><a class="dropdown-item" data-value="Friend">Add/Remove Friend</a></li>
 									</ul>
