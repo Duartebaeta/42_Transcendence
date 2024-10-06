@@ -36,6 +36,7 @@ class Activate(View):
 		return redirect('http://localhost:3000/')
 
 	@staticmethod
+	@csrf_exempt
 	def create_user_db(user_id, username, avatar):
 		urls = ["http://user-game-stats:8080/user-stats/user/",
 				"http://livechat:9000/rooms/user/"
@@ -49,6 +50,6 @@ class Activate(View):
 
 		for url in urls:
 			response = requests.post(url=url, json=payload, headers=headers)
-			if not response.ok:
+			if not (response.status_code == 201):
 				return False, response.text
 		return True, None
