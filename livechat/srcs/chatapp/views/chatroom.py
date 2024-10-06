@@ -68,4 +68,4 @@ class ChatRoomView(View):
 			}
 			messages_array.append(result)
 
-		return JsonResponse(status=200, data={"messages": messages_array,'name': chatroom.name, 'online_status': message.user.is_online}, safe=False)
+		return JsonResponse(status=200, data={"messages": messages_array,'name': chatroom.name, 'online_status': otherUser.is_online}, safe=False)
