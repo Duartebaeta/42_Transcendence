@@ -74,11 +74,17 @@ document.addEventListener('DOMContentLoaded', function() {
 				let url = 'ws://localhost:9000/ws/' + id +'/' + username + '/';
 				let online_checker = new WebSocket(url);
 				online_checker.onopen = function() {
-					getOnlineUsers(username);
+					online_checker.send(JSON.stringify({
+						type: "send_online"
+					}));
 				}
-
-				online_checker.onclose = function() {
-					getClosedUsers(username);
+				online_checker.onmessage = function(event) {
+					const data = JSON.parse(event.data);
+					if (data.type == 'new_connection') {
+						getOnlineUsers(data.username);
+					} else if (data.type == 'disconnect') {
+						getClosedUsers(data.username);
+					}
 				}
 			})
 			.catch(error => {

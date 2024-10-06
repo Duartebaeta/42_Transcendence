@@ -19,9 +19,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	async def disconnect(self, code):
 	# Leave room group
 		await self.channel_layer.group_discard(
-	    self.room_group_name,
-	    self.channel_name
-	)
+			self.room_group_name,
+			self.channel_name
+		)
 
 	async def receive(self, text_data):
 		data = json.loads(text_data)
@@ -69,10 +69,53 @@ class LoginChecker(AsyncWebsocketConsumer):
 
 		await self.update_to_online()
 
+		self.general_group_name = 'login_checker'
+
+		await self.channel_layer.group_add(
+	 		self.general_group_name,
+	 		self.channel_name
+		)
+
 		await self.accept()
 
 	async def disconnect(self, code):
 		await self.update_to_offline()
+		await self.channel_layer.group_send(
+			self.general_group_name,
+			{
+				'type': 'disconnect',
+				'username': self.username
+			}
+		)
+		await self.channel_layer.group_discard(
+			self.general_group_name,
+			self.channel_name
+		)
+
+	async def receive(self, text_data):
+		data = json.loads(text_data)
+		if data.type == "send_online":
+			await self.channel_layer.group_send(
+				self.general_group_name,
+				{
+					'type': 'connect',
+					'username': self.username
+				}
+			)
+
+	async def connect(self, event):
+		userName = event['username']
+		await self.send(text_data=json.dumps({
+		    'type': 'new_connection',
+		    'username': userName
+		}))
+
+	async def disconnect(self, event):
+		userName = event['username']
+		await self.send(text_data=json.dumps({
+			'type': 'disconnect',
+			'username': userName
+		}))
 
 	@sync_to_async
 	def update_to_online(self):
