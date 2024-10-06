@@ -12,7 +12,7 @@ COPY shared/ shared/
 
 RUN mkdir -p users/srcs/ && touch users/srcs/.env
 
-RUN mkdir -p user_game_stats/srcs/ && touch user_game_stats/srcs/.env
+RUN mkdir -p user-game-stats/srcs/ && touch user-game-stats/srcs/.env
 
 RUN mkdir -p livechat/srcs/ && touch livechat/srcs/.env
 

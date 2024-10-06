@@ -3,7 +3,7 @@ from rsa_keys import generate_rsa_keys
 from dotenv import load_dotenv, dotenv_values
 
 USERS_ENV = 'users/srcs/.env'
-STATS_ENV = 'user_game_stats/srcs/.env'
+STATS_ENV = 'user-game-stats/srcs/.env'
 CHAT_ENV = 'livechat/srcs/.env'
 GAME_ENV = 'gamebackend/srcs/.env'
 SHARED_ENV = 'shared/.env'

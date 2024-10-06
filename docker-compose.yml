@@ -2,22 +2,42 @@ services:
   users:
     # extends:
     #   file: users/docker/docker-compose.yaml
-    #   service: user_management
+    #   service: users
     build:
-      dockerfile: users/docker/Dockerfile
+      dockerfile: docker/Dockerfile
+      context: users
+    networks:
+      - app-network
     volumes:
       - ./users/srcs/db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
-    networks:
-      - app-network
     env_file:
       - .env
-    command: python manage.py runserver 0.0.0.0:8000
+    restart: on-failure
+  nginx:
+    build:
+      context: nginx
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl
+    expose:
+      - "443"
+      - "80"
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - app-network
+    restart: on-failure
+    depends_on:
+      - users
+      - user-game-stats
+      - livechat
 
   user-game-stats:
     build:
-      dockerfile: user-game-stats/docker/Dockerfile
+      dockerfile: docker/Dockerfile
+      context: user-game-stats
     volumes:
       - ./user-game-stats/srcs/db.sqlite3:/app/db.sqlite3
     ports:
@@ -25,7 +45,6 @@ services:
     networks:
       - app-network
     command: python manage.py runserver 0.0.0.0:8080
-
   livechat:
     build:
       dockerfile: livechat/docker/Dockerfile
@@ -36,7 +55,6 @@ services:
     networks:
       - app-network
     command: python manage.py runserver 0.0.0.0:9000
-
 networks:
   app-network:
     driver: bridge

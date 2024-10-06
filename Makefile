@@ -31,6 +31,8 @@ setup: create-ssl-certificate
 	@for service in $(DJANGO_SERVICES); do \
 		docker cp python-env:/app/$$service/srcs/.env $$(pwd)/$$service/srcs/.env; \
 		cp -r shared $$service/srcs; \
+		rm -rf $$service/docker/nginx/ssl; \
+		mv -f $$service/srcs/shared/ssl/ $$service/docker/nginx; \
 	done
 	@docker rm python-env
 	@echo "Setup completed"
