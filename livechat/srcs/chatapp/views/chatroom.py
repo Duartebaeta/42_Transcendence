@@ -8,7 +8,8 @@ from django.views import View
 
 from shared.util import load_json_request
 
-from chatapp.models import User, ChatRoom, ChatMessage
+from chatapp.models import User, ChatRoom, ChatMessage, Friend
+from django.db.models import Q
 
 from shared.jwt_manager import AccessJWTManager
 
@@ -33,7 +34,6 @@ class ChatRoomView(View):
 			return JsonResponse(status=400, data={'errors': [err]})
 
 		otherUsername = json_request.get('user')
-		print(otherUsername)
 		if otherUsername is None or otherUsername == '':
 			return JsonResponse(status=400, data={'errors': ['No username given to friend a user(How do i know who you wanna friend dumb dumb)']})
 		otherUser = User.objects.filter(username=otherUsername).first()
@@ -57,7 +57,7 @@ class ChatRoomView(View):
 					user2=user2,
 					name=roomName
 			)
-			return JsonResponse(status=200, data={"messages": ChatMessageSerializer(messages, many=True).data, 'name': chatroom.name}, safe=False)
+			return JsonResponse(status=200, data={"messages": [], 'name': chatroom.name}, safe=False)
 		messages = ChatMessage.objects.filter(room=chatroom).order_by('date')[0:30]
 		messages_array = []
 
@@ -69,4 +69,14 @@ class ChatRoomView(View):
 			}
 			messages_array.append(result)
 
-		return JsonResponse(status=200, data={"messages": messages_array, 'name': chatroom.name}, safe=False)
+		friend = Friend.objects.filter(Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)).exists()
+		
+		return JsonResponse(
+				status=200,
+				data={
+					'messages': messages_array,
+					'name': chatroom.name,
+					'online_status': otherUser.is_online,
+					'friend': friend,
+					},
+				safe=False)

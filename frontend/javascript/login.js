@@ -55,6 +55,42 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Hide Login Modal
 			var myModal = bootstrap.Modal.getInstance(document.getElementById('login-modal'));
 			myModal.hide();
+
+
+			var request = {
+				method: 'GET', // HTTP method
+				url: 'http://localhost:8000/user/me/',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			};
+
+			authenticatedRequest(request.url, request)
+			.then(response => response.json())
+			.then(data => {
+				let id = data.id;
+				let username = data.username;
+
+				let url = 'ws://localhost:9000/ws/' + id +'/' + username + '/';
+				let online_checker = new WebSocket(url);
+				online_checker.onopen = function() {
+					online_checker.send(JSON.stringify({
+						type: "send_online"
+					}));
+				}
+				online_checker.onmessage = function(event) {
+					const data = JSON.parse(event.data);
+					if (data.type == 'new_connection') {
+						if (data.username != username)
+							getOnlineUsers(data.username);
+					} else if (data.type == 'disconnect') {
+						getClosedUsers(data.username);
+					}
+				}
+			})
+			.catch(error => {
+				console.error("Error fetching data:", error);
+			});
 		})
 		.catch(function(error) {
 			console.error('There was a problem with the fetch operation:', error);

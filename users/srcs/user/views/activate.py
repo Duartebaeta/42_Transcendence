@@ -21,8 +21,13 @@ class Activate(View):
 		except(TypeError, ValueError, OverflowError, User.DoesNotExist):
 			user = None
 		if user is not None and default_token_generator.check_token(user, token):
-			if not self.create_user_db(user.id, user.username, user.avatar):
-				return HttpResponseBadRequest("Some error occured while creating user")
+
+			success, err = self.create_user_db(user.id, user.username, user.avatar)
+			if not success:
+				return HttpResponseBadRequest(err)
+
+			# if not self.create_user_db(user.id, user.username, user.avatar):
+			# 	return HttpResponseBadRequest("Some error occured while creating user")
 			user.emailVerified = True
 			user.save()
 			messages.success(request, 'Your account has been activated.')
@@ -31,6 +36,7 @@ class Activate(View):
 		return redirect('http://localhost:3000/')
 
 	@staticmethod
+	@csrf_exempt
 	def create_user_db(user_id, username, avatar):
 		urls = ["http://user-game-stats:8080/user-stats/user/",
 				"http://livechat:9000/rooms/user/"
@@ -41,11 +47,9 @@ class Activate(View):
 			'username': username,
 			'avatar': avatar
 		}
-		try:
-			for url in urls:
-				response = requests.post(url, json=payload, headers=headers) # Sends the post request to User_Stats api
-				response.raise_for_status()
-			return True
-		except requests.exceptions.RequestException as e:
-			print(f"Request failed: {e}")
-			return False
+
+		for url in urls:
+			response = requests.post(url=url, json=payload, headers=headers)
+			if not (response.status_code == 201):
+				return False, response.text
+		return True, None

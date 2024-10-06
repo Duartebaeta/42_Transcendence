@@ -1,16 +1,17 @@
-import { startGame } from "./pong.js";
+let chatSocket;
+let isChatting = false;
+let isFriend = false;
 
 // Clear Chat Window After Leaving Chat Modal
 document.addEventListener('DOMContentLoaded', function () {
 	const chatModal = document.getElementById('chat-modal');
 
 	chatModal.addEventListener('hidden.bs.modal', function () {
-		let chatLogs = document.getElementById('chat-messages');
-		const dropdownBtn = document.getElementById('chatDropdownMenu');
-
-		chatLogs.innerHTML = "";
+		document.getElementById('chat-messages').innerHTML = '';
+		document.getElementById('chatDropdownMenu').classList.add('d-none');
+		document.getElementById('onlineStatus').innerText = '';
 		document.getElementById('selectedContactName').innerHTML = "";
-		dropdownBtn.classList.add('d-none');
+		isChatting = false;
 	});
 })
 
@@ -48,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			console.log(data)
 			const contacts = data.contacts;
 			const friends = data.friends;
-			
 			// Create HTML Content For Contacts
 			let info = '';
 			let friendsInfo = "";
@@ -86,14 +86,13 @@ document.addEventListener('DOMContentLoaded', function () {
 // Fetch And Display Messages With Selected Contact
 document.addEventListener('DOMContentLoaded', function () {
 	const chatWindow = document.getElementById('chat-messages');
-	let chatSocket;
 
 	document.getElementById('contacts').addEventListener('click', function (event) {
 		const contactArea = event.target.closest('.contactArea');
 
 		if (contactArea) {
+			isChatting = true;
 			const contactId = contactArea.getAttribute('data-contact-id');
-
 			const dropdownBtn = document.getElementById('dropdownMenuButton');
 
 			chatDropdownMenu.classList.remove('d-none');
@@ -120,6 +119,19 @@ document.addEventListener('DOMContentLoaded', function () {
 					const roomName = data.name;
 					let info = '';
 
+					if (data.friend == true) {
+						isFriend = true;
+						if (data.online_status == true)
+							document.getElementById('onlineStatus').innerText = '(Online)';
+						else
+							document.getElementById('onlineStatus').innerText = '(Offline)';	
+					}
+					else {
+						isFriend = false;
+						document.getElementById('onlineStatus').innerText = '';	
+					}
+
+
 					// Display previous messages if any
 					const chat = data.messages;
 					chat.forEach(message => {
@@ -141,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
 					// Handle incoming messages from WebSocket
 					chatSocket.onmessage = function (e) {
 						const data = JSON.parse(e.data);
-						console.log( data)
 						if (data.message) {
 							let messageHTML = renderMessage(data.message, (data.username != contactId));
 							document.getElementById('chat-messages').innerHTML += messageHTML;
@@ -369,3 +380,26 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
     });
 });
+
+function getClosedUsers(username) {
+	if (isChatting == true && isFriend == true) {
+		const contactName = document.getElementById('selectedContactName').innerText;
+
+		if (contactName === username){
+			document.getElementById('onlineStatus').innerText = '(Offline)';
+		}
+	}
+}
+
+function getOnlineUsers(username) {
+	console.log(isChatting)
+	console.log(isFriend)
+	if (isChatting == true && isFriend == true) {
+		console.log('user got online')
+		const contactName = document.getElementById('selectedContactName').innerText;
+
+		if (contactName === username){
+			document.getElementById('onlineStatus').innerText = '(Online)';
+		}
+	}
+}
