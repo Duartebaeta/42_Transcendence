@@ -49,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		.then(data => {
 			const contacts = data.contacts;
 			const friends = data.friends;
-			
 			// Create HTML Content For Contacts
 			let info = '';
 			let friendsInfo = "";
@@ -142,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
 					// Handle incoming messages from WebSocket
 					chatSocket.onmessage = function (e) {
 						const data = JSON.parse(e.data);
-						console.log( data)
 						if (data.message) {
 							let messageHTML = renderMessage(data.message, (data.username != contactId));
 							document.getElementById('chat-messages').innerHTML += messageHTML;
