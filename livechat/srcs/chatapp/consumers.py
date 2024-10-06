@@ -83,8 +83,12 @@ class LoginChecker(AsyncWebsocketConsumer):
 		await self.channel_layer.group_send(
 			self.general_group_name,
 			{
-				'type': 'disconnect',
-				'username': self.username
+				'type': 'login_messager',
+				'message': {
+					'type': 'disconnect',
+					'username': self.username
+				}
+				
 			}
 		)
 		await self.channel_layer.group_discard(
@@ -98,24 +102,18 @@ class LoginChecker(AsyncWebsocketConsumer):
 			await self.channel_layer.group_send(
 				self.general_group_name,
 				{
-					'type': 'connect',
-					'username': self.username
+					'type': 'login_messager',
+					'message': {
+						'type': 'new_connection',
+						'username': self.username
+					}
+					
 				}
 			)
 
-	async def connect(self, event):
-		userName = event['username']
-		await self.send(text_data=json.dumps({
-		    'type': 'new_connection',
-		    'username': userName
-		}))
-
-	async def disconnect(self, event):
-		userName = event['username']
-		await self.send(text_data=json.dumps({
-			'type': 'disconnect',
-			'username': userName
-		}))
+	async def login_messager(self, event):
+		message = event['message']
+		await self.send(text_data=json.dumps(message))
 
 	@sync_to_async
 	def update_to_online(self):
