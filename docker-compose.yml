@@ -44,7 +44,6 @@ services:
       - "8080:8080"
     networks:
       - app-network
-    command: python manage.py runserver 0.0.0.0:8080
   livechat:
     build:
       dockerfile: livechat/docker/Dockerfile
@@ -54,7 +53,6 @@ services:
       - "9000:9000"
     networks:
       - app-network
-    command: python manage.py runserver 0.0.0.0:9000
 networks:
   app-network:
     driver: bridge
