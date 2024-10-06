@@ -1,17 +1,16 @@
 let chatSocket;
 let isChatting = false;
+let isFriend = false;
 
 // Clear Chat Window After Leaving Chat Modal
 document.addEventListener('DOMContentLoaded', function () {
 	const chatModal = document.getElementById('chat-modal');
 
 	chatModal.addEventListener('hidden.bs.modal', function () {
-		let chatLogs = document.getElementById('chat-messages');
-		const dropdownBtn = document.getElementById('chatDropdownMenu');
-
-		chatLogs.innerHTML = "";
+		document.getElementById('chat-messages') = '';
+		document.getElementById('chatDropdownMenu').classList.add('d-none');
+		document.getElementById('onlineStatus').innerText = '';
 		document.getElementById('selectedContactName').innerHTML = "";
-		dropdownBtn.classList.add('d-none');
 		isChatting = false;
 	});
 })
@@ -93,7 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (contactArea) {
 			isChatting = true;
 			const contactId = contactArea.getAttribute('data-contact-id');
-
 			const dropdownBtn = document.getElementById('dropdownMenuButton');
 
 			chatDropdownMenu.classList.remove('d-none');
@@ -119,6 +117,11 @@ document.addEventListener('DOMContentLoaded', function () {
 				.then(data => {
 					const roomName = data.name;
 					let info = '';
+
+					if (data.friend == true)
+						isFriend = true;
+					else
+						isFriend = false;
 
 					// Display previous messages if any
 					const chat = data.messages;
@@ -324,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function getClosedUsers(username) {
-	if (isChatting == true) {
+	if (isChatting == true && isFriend == true) {
 		const contactName = document.getElementById('selectedContactName').innerText;
 
 		if (contactName === username){
@@ -334,7 +337,7 @@ function getClosedUsers(username) {
 }
 
 function getOnlineUsers(username) {
-	if (isChatting == true) {
+	if (isChatting == true && isFriend == true) {
 		const contactName = document.getElementById('selectedContactName').innerText;
 
 		if (contactName === username){
