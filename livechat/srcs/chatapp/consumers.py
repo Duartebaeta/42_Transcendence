@@ -98,7 +98,7 @@ class LoginChecker(AsyncWebsocketConsumer):
 
 	async def receive(self, text_data):
 		data = json.loads(text_data)
-		if data.type == "send_online":
+		if data['type'] == "send_online":
 			await self.channel_layer.group_send(
 				self.general_group_name,
 				{
