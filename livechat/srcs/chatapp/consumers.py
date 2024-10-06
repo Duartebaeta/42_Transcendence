@@ -16,7 +16,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 		await self.accept()
 
-	async def disconnect(self):
+	async def disconnect(self, code):
 	# Leave room group
 		await self.channel_layer.group_discard(
 	    self.room_group_name,
@@ -67,15 +67,25 @@ class LoginChecker(AsyncWebsocketConsumer):
 		self.user_id = self.scope['url_route']['kwargs']['user_id']
 		self.username = self.scope['url_route']['kwargs']['username']
 
-		user = User.objects.filter(id=user_id).first()
-		if user is None:
-			await self.close()
-		user.is_online = True
+		await self.update_to_online()
 
 		await self.accept()
 
-	async def disconnect(self):
-		user = User.objects.filter(id=user_id).first()
+	async def disconnect(self, code):
+		await self.update_to_offline()
+
+	@sync_to_async
+	def update_to_online(self):
+		user = User.objects.filter(id=self.user_id).first()
+		if user is None:
+			self.close()
+		user.is_online = True
+		user.save()
+
+	@sync_to_async
+	def update_to_offline(self):
+		user = User.objects.filter(id=self.user_id).first()
 		if user is None:
 			return
 		user.is_online = False
+		user.save()
