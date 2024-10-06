@@ -1,4 +1,20 @@
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf        # Main nginx config
+      - ./nginx/conf.d:/etc/nginx/conf.d               # Server config in conf.d
+      - ./frontend:/usr/share/nginx/html               # Frontend files
+    depends_on:
+      - users
+      - user-game-stats
+      - livechat
+    networks:
+      - app-network
+
   users:
     build:
       dockerfile: users/docker/Dockerfile

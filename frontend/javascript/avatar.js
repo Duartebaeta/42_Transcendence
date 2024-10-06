@@ -5,7 +5,7 @@ function getAvatarBase64(input, btn) {
 
 		// If file does not exist, return Default avatar
 		if (!file) {
-			const imageUrl = './defaultAvatar.png';
+			const imageUrl = './defaultAvatar/defaultAvatar.png';
 			
 			fetch(imageUrl)
 			.then(response => response.blob()) // Convert the response to a Blob
