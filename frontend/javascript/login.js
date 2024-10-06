@@ -81,7 +81,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				online_checker.onmessage = function(event) {
 					const data = JSON.parse(event.data);
 					if (data.type == 'new_connection') {
-						getOnlineUsers(data.username);
+						if (data.username != username)
+							getOnlineUsers(data.username);
 					} else if (data.type == 'disconnect') {
 						getClosedUsers(data.username);
 					}

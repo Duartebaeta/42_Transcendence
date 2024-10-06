@@ -8,7 +8,8 @@ from django.views import View
 
 from shared.util import load_json_request
 
-from chatapp.models import User, ChatRoom, ChatMessage
+from chatapp.models import User, ChatRoom, ChatMessage, Friend
+from django.db.models import Q
 
 from shared.jwt_manager import AccessJWTManager
 
@@ -68,4 +69,14 @@ class ChatRoomView(View):
 			}
 			messages_array.append(result)
 
-		return JsonResponse(status=200, data={"messages": messages_array,'name': chatroom.name, 'online_status': otherUser.is_online}, safe=False)
+		friend = Friend.objects.filter(Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1)).exists()
+		
+		return JsonResponse(
+				status=200,
+				data={
+					'messages': messages_array,
+					'name': chatroom.name,
+					'online_status': otherUser.is_online,
+					'friend': friend,
+					},
+				safe=False)

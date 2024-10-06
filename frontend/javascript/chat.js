@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const chatModal = document.getElementById('chat-modal');
 
 	chatModal.addEventListener('hidden.bs.modal', function () {
-		document.getElementById('chat-messages') = '';
+		document.getElementById('chat-messages').innerHTML = '';
 		document.getElementById('chatDropdownMenu').classList.add('d-none');
 		document.getElementById('onlineStatus').innerText = '';
 		document.getElementById('selectedContactName').innerHTML = "";
@@ -118,10 +118,18 @@ document.addEventListener('DOMContentLoaded', function () {
 					const roomName = data.name;
 					let info = '';
 
-					if (data.friend == true)
+					if (data.friend == true) {
 						isFriend = true;
-					else
+						if (data.online_status == true)
+							document.getElementById('onlineStatus').innerText = '(Online)';
+						else
+							document.getElementById('onlineStatus').innerText = '(Offline)';	
+					}
+					else {
 						isFriend = false;
+						document.getElementById('onlineStatus').innerText = '';	
+					}
+
 
 					// Display previous messages if any
 					const chat = data.messages;
@@ -337,7 +345,10 @@ function getClosedUsers(username) {
 }
 
 function getOnlineUsers(username) {
+	console.log(isChatting)
+	console.log(isFriend)
 	if (isChatting == true && isFriend == true) {
+		console.log('user got online')
 		const contactName = document.getElementById('selectedContactName').innerText;
 
 		if (contactName === username){
