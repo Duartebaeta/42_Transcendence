@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		event.preventDefault();
 
 		// Establish WebSocket connection for GameManager
-		RemoteSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
+		RemoteSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/GameManager/`);
 
 		RemoteSocket.onmessage = function(event) {
 			console.log('Received message:', event.data);
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 		// Establish WebSocket connection for TournamentManager
-		TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/`);
+		TournamentSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/tournament/`);
 		// Handle incoming messages from the backend
 		TournamentSocket.onmessage = function(event) {
 			console.log('Received message:', event.data);

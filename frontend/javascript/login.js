@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				let id = data.id;
 				let username = data.username;
 
-				let url = 'ws://localhost:9000/ws/' + id +'/' + username + '/';
+				let url = 'wss://localhost:9000/ws/chat/' + id +'/' + username + '/';
 				let online_checker = new WebSocket(url);
 				online_checker.onopen = function() {
 					online_checker.send(JSON.stringify({

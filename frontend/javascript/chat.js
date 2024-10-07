@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					// Establish WebSocket connection for the current room
 					chatSocket = new WebSocket(
-						'ws://localhost:9000' + '/ws/' + roomName + '/'
+						'wss://localhost:9000' + '/ws/chat/' + roomName + '/'
 					);
 
 					// Handle incoming messages from WebSocket
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		}
 		else if (selectedValue === 'Invite') {
-			let gameManagerSocket = new WebSocket('ws://localhost:9090/ws/GameManager/');
+			let gameManagerSocket = new WebSocket('wss://localhost:9090/ws/gamebackend/GameManager/');
 			let gameId
 
 			const request = {

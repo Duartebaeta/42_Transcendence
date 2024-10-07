@@ -48,7 +48,7 @@ function startGame(GAME_ID, _username = "") {
 		const game_container = document.querySelector('.game');
 		const game_menu = document.querySelector('.game-menu');
 	
-		socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${userID}/`);
+		socket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/game/${gameId}/${userID}/`);
 		socket.onopen = function(e) {
 			console.log("[open] Connection established");
 			isSocketConnected = true;

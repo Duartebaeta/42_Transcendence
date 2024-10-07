@@ -19,8 +19,8 @@ function startTournament(displayName, tournamentID) {
 	.then((response) => response.json())
 	.then((json) => {
 		// Connect to WebSocket for the tournament
-		TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/${tournamentID}/${displayName}/`);
-		GameManagerSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
+		TournamentSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/tournament/${tournamentID}/${displayName}/`);
+		GameManagerSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/GameManager/`);
 
 		let tournamentData;
 
