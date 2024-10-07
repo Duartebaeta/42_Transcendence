@@ -1,4 +1,15 @@
 services:
+  # gamebackend:
+  #   build:
+  #     dockerfile: gamebackend/docker/Dockerfile
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - app-network
+  #   env_file:
+  #     - .env
+  #   command: daphne -b 0.0.0.0 -p 9090 gameapi.asgi:application
+
   users:
     build: ./users/docker
       # dockerfile: users/docker/Dockerfile
