@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// // Construct the request object
 		var request = {
 		    method: 'POST', // HTTP method
-		    url: 'http://127.0.0.1:8000/user/sign-in/',
+		    url: 'https://localhost:8000/user/sign-in/',
 		    headers: {
 		        'Content-Type': 'application/json',
 		    },

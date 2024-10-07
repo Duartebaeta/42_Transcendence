@@ -49,8 +49,8 @@ class ChangeUsername(View):
 
 	@staticmethod
 	def update_username(user_id, username):
-		urls = ["http://127.0.0.1:8080/user-stats/user/",
-				# "http://127.0.0.1:9000/rooms/user"
+		urls = ["https://localhost:8080/user-stats/user/",
+				# "https://localhost:9000/rooms/user"
 				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {

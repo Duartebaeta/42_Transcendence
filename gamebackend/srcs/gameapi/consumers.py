@@ -499,7 +499,7 @@ class GameManager(AsyncWebsocketConsumer):
 		print(f"Game Stats: {event['game_stats']}")
 
 		#Post method to send the game data as a json to the API on localhost:8080/user-stats/match/
-		url = "http://localhost:8080/user-stats/match/"
+		url = "https://localhost:8080/user-stats/match/"
 		headers = {
 			'Content-Type': 'application/json'
 		}

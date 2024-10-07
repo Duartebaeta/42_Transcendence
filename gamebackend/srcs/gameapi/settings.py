@@ -40,7 +40,7 @@ CHANNEL_LAYERS = {
 	'default': {
 		'BACKEND': 'channels_redis.core.RedisChannelLayer',
 		'CONFIG': {
-			"hosts": [('127.0.0.1', 6379)],
+			"hosts": [('localhost', 6379)],
 		},
 	},
 }
@@ -56,7 +56,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
-	'http://172.20.10.3:5500',
+	'https://172.20.10.3:5500',
 ]
 
 # Session settings

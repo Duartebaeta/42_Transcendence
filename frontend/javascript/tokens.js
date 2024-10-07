@@ -19,7 +19,7 @@ async function refreshAccessToken() {
     const refreshToken = getRefreshToken();
     if (!refreshToken) throw new Error("No refresh token available");
 
-    const response = await fetch('http://127.0.0.1:8000/user/refresh_jwt', {
+    const response = await fetch('https://localhost:8000/user/refresh_jwt', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

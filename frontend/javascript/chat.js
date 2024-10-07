@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		var request = {
 			method: 'GET', // HTTP method
-			url: 'http://localhost:9000/rooms/user/',
+			url: 'https://localhost:9000/rooms/user/',
 			headers: {
 				'Content-Type': 'application/json',
 			}
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			// Fetch room details
 			var request = {
 				method: 'POST',
-				url: 'http://localhost:9000/rooms/chatroom/',
+				url: 'https://localhost:9000/rooms/chatroom/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			let request = {
 				method: 'POST',
-				url: 'http://127.0.0.1:8080/user-stats/stats/',
+				url: 'https://localhost:8080/user-stats/stats/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		else if (selectedValue === 'Block') {
 			let request = {
 				method: 'POST',
-				url: 'http://127.0.0.1:9000/rooms/block/',
+				url: 'https://localhost:9000/rooms/block/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		else if (selectedValue === 'Friend') {
 			let request = {
 				method: 'POST',
-				url: 'http://127.0.0.1:9000/rooms/friend/',
+				url: 'https://localhost:9000/rooms/friend/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (response.status == 409) {
 					request = {
 						method: 'DELETE',
-						url: 'http://127.0.0.1:9000/rooms/friend/',
+						url: 'https://localhost:9000/rooms/friend/',
 						headers: {
 							'Content-Type': 'application/json',
 						},
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					let request = {
 						method: 'POST',
-						url: 'http://localhost:9000/rooms/invite/',
+						url: 'https://localhost:9000/rooms/invite/',
 						headers: {
 							'Content-Type': 'application/json',
 						},

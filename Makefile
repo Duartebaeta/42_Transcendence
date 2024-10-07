@@ -1,5 +1,5 @@
 SERVICES ?= frontend gamebackend livechat user-game-stats users
-DJANGO_SERVICES ?= livechat user-game-stats users gamebackend
+DJANGO_SERVICES ?= livechat user-game-stats users
 
 flush:
 	for service in $(DJANGO_SERVICES); do \
@@ -33,7 +33,7 @@ setup: create-ssl-certificate
 		cp -r shared $$service/srcs; \
 	done
 	@docker rm python-env
-	@mv -f shared/ssl/ nginx
+	@cp -r shared/ssl/ nginx
 	@echo "Setup completed"
 
 up:

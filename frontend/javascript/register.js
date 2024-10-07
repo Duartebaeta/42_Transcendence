@@ -33,9 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Construct the request object
 			var request = {
 				method: 'POST', // HTTP method
-				url: 'http://127.0.0.1:8000/user/sign-up/',
+				url: 'https://localhost:8000/user/sign-up/',
 				headers: {
-					'Content-Type': 'application/json' 
+					'Content-Type': 'application/json',
+					'credentials': 'include'
 				},
 				body: JSON.stringify({ // Convert data to JSON string
 					username: usernameInput.value,
