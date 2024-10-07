@@ -148,6 +148,7 @@ function cancelTournament() {
 	});
 	document.querySelector('.waiting-room').classList.add('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#sidebar-cover').classList.add('d-none');
 	tournamentBrackets.classList.remove('d-none');
 	document.querySelector('#tournament-text-box').classList.remove('d-none');
 	home_button.classList.remove('d-none');
@@ -195,6 +196,7 @@ function endTournament(displayName, winner = null, user_id = null) {
 
 	tournamentBrackets.classList.remove('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#sidebar-cover').classList.add('d-none');
 	tournament_text_box.classList.remove('d-none');
 
 	home_button.classList.remove('d-none');
@@ -226,6 +228,7 @@ function showBrackets() {
 
 	waitingRoom.classList.add('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#sidebar-cover').classList.add('d-none');
 	tournamentBrackets.classList.remove('d-none');
 }
 

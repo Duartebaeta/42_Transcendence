@@ -12,7 +12,7 @@
 
 	<!-- JavaScript Files -->
 	<script type="module" src="javascript/chat.js" defer></script>
-	<script src="javascript/login.js" defer></script>
+	<script type="module" src="javascript/login.js" defer></script>
 	<script src="javascript/player-stats.js" defer></script>
 	<script src="javascript/register.js" defer></script>
 	<script src="javascript/settings.js" defer></script>
@@ -30,7 +30,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			<!-- Sidebar -->
-			<nav class="col-auto d-md-block bg-gradient" style="background-color: rgb(130, 0, 130);">
+			<nav class="col-auto d-md-block bg-gradient position-relative" style="background-color: rgb(130, 0, 130);">
 				<div class="position-sticky">
 					<ul class="nav navbar flex-column align-items-center justify-content-center">
 						<!-- Profile Button -->
@@ -51,6 +51,7 @@
 						</button>
 					</ul>
 				</div>
+				<div id="sidebar-cover" class="position-absolute d-none"></div>
 			</nav>
 			
 			<!-- Game Content -->

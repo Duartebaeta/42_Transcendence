@@ -1,3 +1,5 @@
+import { startGame } from './pong.js'
+
 let chatSocket;
 let isChatting = false;
 let isFriend = false;
@@ -403,3 +405,5 @@ function getOnlineUsers(username) {
 		}
 	}
 }
+
+export { getOnlineUsers, getClosedUsers }
