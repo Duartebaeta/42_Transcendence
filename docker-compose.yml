@@ -1,7 +1,7 @@
 services:
   users:
-    build: ./users/docker
-      # dockerfile: users/docker/Dockerfile
+    build: #./users/docker
+      dockerfile: users/docker/Dockerfile
     volumes:
       - ./users/srcs/db.sqlite3:/app/db.sqlite3
     networks:
@@ -12,8 +12,8 @@ services:
     # command: python manage.py runserver 0.0.0.0:8000
 
   user-game-stats:
-    build: ./user-game-stats/docker
-      # dockerfile: user-game-stats/docker/Dockerfile
+    build: #./user-game-stats/docker
+      dockerfile: user-game-stats/docker/Dockerfile
     volumes:
       - ./user-game-stats/srcs/db.sqlite3:/app/db.sqlite3
     networks:
@@ -22,8 +22,8 @@ services:
     # command: python manage.py runserver 0.0.0.0:8080
 
   livechat:
-    build: ./livechat/docker
-      # dockerfile: livechat/docker/Dockerfile
+    build: #./livechat/docker
+      dockerfile: livechat/docker/Dockerfile
     volumes:
       - ./livechat/srcs/db.sqlite3:/app/db.sqlite3
     networks:
@@ -32,7 +32,8 @@ services:
     # command: python manage.py runserver 0.0.0.0:9000
 
   nginx:
-    build: ./nginx
+    build:
+      dockerfile: nginx/Dockerfile
     ports:
       - "80:80"
       - "443:443"
@@ -44,7 +45,7 @@ services:
       - users
       - user-game-stats
       - livechat
-      - gamebackend
+      # - gamebackend
     networks:
       - app-network
     restart: on-failure

@@ -2,11 +2,11 @@ FROM nginx:latest
 
 WORKDIR /etc/nginx
 
-COPY ./default.conf /et/nginx/nginx.conf
+COPY nginx/nginx.conf /et/nginx/nginx.conf
 
-COPY ./ssl /etc/nginx/ssl
+COPY nginx/ssl /etc/nginx/ssl
 
-COPY ./frontend /usr/share/nginx/html
+COPY nginx/frontend /usr/share/nginx/html
 
 EXPOSE 80 443
 

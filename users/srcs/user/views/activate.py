@@ -33,7 +33,7 @@ class Activate(View):
 			messages.success(request, 'Your account has been activated.')
 		else :
 			messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
-		return redirect('http://localhost:3000/')
+		return redirect('https://localhost/index.html')
 
 	@staticmethod
 	@csrf_exempt

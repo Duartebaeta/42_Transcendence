@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	updateButton.addEventListener("click", function() {
 		var request = {
 			method: 'GET',
-			url: 'http://127.0.0.1:8080/user-stats/user/',
+			url: 'https://127.0.0.1:8080/user-stats/user/',
 			headers: {
 				'Content-Type': 'application/json',
 			}
