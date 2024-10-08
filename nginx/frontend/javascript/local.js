@@ -242,6 +242,7 @@ let Pong;
 
 function startLocal() {
 	document.querySelector('.game').classList.remove('d-none');
+	document.querySelector('#sidebar-cover').classList.remove('d-none');
 	document.querySelector('.game').classList.add('d-block');
 	document.querySelector('.game-menu').classList.add('d-none');
 	Pong = Object.assign({}, Game);
@@ -251,6 +252,7 @@ function startLocal() {
 function endGame() {
 	document.querySelector('#canvas-home-button').addEventListener('click', function () {
 		document.querySelector('.game').classList.add('d-none');
+		document.querySelector('#sidebar-cover').classList.add('d-none');
 		document.querySelector('#canvas-home-button').classList.add('d-none');
 		document.querySelector('.game-menu').classList.remove('d-none');
 	});
