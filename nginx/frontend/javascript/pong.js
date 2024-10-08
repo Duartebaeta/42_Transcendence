@@ -38,7 +38,9 @@ function startGame(GAME_ID, _username = "") {
 	.then((response) => response.json())
 	.then((data) => {
 		userID = data.id;
-		username = data.username;
+		if (username == "") {
+			username = data.username;
+		}
 
 		console.log(userID);
 		console.log(username);
@@ -47,7 +49,7 @@ function startGame(GAME_ID, _username = "") {
 		const game_container = document.querySelector('.game');
 		const game_menu = document.querySelector('.game-menu');
 	
-		socket = new WebSocket(`/ws/gamebackend/game/${gameId}/${userID}/`);
+		socket = new WebSocket(`/ws/gamebackend/game/${gameId}/${userID}/${username}/`);
 		socket.onopen = function(e) {
 			console.log("[open] Connection established");
 			isSocketConnected = true;

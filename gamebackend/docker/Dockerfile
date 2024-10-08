@@ -16,4 +16,5 @@ ENV DJANGO_SETTINGS_MODULE=gameapi.settings
 
 EXPOSE 9090
 
+# CMD ["tail", "-f"]
 CMD ["daphne", "-b", "0.0.0.0", "-p", "9090", "gameapi.asgi:application"]
