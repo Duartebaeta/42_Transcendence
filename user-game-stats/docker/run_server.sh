@@ -1,5 +1,6 @@
 #!/bin/bash
 
+python /app/manage.py makemigrations user_stats
 python /app/manage.py makemigrations
 python /app/manage.py migrate
 

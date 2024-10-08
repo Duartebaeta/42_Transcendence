@@ -61,13 +61,17 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-	window.addEventListener("load", function() {
-		const currentPath = window.location.pathname;
-		if (currentPath !== '/') {
-			showModal(currentPath.substring(1));  // Strip the '/' and pass to showModal
-		}
-	});
-	
+    window.addEventListener("load", function() {
+        // Clear history on page load by using replaceState to reset the URL to its initial state
+        history.replaceState(null, null, window.location.pathname);
+    
+        // Check if there's a modal-specific URL and open the modal
+        const currentPath = window.location.pathname;
+        if (currentPath !== '/') {
+            showModal(currentPath.substring(1));  // Strip the '/' and open the modal
+        }
+    });
+
     // When modals are closed, make sure to pop state (go back in history)
     const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
     closeButtons.forEach(button => {

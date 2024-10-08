@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="style.css">
 
 	<!-- JavaScript Files -->
+	<script type="module" src="javascript/arrows.js" defer></script>
 	<script type="module" src="javascript/chat.js" defer></script>
 	<script type="module" src="javascript/login.js" defer></script>
 	<script src="javascript/player-stats.js" defer></script>
@@ -187,7 +188,7 @@
 	</div>
 
 	<!--Login Modal -->
-	<div id="login-modal" class="modal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="login-modal" class="modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
@@ -225,7 +226,7 @@
 	</div>
 
 	<!-- Register Modal -->
-	<div id="register-modal" class="modal fade" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="register-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">

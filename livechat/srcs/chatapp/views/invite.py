@@ -52,7 +52,7 @@ class Invite(View):
 			return JsonResponse(status=400, data={'errors': ['No game id was given']})
 		
 		message = f'Join my game: {game_id}'
-		chat_message = ChatMessage.objects.create(user=user, room=chatroom, message=message)
+		chat_message = ChatMessage.objects.create(user=other_user, room=chatroom, message=message)
 		try:
 			chat_message.save()
 			return JsonResponse(status=200, data={'message': message})
