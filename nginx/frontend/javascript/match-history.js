@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	updateButton.addEventListener("click", function() {
 		var request = {
 			method: 'GET',
-			url: '${window.config.API_URL}/user-stats/match/',
+			url: '/user-stats/match/',
 			headers: {
 				'Content-Type': 'application/json',
 			}

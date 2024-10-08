@@ -73,8 +73,6 @@ services:
       # - gamebackend
     networks:
       - app-network
-    env_file:
-      - nginx/frontend/.env
     restart: on-failure
 
 networks:

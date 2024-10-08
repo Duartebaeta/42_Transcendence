@@ -9,7 +9,7 @@ let socketMessageQueue = [];
 function startTournament(displayName, tournamentID) {
 	var request = {
 		method: 'GET', // HTTP method
-		url: '${window.config.API_URL}/user/me/',
+		url: '/user/me/',
 		headers: {
 			'Content-Type': 'application/json',
 		}
@@ -172,7 +172,7 @@ function endTournament(displayName, winner = null, user_id = null) {
 		});
 		var request = {
 			method: 'POST', // HTTP method
-			url: '${window.config.API_URL}/user-stats/tournament/',
+			url: '/user-stats/tournament/',
 			headers: {
 				'Content-Type': 'application/json',
 			},

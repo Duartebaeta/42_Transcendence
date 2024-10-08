@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// // Construct the request object
 		var request = {
 		    method: 'POST', // HTTP method
-		    url: '${window.config.API_URL}/user/sign-in/',
+		    url: '/user/sign-in/',
 		    headers: {
 		        'Content-Type': 'application/json',
 		    },
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			var request = {
 				method: 'GET', // HTTP method
-				url: '${window.config.API_URL}/user/me/',
+				url: '/user/me/',
 				headers: {
 					'Content-Type': 'application/json',
 				}

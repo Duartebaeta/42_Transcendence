@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		var request = {
 		    method: 'POST', // HTTP method
-		    url: '${window.config.API_URL}/user/change-username/',
+		    url: '/user/change-username/',
 		    headers: {
 		        'Content-Type': 'application/json',
 		    },
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		var request = {
 		    method: 'POST', // HTTP method
-		    url: '${window.config.API_URL}/user/change-password/',
+		    url: '/user/change-password/',
 		    headers: {
 		        'Content-Type': 'application/json',
 		    },
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				// Prepare the request data
 				let request = {
 					method: 'POST', // HTTP method
-					url: '${window.config.API_URL}/user/change-avatar/',
+					url: '/user/change-avatar/',
 					headers: {
 						'Content-Type': 'application/json',
 					},

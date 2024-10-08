@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Construct the request object
 			var request = {
 				method: 'POST', // HTTP method
-				url: '${window.config.API_URL}/user/sign-up/',
+				url: '/user/sign-up/',
 				headers: {
 					'Content-Type': 'application/json' 
 				},

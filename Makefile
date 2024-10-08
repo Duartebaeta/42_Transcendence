@@ -24,18 +24,6 @@ clear-shared:
 		rm -rf $$SERVICE/srcs/shared; \
 	done
 
-# setup: create-ssl-certificate
-# 	@docker build -t python-env .
-# 	@docker run --name python-env python-env
-# 	@docker cp python-env:/app/users/srcs/.env $$(pwd)/users/srcs/.env
-# 	@docker cp python-env:/app/shared $$(pwd)
-# 	@for service in $(DJANGO_SERVICES); do \
-# 		cp -r shared $$service/srcs; \
-# 	done
-# 	@docker rm python-env
-# 	@cp -r shared/ssl/ nginx
-# 	@echo "Setup completed"
-
 setup: create-ssl-certificate
 	@docker build -t python-env .
 	@docker run --name python-env python-env
@@ -48,8 +36,7 @@ setup: create-ssl-certificate
 	@cp -r shared/ssl/ nginx
 	@echo "Setup completed"
 
-up:
-#	docker compose build --no-cache
+up: setup
 	docker compose up --build
 
 reup: down up

@@ -7,7 +7,6 @@ STATS_ENV = 'user-game-stats/srcs/.env'
 CHAT_ENV = 'livechat/srcs/.env'
 GAME_ENV = 'gamebackend/srcs/.env'
 SHARED_ENV = 'shared/.env'
-FRONT_ENV = 'nginx/frontend/.env'
 
 load_dotenv('.env')
 
@@ -17,7 +16,6 @@ files = [
 	CHAT_ENV,
 	GAME_ENV,
 	SHARED_ENV,
-	FRONT_ENV,
 ]
 
 for env in files:
@@ -59,6 +57,3 @@ write_env_variable('CHAT_SECRET_KEY', os.urandom(32).hex(), CHAT_ENV)
 
 # Gamebackend
 write_env_variable('GAME_SECRET_KEY', os.urandom(32).hex(), GAME_ENV)
-
-# Frontend
-write_env_variable('API_URL', os.getenv('API_URL'), FRONT_ENV)
