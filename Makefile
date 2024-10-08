@@ -1,4 +1,4 @@
-SERVICES ?= frontend gamebackend livechat user-game-stats users
+SERVICES ?= gamebackend livechat user-game-stats users
 DJANGO_SERVICES ?= livechat user-game-stats users
 
 flush:
@@ -28,7 +28,7 @@ setup: create-ssl-certificate
 	@docker build -t python-env .
 	@docker run --name python-env python-env
 	@docker cp python-env:/app/shared $$(pwd)
-	@for service in $(DJANGO_SERVICES); do \
+	@for service in $(SERVICES); do \
 		docker cp python-env:/app/$$service/srcs/.env $$(pwd)/$$service/srcs/.env; \
 		cp -r shared $$service/srcs; \
 	done

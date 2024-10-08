@@ -23,6 +23,7 @@ class Game():
 		self.game_id = game_id
 		self.ready_players = set()
 		self.players = {}
+		self.users = {}
 		self.ball_x = 700
 		self.ball_y = 500
 		self.ball_move_x = 'LEFT'
@@ -37,12 +38,14 @@ class Game():
 		self.game_over = False
 		self.closed = False
 
-	def add_player(self, username, channel_name):
+	def add_player(self, user_id, channel_name, username):
 		if len(self.players) == 0:
-			self.players[username] = {"channel_name": channel_name, "side": "left"}
+			self.players[user_id] = {"channel_name": channel_name, "side": "left"}
+			self.users[username] = {"side": "left"}
 			return "left"
 		elif len(self.players) == 1:
-			self.players[username] = {"channel_name": channel_name, "side": "right"}
+			self.players[user_id] = {"channel_name": channel_name, "side": "right"}
+			self.users[username] = {"side": "right"}
 			return "right"
 
 	def get_player_side(self, username):
@@ -114,6 +117,8 @@ class Game():
 			"game_id": self.game_id,
 			"player": int(list(self.players.keys())[0]),
 			"opponent": int(list(self.players.keys())[1]),
+			"player_name": list(self.users.keys())[0],
+			"opponent_name": list(self.users.keys())[1],
 			"player_score": self.left_score,
 			"opponent_score": self.right_score,
 			"won": self.left_score > self.right_score
