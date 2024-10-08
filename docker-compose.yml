@@ -16,6 +16,8 @@ services:
       dockerfile: users/docker/Dockerfile
     volumes:
       - ./users/srcs/db.sqlite3:/app/db.sqlite3
+    expose:
+      - "8000"
     networks:
       - app-network
     env_file:
@@ -29,6 +31,8 @@ services:
       dockerfile: user-game-stats/docker/Dockerfile
     volumes:
       - ./user-game-stats/srcs/db.sqlite3:/app/db.sqlite3
+    expose:
+      - "8080"
     networks:
       - app-network
     restart: on-failure
@@ -40,6 +44,8 @@ services:
       dockerfile: livechat/docker/Dockerfile
     volumes:
       - ./livechat/srcs/db.sqlite3:/app/db.sqlite3
+    expose:
+      - "9000"
     networks:
       - app-network
     restart: on-failure
