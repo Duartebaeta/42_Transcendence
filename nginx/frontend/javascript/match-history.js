@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	updateButton.addEventListener("click", function() {
 		var request = {
 			method: 'GET',
-			url: 'https://127.0.0.1:8080/user-stats/match/',
+			url: 'https://10.12.244.159/user-stats/match/',
 			headers: {
 				'Content-Type': 'application/json',
 			}

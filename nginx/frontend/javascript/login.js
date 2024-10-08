@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// // Construct the request object
 		var request = {
 		    method: 'POST', // HTTP method
-		    url: 'https://127.0.0.1:8000/user/sign-in/',
+		    url: 'https://10.12.244.159/user/sign-in/',
 		    headers: {
 		        'Content-Type': 'application/json',
 		    },
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			var request = {
 				method: 'GET', // HTTP method
-				url: 'https://localhost:8000/user/me/',
+				url: 'https://10.12.244.159/user/me/',
 				headers: {
 					'Content-Type': 'application/json',
 				}
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				let id = data.id;
 				let username = data.username;
 
-				let url = 'wss://localhost:9000/ws/chat/' + id +'/' + username + '/';
+				let url = 'wss://10.12.244.159/ws/chat/' + id +'/' + username + '/';
 				let online_checker = new WebSocket(url);
 				online_checker.onopen = function() {
 					online_checker.send(JSON.stringify({

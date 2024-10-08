@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		var request = {
 			method: 'GET', // HTTP method
-			url: 'https://localhost:9000/rooms/user/',
+			url: 'https://10.12.244.159/rooms/user/',
 			headers: {
 				'Content-Type': 'application/json',
 			}
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			// Fetch room details
 			var request = {
 				method: 'POST',
-				url: 'https://localhost:9000/rooms/chatroom/',
+				url: 'https://10.12.244.159/rooms/chatroom/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					// Establish WebSocket connection for the current room
 					chatSocket = new WebSocket(
-						'wss://localhost:9000' + '/ws/chat/' + roomName + '/'
+						'wss://10.12.244.159' + '/ws/chat/' + roomName + '/'
 					);
 
 					// Handle incoming messages from WebSocket
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			let request = {
 				method: 'POST',
-				url: 'https://127.0.0.1:8080/user-stats/stats/',
+				url: 'https://10.12.244.159/user-stats/stats/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		else if (selectedValue === 'Block') {
 			let request = {
 				method: 'POST',
-				url: 'https://127.0.0.1:9000/rooms/block/',
+				url: 'https://10.12.244.159/rooms/block/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		else if (selectedValue === 'Friend') {
 			let request = {
 				method: 'POST',
-				url: 'https://127.0.0.1:9000/rooms/friend/',
+				url: 'https://10.12.244.159/rooms/friend/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (response.status == 409) {
 					request = {
 						method: 'DELETE',
-						url: 'https://127.0.0.1:9000/rooms/friend/',
+						url: 'https://10.12.244.159/rooms/friend/',
 						headers: {
 							'Content-Type': 'application/json',
 						},
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		}
 		else if (selectedValue === 'Invite') {
-			let gameManagerSocket = new WebSocket('wss://localhost:9090/ws/gamebackend/GameManager/');
+			let gameManagerSocket = new WebSocket('wss://10.12.244.159/ws/gamebackend/GameManager/');
 			let gameId
 
 			const request = {
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					let request = {
 						method: 'POST',
-						url: 'https://localhost:9000/rooms/invite/',
+						url: 'https://10.12.244.159/rooms/invite/',
 						headers: {
 							'Content-Type': 'application/json',
 						},
