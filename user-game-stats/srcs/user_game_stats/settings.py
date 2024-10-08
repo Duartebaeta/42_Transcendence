@@ -31,7 +31,7 @@ DEBUG = True
 
 USERNAME_MAX_LENGTH = 20
 
-ALLOWED_HOSTS = ['localhost', '10.12.244.159', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '10.12.244.159', '127.0.0.1', '0.0.0.0', 'user-stats', 'users', 'livechat']
 
 # Application definition
 
