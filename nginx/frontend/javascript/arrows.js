@@ -1,3 +1,5 @@
+import { checkLogin } from "./login.js";
+
 document.addEventListener("DOMContentLoaded", function() {
     const statsModal = new bootstrap.Modal(document.getElementById('stats-modal'));
     const chatModal = new bootstrap.Modal(document.getElementById('chat-modal'));
@@ -29,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Handle back and forward navigation
     window.onpopstate = function(event) {
         const modalId = event.state && event.state.modal;
+        closeAllModals();
         if (modalId) {
             showModal(modalId);
         } else {
@@ -67,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
         // Check if there's a modal-specific URL and open the modal
         const currentPath = window.location.pathname;
-        if (currentPath !== '/') {
+        if (currentPath !== '/' && checkLogin()) {
             showModal(currentPath.substring(1));  // Strip the '/' and open the modal
         }
     });

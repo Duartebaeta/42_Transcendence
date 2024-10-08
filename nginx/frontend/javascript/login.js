@@ -1,5 +1,7 @@
 import { getClosedUsers, getOnlineUsers } from "./chat.js ";
 
+let loginStatus = false;
+
 // Login Modal Trigger
 document.addEventListener('DOMContentLoaded', function() {
 	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
@@ -79,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					online_checker.send(JSON.stringify({
 						type: "send_online"
 					}));
+					loginStatus = true;
 				}
 				online_checker.onmessage = function(event) {
 					const data = JSON.parse(event.data);
@@ -115,3 +118,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			passwordInput.setAttribute('type', 'password');
 	})	
 });
+
+function checkLogin() {
+	return loginStatus;
+}
+
+export { checkLogin }

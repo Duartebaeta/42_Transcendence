@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
 							messageInput.value = ""; // Clear input field
 
 							chatSocket.onclose = function (e) {
-								throw (console.log('WebSocket connection closed 2'));
+								console.log('WebSocket connection closed 2');
 							};
 						}
 					});

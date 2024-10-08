@@ -41,9 +41,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	tournamentForm.addEventListener('submit', function(event) {
 		event.preventDefault();
 
+		let regex = /^[a-zA-Z]+$/;
+
 		let tournamentDisplayName = event.target.elements[0].value;
-		if (tournamentDisplayName === '') {
-			alert('Please enter a display name');
+		if (tournamentDisplayName === '' || regex.test(tournamentDisplayName) == false) {
+			alert('Please enter a valid display name');
 			return;
 		}
 
