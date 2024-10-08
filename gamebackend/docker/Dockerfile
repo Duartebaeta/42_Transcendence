@@ -12,6 +12,8 @@ COPY gamebackend/srcs/ /app/
 
 COPY shared /app/shared/
 
+ENV DJANGO_SETTINGS_MODULE=gamebackend.settings
+
 EXPOSE 9090
 
 CMD ["daphne", "-b", "0.0.0.0", "-p", "9090", "gameapi.asgi:application"]

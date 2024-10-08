@@ -50,7 +50,7 @@ class ChangeUsername(View):
 	@staticmethod
 	def update_username(user_id, username):
 		urls = ["http://user-stats:8080/user-stats/user/",
-				"http://livechat:9000/rooms/user"
+				"http://livechat:9000/rooms/user/"
 				]
 		headers = {'Content-Type': 'application/json'}
 		payload = {
