@@ -40,6 +40,8 @@ up:
 #	docker compose build --no-cache
 	docker compose up --build
 
+reup: down up
+
 down:
 	docker compose down
 
