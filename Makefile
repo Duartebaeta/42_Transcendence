@@ -37,8 +37,8 @@ setup: create-ssl-certificate
 	@echo "Setup completed"
 
 up:
-	docker compose build --no-cache
-	docker compose up
+#	docker compose build --no-cache
+	docker compose up --build
 
 down:
 	docker compose down
