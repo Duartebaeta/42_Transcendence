@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 
 from django.http import HttpResponseBadRequest
 
+from user_management import settings
+
 import requests
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -33,7 +35,7 @@ class Activate(View):
 			messages.success(request, 'Your account has been activated.')
 		else :
 			messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
-		return redirect('https://10.12.244.159/index.html')
+		return redirect(f'https://{settings.API_URL}/index.html')
 
 	@staticmethod
 	@csrf_exempt

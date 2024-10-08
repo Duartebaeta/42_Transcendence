@@ -29,6 +29,7 @@ SECRET_KEY = os.getenv('USER_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+API_URL = os.getenv("API_URL")
 # User, email and password verification rules
 USERNAME_MIN_LENGTH = 3
 USERNAME_MAX_LENGTH = 20
