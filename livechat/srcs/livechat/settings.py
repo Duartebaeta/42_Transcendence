@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-dc&82_-jx3ttb=n*zjnnk!c&e&(doaq@x398fg)(qx9hs*5$^h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'livechat', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '10.12.244.159', '127.0.0.1', '0.0.0.0']
 
 # Application definition
 
