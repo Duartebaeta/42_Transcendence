@@ -16,7 +16,7 @@ class Notification(View):
 	@csrf_exempt
 	def post(self, request):
 		json_request, err = load_json_request(request)
-		if err not None:
+		if err is not None:
 			return JsonResponse(status=400, data={'errors': [err]})
 
 		user_id = json_request.get('user_id')
