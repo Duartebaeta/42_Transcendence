@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dc&82_-jx3ttb=n*zjnnk!c&e&(doaq@x398fg)(qx9hs*5$^h'
+SECRET_KEY = os.getenv('CHAT_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '10.12.244.159', '127.0.0.1', '0.0.0.0', 'user-stats', 'users', 'livechat']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
