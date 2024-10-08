@@ -21,7 +21,7 @@ def main():
 
 # Function to check game state
 def check_game_state(game_id):
-    url = "http://localhost:9090/cli-api/info/"
+    url = "http://gamebackend:9090/cli-api/info/"
     headers = {'Content-Type': 'application/json',}
     payload = {
         'game_id': game_id
