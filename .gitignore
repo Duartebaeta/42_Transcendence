@@ -15,3 +15,5 @@ users/srcs/shared/
 user-game-stats/srcs/shared/
 livechat/srcs/shared/
 gamebackend/shared/
+nginx/ssl/
+shared/ssl/
