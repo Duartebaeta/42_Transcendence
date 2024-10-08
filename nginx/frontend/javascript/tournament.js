@@ -147,6 +147,7 @@ function cancelTournament() {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
 		game_menu.classList.remove('d-none');
+		home_button.classList.add('d-none');
 		resetTournamentBrackets();
 	});
 	document.querySelector('.waiting-room').classList.add('d-none');
@@ -207,6 +208,7 @@ function endTournament(displayName, winner = null, user_id = null) {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
 		game_menu.classList.remove('d-none');
+		home_button.classList.add('d-none');
 		resetTournamentBrackets();
 	});
 }
@@ -259,6 +261,7 @@ function showBrackets() {
 
 	waitingRoom.classList.add('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#canvas-home-button').classList.add('d-none');
 	tournamentBrackets.classList.remove('d-none');
 }
 
