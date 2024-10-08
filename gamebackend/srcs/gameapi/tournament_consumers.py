@@ -118,7 +118,7 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 						}
 					)
 				else:
-					curr_round = self.my_tournament['rounds'][f'round_{self.my_tournament['current_round']}']
+					curr_round = self.my_tournament['rounds'][f"round_{self.my_tournament['current_round']}"]
 					curr_round['winners'].append(data['winner'])
 					if len(curr_round['winners']) == 2:
 						self.my_tournament['current_round'] += 1

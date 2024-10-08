@@ -4,8 +4,6 @@ import { startTournament } from "./tournament.js";
 
 let TournamentSocket;
 let RemoteSocket;
-let BACKEND_IP = "localhost"
-let PORT = "9090"
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -14,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		event.preventDefault();
 
 		// Establish WebSocket connection for GameManager
-		RemoteSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/GameManager/`);
+		RemoteSocket = new WebSocket('/ws/gamebackend/GameManager/');
 
 		RemoteSocket.onmessage = function(event) {
 			console.log('Received message:', event.data);
@@ -50,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 
 		// Establish WebSocket connection for TournamentManager
-		TournamentSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/tournament/`);
+		TournamentSocket = new WebSocket('/ws/gamebackend/tournament/');
 		// Handle incoming messages from the backend
 		TournamentSocket.onmessage = function(event) {
 			console.log('Received message:', event.data);
@@ -167,5 +165,3 @@ function createRemote() {
 		RemoteSocket.send(JSON.stringify(message));
 	};
 }
-
-export { BACKEND_IP, PORT };

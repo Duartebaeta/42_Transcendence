@@ -12,7 +12,7 @@ COPY gamebackend/srcs/ /app/
 
 COPY shared /app/shared/
 
-ENV DJANGO_SETTINGS_MODULE=gamebackend.settings
+ENV DJANGO_SETTINGS_MODULE=gameapi.settings
 
 EXPOSE 9090
 

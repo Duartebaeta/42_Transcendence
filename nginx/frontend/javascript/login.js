@@ -1,3 +1,5 @@
+import { getClosedUsers, getOnlineUsers } from "./chat.js ";
+
 // Login Modal Trigger
 document.addEventListener('DOMContentLoaded', function() {
 	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
@@ -71,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				let id = data.id;
 				let username = data.username;
 
-				let url = 'wss://10.12.244.159/ws/chat/' + id +'/' + username + '/';
+				let url = '/ws/chat/' + id +'/' + username + '/';
 				let online_checker = new WebSocket(url);
 				online_checker.onopen = function() {
 					online_checker.send(JSON.stringify({

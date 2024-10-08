@@ -1,4 +1,3 @@
-import { BACKEND_IP, PORT } from "./game-logic.js";
 import { startGame } from "./pong.js";
 
 let TournamentSocket;
@@ -19,8 +18,8 @@ function startTournament(displayName, tournamentID) {
 	.then((response) => response.json())
 	.then((json) => {
 		// Connect to WebSocket for the tournament
-		TournamentSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/tournament/${tournamentID}/${displayName}/`);
-		GameManagerSocket = new WebSocket(`wss://${BACKEND_IP}:${PORT}/ws/gamebackend/GameManager/`);
+		TournamentSocket = new WebSocket(`/ws/gamebackend/tournament/${tournamentID}/${displayName}/`);
+		GameManagerSocket = new WebSocket('/ws/gamebackend/GameManager/');
 
 		let tournamentData;
 

@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					// Establish WebSocket connection for the current room
 					chatSocket = new WebSocket(
-						'wss://10.12.244.159' + '/ws/chat/' + roomName + '/'
+						'/ws/chat/' + roomName + '/'
 					);
 
 					// Handle incoming messages from WebSocket
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 						chatSocket.onclose = function (e) {
-							throw (console.log('WebSocket connection closed 1'));
+							console.log('WebSocket connection closed 1');
 						};
 
 						if (message.trim()) {
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		}
 		else if (selectedValue === 'Invite') {
-			let gameManagerSocket = new WebSocket('wss://10.12.244.159/ws/gamebackend/GameManager/');
+			let gameManagerSocket = new WebSocket('/ws/gamebackend/GameManager/');
 			let gameId
 
 			const request = {
@@ -403,3 +403,5 @@ function getOnlineUsers(username) {
 		}
 	}
 }
+
+export { getClosedUsers, getOnlineUsers }
