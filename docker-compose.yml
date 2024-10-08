@@ -11,6 +11,7 @@ services:
   #   command: daphne -b 0.0.0.0 -p 9090 gameapi.asgi:application
 
   users:
+    container_name: users
     build: #./users/docker
       dockerfile: users/docker/Dockerfile
     volumes:
@@ -23,6 +24,7 @@ services:
     # command: python manage.py runserver 0.0.0.0:8000
 
   user-game-stats:
+    container_name: user-stats
     build: #./user-game-stats/docker
       dockerfile: user-game-stats/docker/Dockerfile
     volumes:
@@ -33,6 +35,7 @@ services:
     # command: python manage.py runserver 0.0.0.0:8080
 
   livechat:
+    container_name: livechat
     build: #./livechat/docker
       dockerfile: livechat/docker/Dockerfile
     volumes:
