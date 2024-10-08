@@ -40,6 +40,7 @@ os.rename('private_key.pem', 'shared/private_key.pem')
 write_env_variable('DEGUB', os.getenv('DEBUG'), SHARED_ENV)
 
 # User Management
+write_env_variable('API_URL', os.getenv('API_URL'), USERS_ENV)
 write_env_variable('USER_SECRET_KEY', os.urandom(32).hex(), USERS_ENV)
 write_env_variable('SECRET_REFRESH_KEY', os.urandom(32).hex(), USERS_ENV)
 write_env_variable('EMAIL_HOST', os.getenv('EMAIL_HOST'), USERS_ENV)
@@ -50,10 +51,13 @@ write_env_variable('DEFAULT_FROM_EMAIL', os.getenv('DEFAULT_FROM_EMAIL'), USERS_
 write_env_variable('EMAIL_USE_TLS', os.getenv('EMAIL_USE_TLS'), USERS_ENV)
 
 # User Stats
+write_env_variable('API_URL', os.getenv('API_URL'), STATS_ENV)
 write_env_variable('STATS_SECRET_KEY', os.urandom(32).hex(), STATS_ENV)
 
 # Live Chat
+write_env_variable('API_URL', os.getenv('API_URL'), CHAT_ENV)
 write_env_variable('CHAT_SECRET_KEY', os.urandom(32).hex(), CHAT_ENV)
 
 # Gamebackend
+write_env_variable('API_URL', os.getenv('API_URL'), GAME_ENV)
 write_env_variable('GAME_SECRET_KEY', os.urandom(32).hex(), GAME_ENV)

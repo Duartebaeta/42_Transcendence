@@ -1,4 +1,12 @@
 # settings.py
+import os
+
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv()
+
+SECRET_KEY = os.getenv('GAME_SECRET_KEY')
 
 DEBUG=True
 
@@ -47,8 +55,6 @@ CHANNEL_LAYERS = {
 
 # URL configuration
 ROOT_URLCONF = 'gameapi.urls'
-
-SECRET_KEY = '#+$z8^c6c+xcqig8n-icloskc$12sx#+6$zeci*=wepyi-rek4'
 
 ALLOWED_HOSTS = ['*']
 
