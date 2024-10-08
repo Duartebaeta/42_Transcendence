@@ -29,7 +29,6 @@ SECRET_KEY = 'django-insecure-!5axqs)y-poy)$m8m@n$u+hg=091%cy%ite078p)isc8)u9jw7
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '10.12.244.159', '127.0.0.1', '0.0.0.0', 'user-stats', 'users', 'livechat']
-
 # User, email and password verification rules
 USERNAME_MIN_LENGTH = 3
 USERNAME_MAX_LENGTH = 20
