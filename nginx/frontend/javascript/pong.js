@@ -29,7 +29,7 @@ function startGame(GAME_ID, _username = "") {
 
 	var request = {
 		method: 'GET', // HTTP method
-		url: 'https://10.12.244.159/user/me/',
+		url: '${window.config.API_URL}/user/me/',
 		headers: {
 			'Content-Type': 'application/json',
 		}

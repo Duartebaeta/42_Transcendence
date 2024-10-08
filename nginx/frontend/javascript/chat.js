@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		var request = {
 			method: 'GET', // HTTP method
-			url: 'https://10.12.244.159/rooms/user/',
+			url: '${window.config.API_URL}/rooms/user/',
 			headers: {
 				'Content-Type': 'application/json',
 			}
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			// Fetch room details
 			var request = {
 				method: 'POST',
-				url: 'https://10.12.244.159/rooms/chatroom/',
+				url: '${window.config.API_URL}/rooms/chatroom/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			let request = {
 				method: 'POST',
-				url: 'https://10.12.244.159/user-stats/stats/',
+				url: '${window.config.API_URL}/user-stats/stats/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		else if (selectedValue === 'Block') {
 			let request = {
 				method: 'POST',
-				url: 'https://10.12.244.159/rooms/block/',
+				url: '${window.config.API_URL}/rooms/block/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		else if (selectedValue === 'Friend') {
 			let request = {
 				method: 'POST',
-				url: 'https://10.12.244.159/rooms/friend/',
+				url: '${window.config.API_URL}/rooms/friend/',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (response.status == 409) {
 					request = {
 						method: 'DELETE',
-						url: 'https://10.12.244.159/rooms/friend/',
+						url: '${window.config.API_URL}/rooms/friend/',
 						headers: {
 							'Content-Type': 'application/json',
 						},
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 					let request = {
 						method: 'POST',
-						url: 'https://10.12.244.159/rooms/invite/',
+						url: '${window.config.API_URL}/rooms/invite/',
 						headers: {
 							'Content-Type': 'application/json',
 						},
