@@ -10,8 +10,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY user-game-stats/srcs/ /app/
 
-# COPY shared /app/shared/
+COPY user-game-stats/docker/run_server.sh .
 
 EXPOSE 8080
 
-CMD ["gunicorn", "user_game_stats.wsgi:application", "--bind", "0.0.0.0:8080"]
+ENTRYPOINT ["./run_server.sh"]
