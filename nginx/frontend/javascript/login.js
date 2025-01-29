@@ -1,3 +1,7 @@
+import { getClosedUsers, getOnlineUsers } from "./chat.js ";
+
+let loginStatus = false;
+
 // Login Modal Trigger
 document.addEventListener('DOMContentLoaded', function() {
 	var myModal = new bootstrap.Modal(document.getElementById('login-modal'));
@@ -19,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		// // Construct the request object
 		var request = {
 		    method: 'POST', // HTTP method
-		    url: 'http://127.0.0.1:8000/user/sign-in/',
+		    url: '/user/sign-in/',
 		    headers: {
 		        'Content-Type': 'application/json',
 		    },
@@ -59,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 			var request = {
 				method: 'GET', // HTTP method
-				url: 'http://localhost:8000/user/me/',
+				url: '/user/me/',
 				headers: {
 					'Content-Type': 'application/json',
 				}
@@ -71,12 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				let id = data.id;
 				let username = data.username;
 
-				let url = 'ws://localhost:9000/ws/' + id +'/' + username + '/';
+				let url = '/ws/chat/' + id +'/' + username + '/';
 				let online_checker = new WebSocket(url);
 				online_checker.onopen = function() {
 					online_checker.send(JSON.stringify({
 						type: "send_online"
 					}));
+					loginStatus = true;
 				}
 				online_checker.onmessage = function(event) {
 					const data = JSON.parse(event.data);
@@ -113,3 +118,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			passwordInput.setAttribute('type', 'password');
 	})	
 });
+
+function checkLogin() {
+	return loginStatus;
+}
+
+export { checkLogin }

@@ -1,6 +1,5 @@
 // BACKEND CONECTION CODE
 // Global Variables
-import { BACKEND_IP, PORT } from "./game-logic.js";
 
 let gameId = "";
 let username;
@@ -29,7 +28,7 @@ function startGame(GAME_ID, _username = "") {
 
 	var request = {
 		method: 'GET', // HTTP method
-		url: 'http://localhost:8000/user/me/',
+		url: '/user/me/',
 		headers: {
 			'Content-Type': 'application/json',
 		}
@@ -39,7 +38,9 @@ function startGame(GAME_ID, _username = "") {
 	.then((response) => response.json())
 	.then((data) => {
 		userID = data.id;
-		username = data.username;
+		if (username == "") {
+			username = data.username;
+		}
 
 		console.log(userID);
 		console.log(username);
@@ -48,7 +49,7 @@ function startGame(GAME_ID, _username = "") {
 		const game_container = document.querySelector('.game');
 		const game_menu = document.querySelector('.game-menu');
 	
-		socket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/game/${gameId}/${userID}/`);
+		socket = new WebSocket(`/ws/gamebackend/game/${gameId}/${userID}/${username}/`);
 		socket.onopen = function(e) {
 			console.log("[open] Connection established");
 			isSocketConnected = true;
@@ -92,6 +93,7 @@ function startGame(GAME_ID, _username = "") {
 				document.querySelectorAll('.remote_participant_name')[1].innerHTML = gameState.participants[1];
 				document.querySelector('.remote-waiting-room').classList.add('d-none');
 				game_container.classList.remove('d-none');
+				document.querySelector('#sidebar-cover').classList.remove('d-none');
 			} else if (gameState.type === "player_disconnected") {
 				Pong.backendUpdate(gameState.game_state);
 				Pong.over = true;
@@ -231,6 +233,7 @@ const SockOut = {
 function endGame() {
 	document.querySelector('#canvas-home-button').addEventListener('click', function () {
 		document.querySelector('.game').classList.add('d-none');
+		document.querySelector('#sidebar-cover').classList.add('d-none');
 		document.querySelector('#canvas-home-button').classList.add('d-none');
 		document.querySelector('.game-menu').classList.remove('d-none');
 		document.querySelector('#remoteModeBtn').classList.remove('bg-warning');

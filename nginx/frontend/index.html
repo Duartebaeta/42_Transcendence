@@ -11,8 +11,9 @@
 	<link rel="stylesheet" href="style.css">
 
 	<!-- JavaScript Files -->
+	<script type="module" src="javascript/arrows.js" defer></script>
 	<script type="module" src="javascript/chat.js" defer></script>
-	<script src="javascript/login.js" defer></script>
+	<script type="module" src="javascript/login.js" defer></script>
 	<script src="javascript/player-stats.js" defer></script>
 	<script src="javascript/register.js" defer></script>
 	<script src="javascript/settings.js" defer></script>
@@ -30,27 +31,28 @@
 	<div class="container-fluid">
 		<div class="row">
 			<!-- Sidebar -->
-			<nav class="col-auto d-md-block bg-gradient" style="background-color: rgb(130, 0, 130);">
+			<nav class="col-auto d-md-block bg-gradient position-relative" style="background-color: rgb(130, 0, 130);">
 				<div class="position-sticky">
 					<ul class="nav navbar flex-column align-items-center justify-content-center">
 						<!-- Profile Button -->
-						<button id="statsBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#stats-modal">
+						<button id="statsBtn" class="btn nav-item mb-3 text-light">
 							<i class="bi bi-person h3"></i>
 						</button>
 						<!-- Chat Button -->
-						<button id="chatBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#chat-modal">
+						<button id="chatBtn" class="btn nav-item mb-3 text-light">
 							<i class="bi bi-chat h3"></i>
 						</button>
 						<!-- Match History Button -->
-						<button id="matchHistoryBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#match-history-modal">
+						<button id="matchHistoryBtn" class="btn nav-item mb-3 text-light">
 							<i class="bi bi-clock-history h3"></i>
 						</button>
 						<!-- Settings Button -->
-						<button id="settingsBtn" class="btn nav-item mb-3 text-light" data-bs-toggle="modal" data-bs-target="#settings-modal">
+						<button id="settingsBtn" class="btn nav-item mb-3 text-light">
 							<i class="bi bi-gear h3"></i>
 						</button>
 					</ul>
 				</div>
+				<div id="sidebar-cover" class="position-absolute d-none"></div>
 			</nav>
 			
 			<!-- Game Content -->
@@ -126,7 +128,7 @@
 							<p class="participant_name text-light">Waiting for player...</p>	
 						</div>
 						<h5 class="mt-5 d-flex justify-content-center text-light">
-							<p class="text-light" >Game Id:</p>
+							<p class="text-light" >Tournament ID: </p>
 							<p id="tournamentGameId" class="text-light"></p>
 						</h5>
 					</div>
@@ -171,15 +173,15 @@
 							<div class="border px-3 py-4 text-light tournament-winner">...</div>
 						</div>
 					</div>
-					<div id="tournament-text-box" class="d-none">
+					<div id="tournament-text-box" class="">
 						<h4 id="tournament-text" class="text-light"></h4>
-						<button id="tournament-home-button" class="btn bg-gradient btn-block mb-2 home-button" style="background-color: rgb(238, 130, 238)">Main Menu</button>
+						<button id="tournament-home-button" class="btn bg-gradient d-none btn-block mb-2 home-button" style="background-color: rgb(238, 130, 238)">Main Menu</button>
 					</div>
 				</div>
 				<div class="game d-flex flex-column d-none gap-3">
 					<canvas></canvas>
 					<div class="d-flex align-items-center justify-content-center">
-						<button id="canvas-home-button" class="btn bg-gradient btn-block mb-2 home-button d-none" style="background-color: rgb(238, 130, 238)">Main Menu</button>
+						<button id="canvas-home-button" class="btn bg-gradient btn-block d-none mb-2 home-button d-none" style="background-color: rgb(238, 130, 238)">Main Menu</button>
 					</div>
 				</div>
 			</main>
@@ -187,7 +189,7 @@
 	</div>
 
 	<!--Login Modal -->
-	<div id="login-modal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="login-modal" class="modal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
@@ -225,7 +227,7 @@
 	</div>
 
 	<!-- Register Modal -->
-	<div id="register-modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="register-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
@@ -280,7 +282,7 @@
 	</div>
 
 	<!-- Player Stats Modal -->
-	<div id="stats-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="stats-modal" class="modal fade" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
@@ -315,7 +317,7 @@
 	</div>
 
 	<!-- Chat Modal -->
-	<div id="chat-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="chat-modal" class="modal fade" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-xl">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
@@ -384,7 +386,7 @@
 	</div>	  
 
 	<!-- Match History Modal -->
-	<div class="modal fade" id="match-history-modal" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal fade" id="match-history-modal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">
@@ -406,7 +408,7 @@
 	</div>
 
 	<!-- Settings Modal -->
-	<div id="settings-modal" class="modal fade" data-bs-backdrop="modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div id="settings-modal" class="modal fade" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content bg-gradient" style="background-color: rgb(80, 0, 80);">
 				<div class="modal-header">

@@ -6,8 +6,8 @@ from .tournament_consumers import SpecificTournamentConsumer
 from .consumers import GameManager
 
 websocket_urlpatterns = [
-	path('ws/game/<str:game_id>/<str:userID>/', GameConsumer.as_asgi()),
-	re_path(r'ws/GameManager/$', GameManager.as_asgi()),
-	re_path(r'ws/tournament/$', TournamentConsumer.as_asgi()),
-	re_path(r'ws/tournament/(?P<tournament_id>\w+)/(?P<display_name>\w+)/$', SpecificTournamentConsumer.as_asgi()),
+	path('ws/gamebackend/game/<str:game_id>/<str:userID>/<str:username>/', GameConsumer.as_asgi()),
+	re_path(r'ws/gamebackend/GameManager/$', GameManager.as_asgi()),
+	re_path(r'ws/gamebackend/tournament/$', TournamentConsumer.as_asgi()),
+	re_path(r'ws/gamebackend/tournament/(?P<tournament_id>\w+)/(?P<display_name>\w+)/$', SpecificTournamentConsumer.as_asgi()),
 ]

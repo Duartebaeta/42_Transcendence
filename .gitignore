@@ -12,5 +12,8 @@ __init__.py
 node_modules/**
 server.js
 users/srcs/shared/
-user_game_stats/srcs/shared/
+user-game-stats/srcs/shared/
 livechat/srcs/shared/
+gamebackend/srcs/shared/
+nginx/ssl/
+shared/ssl/

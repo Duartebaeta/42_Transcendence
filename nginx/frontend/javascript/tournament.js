@@ -1,4 +1,3 @@
-import { BACKEND_IP, PORT } from "./game-logic.js";
 import { startGame } from "./pong.js";
 
 let TournamentSocket;
@@ -9,7 +8,7 @@ let socketMessageQueue = [];
 function startTournament(displayName, tournamentID) {
 	var request = {
 		method: 'GET', // HTTP method
-		url: 'http://localhost:8000/user/me/',
+		url: '/user/me/',
 		headers: {
 			'Content-Type': 'application/json',
 		}
@@ -19,8 +18,8 @@ function startTournament(displayName, tournamentID) {
 	.then((response) => response.json())
 	.then((json) => {
 		// Connect to WebSocket for the tournament
-		TournamentSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/tournament/${tournamentID}/${displayName}/`);
-		GameManagerSocket = new WebSocket(`ws://${BACKEND_IP}:${PORT}/ws/GameManager/`);
+		TournamentSocket = new WebSocket(`/ws/gamebackend/tournament/${tournamentID}/${displayName}/`);
+		GameManagerSocket = new WebSocket('/ws/gamebackend/GameManager/');
 
 		let tournamentData;
 
@@ -36,7 +35,6 @@ function startTournament(displayName, tournamentID) {
 		TournamentSocket.onmessage = function (event) {
 			const data = JSON.parse(event.data);
 			console.log('Received message:', data);
-			// Handle incoming messages related to the tournament
 			if (data.type === 'get_participants') {
 				populateWaitingRoom(data);
 			} else if (data.type === 'tournament_full') {
@@ -44,18 +42,22 @@ function startTournament(displayName, tournamentID) {
 				tournamentRunning = true;
 				tournamentData = data;
 				populateBrackets(data);
+				signalUser(json.id);
+				changeBracketsText("Round starting...");
 				showBrackets();
 				setTimeout(function() {
 					startRound(tournamentData, displayName);
 				}
-				, 5000);
+				, 10000);
 			} else if (data.type === 'tournament_final') {
 				console.log('Final round:', data);
 				tournamentData = data;
+				signalUser(json.id);
+				changeBracketsText("Round starting...");
 				setTimeout(function() {
 					startFinalRound(tournamentData, displayName);
 				}
-				, 5000);
+				, 10000);
 			} else if (data.type === 'tournament_winner') {
 				console.log('Tournament winner:', data);
 				tournamentRunning = false;
@@ -83,14 +85,15 @@ function startTournament(displayName, tournamentID) {
 			console.log('Received message:', event.data)
 			const data = JSON.parse(event.data);
 			if (data.type === 'game_ended') {
-				console.log('Game over received in tournament end:', data);
+				console.log('Game over successfully received in tournament end:', data);
 				let processed_data = {
 					'gameID': data.gameState.game_id,
-					'participants': [data.gameState.player, data.gameState.opponent],
-					'winner': data.gameState.won ? data.gameState.player : data.gameState.opponent,
-					'loser': data.gameState.won ? data.gameState.opponent : data.gameState.player
+					'participants': [data.gameState.player_name, data.gameState.opponent_name],
+					'winner': data.gameState.won ? data.gameState.player_name : data.gameState.opponent_name,
+					'loser': data.gameState.won ? data.gameState.opponent_name : data.gameState.player_name
 				};
 				TournamentSocket.send(JSON.stringify({ type: 'game_over', data: processed_data }));
+				changeBracketsText("Waiting for other games to finish...")
 				showBrackets();
 				
 			}
@@ -139,15 +142,17 @@ function cancelTournament() {
 	let tournament_text_box = document.querySelector('#tournament-text-box');
 	let game_menu = document.querySelector('.game-menu');
 	let game_window = document.querySelector('.game');
-	document.querySelector('#tournament-text').innerHTML = 'Tournament has ended';
+	changeBracketsText('Tournament has ended');
 	home_button.addEventListener('click', function () {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
 		game_menu.classList.remove('d-none');
+		home_button.classList.add('d-none');
 		resetTournamentBrackets();
 	});
 	document.querySelector('.waiting-room').classList.add('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#sidebar-cover').classList.add('d-none');
 	tournamentBrackets.classList.remove('d-none');
 	document.querySelector('#tournament-text-box').classList.remove('d-none');
 	home_button.classList.remove('d-none');
@@ -172,7 +177,7 @@ function endTournament(displayName, winner = null, user_id = null) {
 		});
 		var request = {
 			method: 'POST', // HTTP method
-			url: 'http://localhost:8080/user-stats/tournament/',
+			url: '/user-stats/tournament/',
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -187,14 +192,15 @@ function endTournament(displayName, winner = null, user_id = null) {
 	}
 
 	if (winner == displayName) {
-		document.querySelector('#tournament-text').innerHTML = 'Congratulations! You won the tournament!';
+		changeBracketsText('Congratulations! You won the tournament!');
 		document.querySelector('.tournament-winner').innerHTML = displayName;
 	} else {
-		document.querySelector('#tournament-text').innerHTML = 'Better luck next time! You lost the tournament!';
+		changeBracketsText('Better luck next time! You lost the tournament!');
 	}
 
 	tournamentBrackets.classList.remove('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#sidebar-cover').classList.add('d-none');
 	tournament_text_box.classList.remove('d-none');
 
 	home_button.classList.remove('d-none');
@@ -204,6 +210,7 @@ function endTournament(displayName, winner = null, user_id = null) {
 		tournamentBrackets.classList.add('d-none');
 		tournament_text_box.classList.add('d-none');
 		game_menu.classList.remove('d-none');
+		home_button.classList.add('d-none');
 		resetTournamentBrackets();
 	});
 }
@@ -217,6 +224,36 @@ function populateBrackets(data) {
 	});
 }
 
+function changeBracketsText(text) {
+	document.querySelector('#tournament-text').innerHTML = text
+}
+
+function signalUser(user_id) {
+	var request = {
+		method: 'POST', // HTTP method
+		url: '/rooms/notification/',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			user_id: user_id,
+			text: "You tournament game is starting. Hurry!"
+		})
+	};
+
+	console.log(request)
+	console.log(request.body)
+
+	authenticatedRequest(request.url, request)
+	.then((response) => response.json())
+	.then((json) => {
+
+	})
+	.catch(error => {
+		console.error("Error fetching data:", error);
+	});
+}
+
 function showBrackets() {
 	if (!tournamentRunning)
 		return;
@@ -226,6 +263,8 @@ function showBrackets() {
 
 	waitingRoom.classList.add('d-none');
 	game_window.classList.add('d-none');
+	document.querySelector('#sidebar-cover').classList.add('d-none');
+	document.querySelector('#canvas-home-button').classList.add('d-none');
 	tournamentBrackets.classList.remove('d-none');
 }
 

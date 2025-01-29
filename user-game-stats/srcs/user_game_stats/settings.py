@@ -24,14 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oktn)ddqj!mvf5a81sn3ayd14tk!4zo58ib)ljg1uh9k$n)pgf'
+SECRET_KEY = os.getenv('STATS_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 USERNAME_MAX_LENGTH = 20
 
-ALLOWED_HOSTS = ['localhost', 'user-game-stats', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

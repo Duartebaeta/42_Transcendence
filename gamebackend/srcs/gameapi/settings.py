@@ -1,4 +1,14 @@
 # settings.py
+import os
+
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv()
+
+SECRET_KEY = os.getenv('GAME_SECRET_KEY')
+
+DEBUG=True
 
 INSTALLED_APPS = [
 	'django.contrib.admin',
@@ -29,19 +39,22 @@ MIDDLEWARE = [
 ASGI_APPLICATION = 'gameapi.asgi.application'
 
 # Channels layers
+# CHANNEL_LAYERS = {
+# 	'default': {
+# 		'BACKEND': 'channels_redis.core.RedisChannelLayer',
+# 		'CONFIG': {
+# 			"hosts": [('127.0.0.1', 6379)],
+# 		},
+# 	},
+# }
 CHANNEL_LAYERS = {
-	'default': {
-		'BACKEND': 'channels_redis.core.RedisChannelLayer',
-		'CONFIG': {
-			"hosts": [('127.0.0.1', 6379)],
-		},
-	},
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
 }
 
 # URL configuration
 ROOT_URLCONF = 'gameapi.urls'
-
-SECRET_KEY = '#+$z8^c6c+xcqig8n-icloskc$12sx#+6$zeci*=wepyi-rek4'
 
 ALLOWED_HOSTS = ['*']
 
@@ -55,3 +68,20 @@ CSRF_TRUSTED_ORIGINS = [
 # Session settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
+
+import os
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
+}

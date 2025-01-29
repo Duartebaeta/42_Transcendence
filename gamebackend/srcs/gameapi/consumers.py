@@ -13,6 +13,7 @@ import datetime
 class GameConsumer(AsyncWebsocketConsumer):
 	async def connect(self):
 		self.game_id = self.scope['url_route']['kwargs']['game_id']
+		self.username = self.scope['url_route']['kwargs']['username']
 		query_string = self.scope['query_string'].decode()
 		query_params = parse_qs(query_string)
 		self.userID = self.scope['url_route']['kwargs']['userID']
@@ -33,7 +34,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 			await self.close()
 			return
 
-		self.side = self.game.add_player(self.userID, self.channel_name)
+		self.side = self.game.add_player(self.userID, self.channel_name, self.username)
 		self.game_group_name = f'game_{self.game_id}'
 
 		await self.channel_layer.group_add(
@@ -487,19 +488,10 @@ class GameManager(AsyncWebsocketConsumer):
 			return
 		#From here down only one player
 
-
-		#Get current time, date, hours minutes and seconds
-		now = datetime.datetime.now()
-		current_time = now.strftime("%H:%M:%S")
-		current_date = now.strftime("%Y-%m-%d")
-		event['game_stats']['time'] = current_time
-		event['game_stats']['date'] = current_date
-		print(f"Game ended at {current_time} on {current_date}")
-
 		print(f"Game Stats: {event['game_stats']}")
 
 		#Post method to send the game data as a json to the API on localhost:8080/user-stats/match/
-		url = "http://localhost:8080/user-stats/match/"
+		url = "http://user-stats:8080/user-stats/match/"
 		headers = {
 			'Content-Type': 'application/json'
 		}

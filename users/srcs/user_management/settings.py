@@ -23,13 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!5axqs)y-poy)$m8m@n$u+hg=091%cy%ite078p)isc8)u9jw7'
+SECRET_KEY = os.getenv('USER_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'users', '127.0.0.1', '0.0.0.0']
-
+ALLOWED_HOSTS = ['*']
+API_URL = os.getenv("API_URL")
 # User, email and password verification rules
 USERNAME_MIN_LENGTH = 3
 USERNAME_MAX_LENGTH = 20

@@ -10,8 +10,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY users/srcs/ /app/
 
-COPY shared /app/shared/
+COPY users/docker/run_server.sh .
 
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "8000"]
+ENTRYPOINT ["./run_server.sh"]

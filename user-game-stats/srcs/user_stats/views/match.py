@@ -69,8 +69,6 @@ class Match(View):
 		won = json_request.get('won')
 		player_score = json_request.get('player_score')
 		opponent_score = json_request.get('opponent_score')
-		time = json_request.get('time')
-		date = json_request.get('date')
 
 		success, error = Match.verify_all_infos(
 			player_id=player_id,
@@ -78,14 +76,10 @@ class Match(View):
 			won=won,
 			player_score=player_score,
 			opponent_score=opponent_score,
-			time=time,
-			date=date
 			)
 		if not success:
 			return JsonResponse(status=400, data={'errors': [error]})
 
-		match_time = date + ' ' + time
-		time = datetime.strptime(match_time, '%Y-%m-%d %H:%M:%S')
 		player = User.objects.filter(id=player_id).first()
 		opponent = User.objects.filter(id=opponent_id).first()
 		try:
@@ -95,7 +89,6 @@ class Match(View):
 				won=won,
 				player_score=player_score,
 				opponent_score=opponent_score,
-				time=time,
 			)
 			opponent_match = MatchModel.objects.create(
 				player=opponent,
@@ -103,7 +96,6 @@ class Match(View):
 				won=not won,
 				player_score=opponent_score,
 				opponent_score=player_score,
-				time=time,
 			)
 			if won:
 				player.wins += 1
@@ -120,7 +112,7 @@ class Match(View):
 		return JsonResponse(status=200, data={'message': 'Successfuly created matches'})
 
 	@staticmethod
-	def verify_all_infos(player_id, opponent_id, won, player_score, opponent_score, time, date):
+	def verify_all_infos(player_id, opponent_id, won, player_score, opponent_score):
 		success, error = Match.verify_players_id(player_id)
 		if not success:
 			return False, error
@@ -139,10 +131,6 @@ class Match(View):
 		success, error = Match.verify_players_scores(opponent_score)
 		if not success:
 			return False, error
-		if time is None or time == '':
-			return False, 'No time was given'
-		if date is None or date == '':
-			return False, 'No date was given'
 		return True, None
 
 	@staticmethod

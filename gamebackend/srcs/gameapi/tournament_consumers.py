@@ -79,6 +79,17 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 			)
 		elif data['type'] == 'get_participants':
 			participants = self.my_tournament['participants']
+			print(f"Sending participants {participants}")
+			await self.channel_layer.group_send(
+				self.group_name,
+				{
+					'type': 'tournament_message',
+					'message': {
+						'type': 'get_participants',
+						'participants': participants
+					}
+				}
+			)
 			await self.send(text_data=json.dumps({
 				'type': 'get_participants',
 				'participants': participants
@@ -86,7 +97,10 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 
 		elif data['type'] == 'game_over':
 			data = data['data']
-			print(f"Game over: {data}")
+			print(f"CAUGHT IN TOURNAMENT CONSUMER(100)= GAME OVER: {data}")
+			print(f"Display name: {self.display_name}")
+			print(f"Winner: {data['winner']}")
+			print(f"Display name == winner: {self.display_name == data['winner']}")
 			if self.display_name == data['winner']:
 				self.my_tournament['losers'].append(data['loser'])
 				await self.channel_layer.group_send(
@@ -118,7 +132,7 @@ class SpecificTournamentConsumer(AsyncWebsocketConsumer):
 						}
 					)
 				else:
-					curr_round = self.my_tournament['rounds'][f'round_{self.my_tournament['current_round']}']
+					curr_round = self.my_tournament['rounds'][f"round_{self.my_tournament['current_round']}"]
 					curr_round['winners'].append(data['winner'])
 					if len(curr_round['winners']) == 2:
 						self.my_tournament['current_round'] += 1

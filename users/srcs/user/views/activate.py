@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 
 from django.http import HttpResponseBadRequest
 
+from user_management import settings
+
 import requests
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -33,12 +35,12 @@ class Activate(View):
 			messages.success(request, 'Your account has been activated.')
 		else :
 			messages.error(request, 'The confirmation link was invalid, possibly because it has already been used.')
-		return redirect('http://localhost:3000/')
+		return redirect(f'https://{settings.API_URL}/index.html')
 
 	@staticmethod
 	@csrf_exempt
 	def create_user_db(user_id, username, avatar):
-		urls = ["http://user-game-stats:8080/user-stats/user/",
+		urls = ["http://user-stats:8080/user-stats/user/",
 				"http://livechat:9000/rooms/user/"
 				]
 		headers = {'Content-Type': 'application/json'}
